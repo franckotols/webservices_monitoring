@@ -66,7 +66,7 @@ class AutenticationServer(object):
 			return (temp)
 
 		print params
-		
+
 
 		username = params["Username"]
 		password = params["Password"]
@@ -91,7 +91,7 @@ class AutenticationServer(object):
 		if flag == True:
 			return "login succesfull"
 		else:
-			raise cherrypy.HTTPError(400, "Utente gia' registrato")
+			raise cherrypy.HTTPError(400, "Username o Password errati")
 
 
 
