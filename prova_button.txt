@@ -1,0 +1,66 @@
+refr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, REGISTER_URL,
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+
+                                try {
+                                    JSONObject obj = response.getJSONObject("server");
+                                    String number = obj.getString("current_number");
+                                    String time = obj.getString("mean_time");
+
+                                    currentNumber.setText(number);
+                                    meanTime.setText(time);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.e("VOLLEY", "ERROR");
+                            }
+                        });
+                requestQueue1.add(jsonObjectRequest);
+            }
+
+        });
+
+        book = (Button) findViewById(R.id.book_button);
+        requestQueue2 = Volley.newRequestQueue(this);
+        book.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                final String username_string = username.getText().toString().trim();
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, REGISTER_URL,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                Toast.makeText(MainActivity.this, response, Toast.LENGTH_LONG).show();
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Toast.makeText(MainActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                            }
+                        }) {
+                    @Override
+                    protected Map<String, String> getParams() {
+                        Map<String, String> params = new HashMap<String, String>();
+                        params.put(KEY_USERNAME, username_string);
+                        return params;
+                    }
+                };
+                requestQueue2.add(stringRequest);
+            }
+
+
+        });

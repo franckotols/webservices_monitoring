@@ -1,0 +1,3 @@
+indirizzo server
+
+"http://192.168.173.1:9090"

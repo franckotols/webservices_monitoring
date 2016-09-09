@@ -1,0 +1,19 @@
+In OS(C:) aprire cartella sitewhere-server-1.6.1
+cliccare cartella "bin" e aprire file "startup.sh"
+
+http://localhost:8080/sitewhere/admin
+
+tenant:
+username: franckotols
+password: 000000
+
+per lo swagger:
+
+lanciare sitewhere come prima e scrivere http://localhost:8080/sitewhere
+
+
+RETE AD HOC
+passi per la creazione: http://www.dottinformatica.it/come-creare-una-rete-ad-hoc-su-windows-10/
+
+Nome rete: Fra
+pass: bingiaeidda
