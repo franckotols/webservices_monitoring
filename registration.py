@@ -35,7 +35,12 @@ class RegistrationServer(object):
 		
 	def GET (self, *uri, **params):
 
-		pass
+		if uri[0] == "specializzazioni":
+			spec = {"specializzazioni":[
+				"diabetologo",
+				"nefrologo"]}
+			spec = json.dumps(spec)
+			return spec
 
 	def POST (self, * uri, ** params):
 		
@@ -61,6 +66,7 @@ class RegistrationServer(object):
 		user_username = data_obj['user']
 		user_password = data_obj['password']
 		sesso=data_obj['sex']
+		spec = data_obj['specializzazione']
 		giorno=str(data_obj['day'])
 		mese=str(data_obj['month'])
 		anno=str(data_obj['year'])
@@ -93,7 +99,7 @@ class RegistrationServer(object):
 		pat_name=nome.upper()+" "+cognome.upper()
 		nascita = giorno+"/"+mese+"/"+anno
 
-		propert={"name":nome, "last name":cognome, "user":user_username, "password":user_password, "sex":sesso, "birthdate":nascita, "TAX code":tax_code, "phone":phone}
+		propert={"name":nome, "last name":cognome, "user":user_username, "password":user_password, "sex":sesso, "specializzazione":spec,"birthdate":nascita, "TAX code":tax_code, "phone":phone}
 		new_person_param={"roles":[""], "userName":pat_username, "emailAddress":email, "id":pat_id, "imageUrl":imm_url, "properties":propert, "name":pat_name}
 		new_person_param_str=json.dumps(new_person_param)
 		new_person_param_str=new_person_param_str.replace(": ",":")
