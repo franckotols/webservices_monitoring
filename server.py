@@ -197,9 +197,9 @@ class AuthenticationServer(object):
 				break
 
 		if flag == True:
-			return "login succesfull"
+			return "login_succesful"
 		else:
-			raise cherrypy.HTTPError(400, "Username o Password errati")
+			raise cherrypy.HTTPError(400, "wrong_params")
 
 	def PUT (self, * uri, ** params): 
 		pass
@@ -326,11 +326,13 @@ class SearchPatientServer(object):
 			if count > 0:
 				selected.append(dixt["results"][i])
 
-		server_response = { "server_response": selected }
-		server_response = json.dumps(server_response)
-		print server_response
-
-		return server_response
+		if len(selected) > 0:
+			server_response = { "server_response": selected }
+			server_response = json.dumps(server_response)
+			#print server_response
+			return server_response
+		else:
+			raise cherrypy.HTTPError(400, "no_selected")
 
 
 
