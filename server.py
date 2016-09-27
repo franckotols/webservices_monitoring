@@ -7,6 +7,7 @@ import urllib
 import urllib2
 import operator
 from sys import argv
+from pymongo import Connection, MongoClient
 
 class RegistrationServer(object):
 	exposed = True
@@ -36,12 +37,16 @@ class RegistrationServer(object):
 	def GET (self, *uri, **params):
 
 		if uri[0] == "specializzazioni":
-			spec = {"specializzazioni":[
-				"diabetologo",
-				"nefrologo"]}
-			spec = json.dumps(spec)
-			return spec
-
+			#posso scrivere anche con=Connection()
+			con = MongoClient()
+			db = con['utils']
+			collection = db.specializzazioni #e' la collection
+			#docu = spec.find() find non va bene perche' restituisce un oggetto pymongo.cursor.cursos
+			docu = collection.find_one() #restituisce il dizionario 
+			target = docu["specializzazioni"]
+			mydict = {"specializzazioni": target}
+			return json.dumps(mydict)
+			
 	def POST (self, * uri, ** params):
 		
 		#copiato da giuseppe
@@ -234,18 +239,16 @@ class DiseaseServer(object):
 		
 		
 	def GET (self, *uri, **params):
+
+		con = MongoClient()
+		db = con['utils']
+		collection = db.diseases #e' la collection
+		#docu = spec.find() find non va bene perche' restituisce un oggetto pymongo.cursor.cursos
+		docu = collection.find_one() #restituisce il dizionario 
+		target = docu["diseases"]
+		mydict = {"diseases": target}
+		return json.dumps(mydict)
 	
-		dis = {"diseases":[
-			"Dialisi Peritoneale",
-			"Emodialisi",
-			"Insufficienza renale",
-			"Trapianto",
-			"Diabete tipo I",
-			"Diabete tipo II",
-			"Esami del sangue",
-			"Test delle urine"]}
-		dis = json.dumps(dis)
-		return dis
 
 	def POST (self, * uri, ** params):
 
@@ -287,10 +290,8 @@ class SearchPatientServer(object):
 		pass
 
 	def POST (self, * uri, ** params):
+		print params
 		
-
-		#print params
-
 		search_name = params['patient_name']
 		search_diseases = params['diseases']
 		print "*********"
@@ -306,7 +307,6 @@ class SearchPatientServer(object):
 		r = sessione.get(url_def, headers=self.headers, auth=self.auth)
 		result = r.content
 		dixt = json.loads(result)
-		print dixt
 		for i in range(0,len(dixt['results'])):
 
 			
@@ -323,7 +323,15 @@ class SearchPatientServer(object):
 				print user_diseases[k]
 				if user_diseases[k] in search_diseases:
 					count = count+1
-			if count > 0:
+			
+			#NON SO SE LA RICERCA FATTA IN QUESTO MODO
+			#PER VEDERE SE FUNZIONA IL NUMERO DI PAZIENTI DEVE ESSERE ALTO
+			#E CI DEVONO ESSERE ANCHE PAZIENTI CON LO STESSO NOME MA CON MALATTIE DIVERSE
+			if count > 0 and len(search_name)==0:
+				selected.append(dixt["results"][i])
+			elif search_name in name and len(search_name)>0:
+				selected.append(dixt["results"][i])
+			elif search_name in name and count > 0 and len(search_name)>0:
 				selected.append(dixt["results"][i])
 
 		if len(selected) > 0:

@@ -1,0 +1,796 @@
+GUIDA SITEWHERE:
+
+Sites:
+
+{
+	"numResults":1,
+	"results":[
+		{
+			"createdDate":"2016-07-04T12:18:08.983+0200",
+			"createdBy":"system",
+			"deleted":false,
+			"token":"bb105f8d-3150-41f5-b9d1-db04965668d3",
+			"name":"Construction Site",
+			"description":
+				"A construction site with many high-value assets that should not be taken offsite. \nThe system provides location tracking for the assets and notifies administrators if any of the assets move \noutside of the general site area or into areas where they are not allowed.",
+			"imageUrl":"https://s3.amazonaws.com/sitewhere-demo/construction/construction.jpg",
+			"map":
+				{
+					"type":"mapquest",
+					"metadata":
+						{
+							"zoomLevel":"15",
+							"centerLatitude":"34.10469794977326",
+							"centerLongitude":"-84.23966646194458"
+						}
+				},
+			"metadata":{}
+		}
+	]
+}
+
+
+
+Assets categories:
+
+{
+	"numResults":2,
+	"results":[
+		{
+			"id":"lista_medici_asset_ID",
+			"name":"Lista Medici","assetType":
+			"Person"
+		},
+
+		{
+			"id":"PATIENT_LIST_asset_id",
+			"name":"Patients List",
+			"assetType":"Person"
+		}
+	]
+}
+
+Asset category by id: 
+
+{
+	"id":"lista_medici_asset_ID",
+	"name":"Lista Medici",
+	"assetType":"Person"
+}
+
+Assets categoryID ASSETS:
+
+{
+	"numResults":4,
+	"results":[
+		{
+			"id":"chiara-tolu",
+			"name":"CHIARA TOLU",
+			"type":"Person",
+			"assetCategoryId":"lista_medici_asset_ID",
+			"imageUrl":"https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSeMhLE4mlN1K4KrmWh9e_qkKS46K5_F4I9zAPXoJH_3zQawLLycg",
+			"properties":
+				{
+					"password":"chiara",
+					"last name":"Tolu",
+					"birthdate":"24/9/1999",
+					"phone":"3332233323",
+					"sex":"Female",
+					"name":"Chiara",
+					"specializzazione":
+					"diabetologo"
+				},
+			"userName":"chiara_tolu",
+			"emailAddress":"chiara@mail.it",
+			"roles":[""]
+		},
+		{
+			"id":"francesco-tolu",
+			"name":"FRANCESCO TOLU",
+			"type":"Person","assetCategoryId":"lista_medici_asset_ID",
+			"imageUrl":"https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQB4dVacA67gn_f0CQ1YMZ-cqDucluN1pPoXnEGR1NCa4rutI76",
+			"properties":
+				{
+					"password":"bingiaeidda",
+					"last name":"Tolu",
+					"birthdate":"18/8/1989",
+					"phone":"3409855775",
+					"sex":"Male",
+					"name":"Francesco",
+					"specializzazione":"diabetologo"
+				},
+			"userName":"francesco_tolu",
+			"emailAddress":"tolufrancesco@gmail.com",
+			"roles":[""]
+		},
+		{
+			"id":"giorgia-demelas",
+			"name":"GIORGIA DEMELAS",
+			"type":"Person",
+			"assetCategoryId":"lista_medici_asset_ID",
+			"imageUrl":"https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSeMhLE4mlN1K4KrmWh9e_qkKS46K5_F4I9zAPXoJH_3zQawLLycg",
+			"properties":
+				{
+					"password":"gio",
+					"last name":"Demelas",
+					"birthdate":"20/9/1993",
+					"phone":"325252",
+					"sex":"Female",
+					"name":"Giorgia",
+					"specializzazione":"nefrologo"
+				},
+			"userName":"giorgia_demelas",
+			"emailAddress":"giorgia@mail.it",
+			"roles":[""]
+		},
+		{
+			"id":"silvia-tolu",
+			"name":"SILVIA TOLU",
+			"type":"Person",
+			"assetCategoryId":"lista_medici_asset_ID",
+			"imageUrl":"https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSeMhLE4mlN1K4KrmWh9e_qkKS46K5_F4I9zAPXoJH_3zQawLLycg",
+			"properties":
+				{
+					"password":"silvia",
+					"last name":"Tolu",
+					"birthdate":"14/8/1990",
+					"phone":"3333333333",
+					"sex":"Female",
+					"name":"Silvia",
+					"specializzazione":"nefrologo"
+				},
+			"userName":"silvia_tolu",
+			"emailAddress":"silvia@mail.it",
+			"roles":[""]
+		}
+	
+	]
+}
+
+Assets categoryID assets assetID
+
+{
+	"id":"chiara-tolu",
+	"name":"CHIARA TOLU",
+	"type":"Person",
+	"assetCategoryId":"lista_medici_asset_ID",
+	"imageUrl":"https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSeMhLE4mlN1K4KrmWh9e_qkKS46K5_F4I9zAPXoJH_3zQawLLycg",
+	"properties":
+		{
+			"password":"chiara",
+			"last name":"Tolu",
+			"birthdate":"24/9/1999",
+			"phone":"3332233323",
+			"sex":"Female",
+			"name":"Chiara",
+			"specializzazione":"diabetologo"
+		},
+	"userName":"chiara_tolu",
+	"emailAddress":"chiara@mail.it",
+	"roles":[""]
+}
+
+
+SPECIFICATION GALAXY TAB, inutile ma per test - IMPORTANTE IL TOKEN
+
+{
+  "createdDate": "2016-09-26T18:05:00.103+0200",
+  "createdBy": "franckotols",
+  "deleted": false,
+  "token": "5c9822bb-0a25-4bc4-be11-f1cb7264fd68",
+  "name": "Android Tablet",
+  "assetModuleId": "fs-devices",
+  "assetId": "173",
+  "assetName": "Galaxy Tab 3",
+  "assetImageUrl": "https://s3.amazonaws.com/sitewhere-demo/construction/misc/android-logo.png",
+  "asset": {
+    "id": "173",
+    "name": "Galaxy Tab 3",
+    "type": "Device",
+    "assetCategoryId": "fs-devices",
+    "imageUrl": "https://s3.amazonaws.com/sitewhere-demo/construction/misc/android-logo.png",
+    "properties": {
+      "sz_size": "1gb",
+      "cpu": "Dual Core Application Processor ",
+      "manufacturer": "Samsung"
+    },
+    "sku": "GTAB3",
+    "description": " This thin, lightweight Android tablet features a 7-inch touch display along with the same familiar interface as other Samsung Galaxy devices, making it easy to use. Use it to quickly browse the web, watch movies, read e-books, or download apps from Google Play."
+  },
+  "containerPolicy": "Standalone",
+  "metadata": {}
+}
+
+__________________
+                  |
+GET ASSIGNMENT    |
+__________________|
+
+{
+    "activeDate": "2016-09-26T21:44:31.810+0200",
+    "assetId": "francesco-tolu",
+    "assetImageUrl": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQB4dVacA67gn_f0CQ1YMZ-cqDucluN1pPoXnEGR1NCa4rutI76",
+    "assetModuleId": "lista_medici_asset_ID",
+    "assetName": "FRANCESCO TOLU",
+    "assignmentType": "Associated",
+    "associatedPerson": {
+        "assetCategoryId": "lista_medici_asset_ID",
+        "emailAddress": "tolufrancesco@gmail.com",
+        "id": "francesco-tolu",
+        "imageUrl": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQB4dVacA67gn_f0CQ1YMZ-cqDucluN1pPoXnEGR1NCa4rutI76",
+        "name": "FRANCESCO TOLU",
+        "properties": {
+            "birthdate": "18/8/1989",
+            "last name": "Tolu",
+            "name": "Francesco",
+            "password": "bingiaeidda",
+            "phone": "3409855775",
+            "sex": "Male",
+            "specializzazione": "diabetologo"
+        },
+        "roles": [
+            ""
+        ],
+        "type": "Person",
+        "userName": "francesco_tolu"
+    },
+    "createdBy": "franckotols",
+    "createdDate": "2016-09-26T21:44:31.810+0200",
+    "deleted": false,
+    "device": {
+        "assetId": "173",
+        "assetImageUrl": "https://s3.amazonaws.com/sitewhere-demo/construction/misc/android-logo.png",
+        "assetName": "Galaxy Tab 3",
+        "assignmentToken": "fbf83dd6-d2a6-4a39-9265-d5f879945f57",
+        "comments": "Android Tablet for testing ",
+        "createdBy": "franckotols",
+        "createdDate": "2016-09-26T21:44:22.344+0200",
+        "deleted": false,
+        "deviceElementMappings": [],
+        "hardwareId": "123-453",
+        "metadata": {},
+        "siteToken": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823",
+        "specificationToken": "dcf8de5b-c876-4ccf-802d-c86d3fdaea44"
+    },
+    "deviceHardwareId": "123-453",
+    "metadata": {},
+    "site": {
+        "createdBy": "franckotols",
+        "createdDate": "2016-09-26T16:15:06.407+0200",
+        "deleted": false,
+        "description": "Sito di test",
+        "imageUrl": "https://spinoff.nasa.gov/Spinoff2012/Images/hm_8.jpg",
+        "map": {
+            "metadata": {
+                "centerLatitude": "",
+                "centerLongitude": "",
+                "zoomLevel": ""
+            },
+            "type": "mapquest"
+        },
+        "metadata": {},
+        "name": "Health Monitoring Site",
+        "token": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823",
+        "updatedBy": "franckotols",
+        "updatedDate": "2016-09-26T17:00:25.363+0200"
+    },
+    "siteToken": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823",
+    "status": "Active",
+    "token": "fbf83dd6-d2a6-4a39-9265-d5f879945f57"
+}
+
+
+*********************************
+POST ASSIGNMENT MEASUREMENT     *
+*----- molto importante --------*
+*********************************
+Esempio
+il Token nell'url è l'assignment token
+L'assignment token viene generato quando c'è un associazione device - asset (che nel nostro caso in mio parere può esssere
+solo device - persona). Questo codice è univoco e molto potente in quanto con quel codice possiamo prendere i dati relativi
+al dispositivo associato a quel paziente. 
+nell'header della richiesta va messo, oltre al tenant token, anche "content-type":"application/json"
+
+Url: http://localhost:8080/sitewhere/api/assignments/fbf83dd6-d2a6-4a39-9265-d5f879945f57/measurements
+Richiesta:
+{
+    "eventDate": "",
+    "measurements": {
+        "glicemia": 76,
+        "pressione": 123
+    },
+    "metadata": {
+        "peso": "stabile",
+        "situazione": "stabile"
+    }
+}
+Risposta:
+{
+    "assetId": "francesco-tolu",
+    "assetModuleId": "lista_medici_asset_ID",
+    "assignmentType": "Associated",
+    "deviceAssignmentToken": "fbf83dd6-d2a6-4a39-9265-d5f879945f57",
+    "eventDate": "2016-09-27T10:48:43.782+0200",
+    "eventType": "Measurements",
+    "id": "57ea326b947ec4497665f38c",
+    "measurements": {
+        "glicemia": 76.0,
+        "pressione": 123.0
+    },
+    "measurementsSummary": "glicemia: 76.0, pressione: 123.0",
+    "metadata": {
+        "peso": "stabile",
+        "situazione": "stabile"
+    },
+    "receivedDate": "2016-09-27T10:48:43.782+0200",
+    "siteToken": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823"
+}
+
+*************************************
+GET MEASUREMENT BY ASSIGNMENT TOKEN *
+*************************************
+
+{
+    "numResults": 8,
+    "results": [
+        {
+            "assetId": "francesco-tolu",
+            "assetModuleId": "lista_medici_asset_ID",
+            "assignmentType": "Associated",
+            "deviceAssignmentToken": "fbf83dd6-d2a6-4a39-9265-d5f879945f57",
+            "eventDate": "2016-09-27T10:57:13.273+0200",
+            "eventType": "Measurements",
+            "id": "57ea3469947ec4497665f38d",
+            "measurements": {
+                "glicemia": 76.0,
+                "pressione": 123.0
+            },
+            "measurementsSummary": "glicemia: 76.0, pressione: 123.0",
+            "metadata": {
+                "peso": "stabile",
+                "situazione": "stabile"
+            },
+            "receivedDate": "2016-09-27T10:57:13.273+0200",
+            "siteToken": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823"
+        },
+        {
+            "assetId": "francesco-tolu",
+            "assetModuleId": "lista_medici_asset_ID",
+            "assignmentType": "Associated",
+            "deviceAssignmentToken": "fbf83dd6-d2a6-4a39-9265-d5f879945f57",
+            "eventDate": "2016-09-27T10:48:43.782+0200",
+            "eventType": "Measurements",
+            "id": "57ea326b947ec4497665f38c",
+            "measurements": {
+                "glicemia": 76.0,
+                "pressione": 123.0
+            },
+            "measurementsSummary": "glicemia: 76.0, pressione: 123.0",
+            "metadata": {
+                "peso": "stabile",
+                "situazione": "stabile"
+            },
+            "receivedDate": "2016-09-27T10:48:43.782+0200",
+            "siteToken": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823"
+        },
+        {
+            "assetId": "francesco-tolu",
+            "assetModuleId": "lista_medici_asset_ID",
+            "assignmentType": "Associated",
+            "deviceAssignmentToken": "fbf83dd6-d2a6-4a39-9265-d5f879945f57",
+            "eventDate": "2016-09-27T10:40:27.303+0200",
+            "eventType": "Measurements",
+            "id": "57ea307b947ec4497665f38b",
+            "measurements": {
+                "engine.temperature": 29.0,
+                "fuel.level": 112.0
+            },
+            "measurementsSummary": "engine.temperature: 29.0, fuel.level: 112.0",
+            "metadata": {
+                "met": "23"
+            },
+            "receivedDate": "2016-09-27T10:40:27.303+0200",
+            "siteToken": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823"
+        },
+        {
+            "assetId": "francesco-tolu",
+            "assetModuleId": "lista_medici_asset_ID",
+            "assignmentType": "Associated",
+            "deviceAssignmentToken": "fbf83dd6-d2a6-4a39-9265-d5f879945f57",
+            "eventDate": "2016-09-27T10:38:15.013+0200",
+            "eventType": "Measurements",
+            "id": "57ea2ff7947ec4497665f38a",
+            "measurements": {
+                "engine.temperature": 23.0,
+                "fuel.level": 55.0
+            },
+            "measurementsSummary": "engine.temperature: 23.0, fuel.level: 55.0",
+            "metadata": {},
+            "receivedDate": "2016-09-27T10:38:15.013+0200",
+            "siteToken": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823"
+        },
+        {
+            "assetId": "francesco-tolu",
+            "assetModuleId": "lista_medici_asset_ID",
+            "assignmentType": "Associated",
+            "deviceAssignmentToken": "fbf83dd6-d2a6-4a39-9265-d5f879945f57",
+            "eventDate": "2016-09-27T10:30:15.609+0200",
+            "eventType": "Measurements",
+            "id": "57ea2e17947ec4497665f389",
+            "measurements": {
+                "antani": 14.0,
+                "fuel.level": 33.22
+            },
+            "measurementsSummary": "fuel.level: 33.22, antani: 14.0",
+            "metadata": {},
+            "receivedDate": "2016-09-27T10:30:15.609+0200",
+            "siteToken": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823"
+        },
+        {
+            "assetId": "francesco-tolu",
+            "assetModuleId": "lista_medici_asset_ID",
+            "assignmentType": "Associated",
+            "deviceAssignmentToken": "fbf83dd6-d2a6-4a39-9265-d5f879945f57",
+            "eventDate": "2016-09-27T10:29:39.624+0200",
+            "eventType": "Measurements",
+            "id": "57ea2df3947ec4497665f388",
+            "measurements": {
+                "engine.temperature": 77.88,
+                "fuel.level": 33.22
+            },
+            "measurementsSummary": "engine.temperature: 77.88, fuel.level: 33.22",
+            "metadata": {},
+            "receivedDate": "2016-09-27T10:29:39.624+0200",
+            "siteToken": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823"
+        },
+        {
+            "assetId": "francesco-tolu",
+            "assetModuleId": "lista_medici_asset_ID",
+            "assignmentType": "Associated",
+            "deviceAssignmentToken": "fbf83dd6-d2a6-4a39-9265-d5f879945f57",
+            "eventDate": "2016-09-27T09:55:17.843+0200",
+            "eventType": "Measurements",
+            "id": "57ea25e5947e258f72ea5a0e",
+            "measurements": {
+                "engine.temperature": 86.21,
+                "fuel.level": 32.68
+            },
+            "measurementsSummary": "engine.temperature: 86.21, fuel.level: 32.68",
+            "metadata": {},
+            "receivedDate": "2016-09-27T09:55:17.843+0200",
+            "siteToken": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823"
+        },
+        {
+            "assetId": "francesco-tolu",
+            "assetModuleId": "lista_medici_asset_ID",
+            "assignmentType": "Associated",
+            "deviceAssignmentToken": "fbf83dd6-d2a6-4a39-9265-d5f879945f57",
+            "eventDate": "2016-09-27T09:27:41.807+0200",
+            "eventType": "Measurements",
+            "id": "57ea1f6d947e258f72ea5a0d",
+            "measurements": {
+                "engine.temperature": 86.21,
+                "fuel.level": 32.68
+            },
+            "measurementsSummary": "engine.temperature: 86.21, fuel.level: 32.68",
+            "metadata": {},
+            "receivedDate": "2016-09-27T09:27:41.807+0200",
+            "siteToken": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823"
+        }
+    ]
+}
+
+POST HARDWARE DEVICE ASSET
+
+{
+    "assetCategoryId": "fs-devices",
+    "description": "Software App for sending blood analysis",
+    "id": "2190",
+    "imageUrl": "http://www.laboratoriobalistreri.it/polopoly_fs/1.18133099.1406888453!/httpImage/img.jpg_gen/derivatives/landscape_490/img.jpg",
+    "name": "Esami del Sangue",
+    "properties": {
+        "type": "software"
+    },
+    "sku": "BLAN-SOFT",
+    "type": "Device"
+}
+
+POST SPECIFICATION 
+
+{
+    "asset": {
+        "assetCategoryId": "fs-devices",
+        "description": "Software App for sending blood analysis",
+        "id": "2190",
+        "imageUrl": "http://www.laboratoriobalistreri.it/polopoly_fs/1.18133099.1406888453!/httpImage/img.jpg_gen/derivatives/landscape_490/img.jpg",
+        "name": "Esami del Sangue",
+        "properties": {
+            "type": "software"
+        },
+        "sku": "BLAN-SOFT",
+        "type": "Device"
+    },
+    "assetId": "2190",
+    "assetImageUrl": "http://www.laboratoriobalistreri.it/polopoly_fs/1.18133099.1406888453!/httpImage/img.jpg_gen/derivatives/landscape_490/img.jpg",
+    "assetModuleId": "fs-devices",
+    "assetName": "Esami del Sangue",
+    "containerPolicy": "Standalone",
+    "createdBy": "franckotols",
+    "createdDate": "2016-09-27T15:58:20.424+0200",
+    "deleted": false,
+    "metadata": {},
+    "name": "AppBloodAnalysis",
+    "token": "ab4e3b64-5504-4140-8713-38bf58e18391"
+}
+
+POST NEW DEVICE
+Request:
+{
+    "comments": "Android App for sending blood analysis.",
+    "hardwareId": "4242-3421",
+    "siteToken": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823",
+    "specificationToken": "ab4e3b64-5504-4140-8713-38bf58e18391"
+}
+Response:
+{
+    "comments": "Android App for sending blood analysis.",
+    "createdBy": "franckotols",
+    "createdDate": "2016-09-27T16:08:26.485+0200",
+    "deleted": false,
+    "deviceElementMappings": [],
+    "hardwareId": "4242-3421",
+    "metadata": {},
+    "siteToken": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823",
+    "specification": {
+        "assetId": "2190",
+        "assetImageUrl": "http://www.laboratoriobalistreri.it/polopoly_fs/1.18133099.1406888453!/httpImage/img.jpg_gen/derivatives/landscape_490/img.jpg",
+        "assetModuleId": "fs-devices",
+        "assetName": "Esami del Sangue",
+        "containerPolicy": "Standalone",
+        "createdBy": "franckotols",
+        "createdDate": "2016-09-27T15:58:20.424+0200",
+        "deleted": false,
+        "metadata": {},
+        "name": "AppBloodAnalysis",
+        "token": "ab4e3b64-5504-4140-8713-38bf58e18391"
+    }
+}
+
+******************************************
+POST ASSIGNMENT                          *
+******************************************
+Request:
+{
+    "assetId": "bncnnt60l44c342q-antonietta-bianchi",
+    "assetModuleId": "PATIENT_LIST_asset_id",
+    "assignmentType": "Associated",
+    "deviceHardwareId": "4242-3421",
+    "metadata": {}
+}
+Response
+{
+    "activeDate": "2016-09-27T16:55:19.427+0200",
+    "assetId": "bncnnt60l44c342q-antonietta-bianchi",
+    "assetImageUrl": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSeMhLE4mlN1K4KrmWh9e_qkKS46K5_F4I9zAPXoJH_3zQawLLycg",
+    "assetModuleId": "PATIENT_LIST_asset_id",
+    "assetName": "ANTONIETTA BIANCHI",
+    "assignmentType": "Associated",
+    "associatedPerson": {
+        "assetCategoryId": "PATIENT_LIST_asset_id",
+        "emailAddress": "antonio@gmail.com",
+        "id": "bncnnt60l44c342q-antonietta-bianchi",
+        "imageUrl": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSeMhLE4mlN1K4KrmWh9e_qkKS46K5_F4I9zAPXoJH_3zQawLLycg",
+        "name": "ANTONIETTA BIANCHI",
+        "properties": {
+            "TAX code": "Bncnnt60l44c342q",
+            "ZIP code": "10138",
+            "address": "corso Ferrucci 54",
+            "birthdate": "4/7/1960",
+            "city": "Torino",
+            "last name": "Bianchi",
+            "name": "Antonietta",
+            "phone": "3331122123",
+            "sex": "Female",
+            "user_disease": "Dialisi Peritoneale"
+        },
+        "roles": [],
+        "type": "Person",
+        "userName": "antonietta_bianchi"
+    },
+    "createdBy": "franckotols",
+    "createdDate": "2016-09-27T16:55:19.427+0200",
+    "deleted": false,
+    "device": {
+        "assetId": "2190",
+        "assetImageUrl": "http://www.laboratoriobalistreri.it/polopoly_fs/1.18133099.1406888453!/httpImage/img.jpg_gen/derivatives/landscape_490/img.jpg",
+        "assetName": "Esami del Sangue",
+        "assignmentToken": "7e4dda31-0c76-4234-a9ac-1f57cfa357ac",
+        "comments": "Android App for sending blood analysis.",
+        "createdBy": "franckotols",
+        "createdDate": "2016-09-27T16:08:26.485+0200",
+        "deleted": false,
+        "deviceElementMappings": [],
+        "hardwareId": "4242-3421",
+        "metadata": {},
+        "siteToken": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823",
+        "specificationToken": "ab4e3b64-5504-4140-8713-38bf58e18391"
+    },
+    "deviceHardwareId": "4242-3421",
+    "metadata": {},
+    "site": {
+        "createdBy": "franckotols",
+        "createdDate": "2016-09-26T16:15:06.407+0200",
+        "deleted": false,
+        "description": "Sito di test",
+        "imageUrl": "https://spinoff.nasa.gov/Spinoff2012/Images/hm_8.jpg",
+        "map": {
+            "metadata": {
+                "centerLatitude": "",
+                "centerLongitude": "",
+                "zoomLevel": ""
+            },
+            "type": "mapquest"
+        },
+        "metadata": {},
+        "name": "Health Monitoring Site",
+        "token": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823",
+        "updatedBy": "franckotols",
+        "updatedDate": "2016-09-27T09:56:06.581+0200"
+    },
+    "siteToken": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823",
+    "status": "Active",
+    "token": "7e4dda31-0c76-4234-a9ac-1f57cfa357ac"
+}
+
+*************************************************************************************************
+IMPORTANTE: ESEMPIO DI INVIO DI ESAMI DEL SANGUE NEI MEASUREMENTS. PAZIENTE: Antonietta Bianchi *
+*************************************************************************************************
+Richiesta:
+{
+    "eventDate": "",
+    "measurements": {
+        "Albumin": 3,
+        "Calcium": 2,
+        "Cholesterol": 12,
+        "ClarenceVolume": 32,
+        "CompleteBloodCount(CBC)": 23,
+        "Creatinine": 19,
+        "DiuresisVolume": 23,
+        "Hemoglobin": 90,
+        "ParathyroidHormone(PTH) ": 23,
+        "Phosphorus": 32,
+        "TotalProtein": 3,
+        "Triglycerides": 90
+    }
+}
+Risposta
+{
+    "assetId": "bncnnt60l44c342q-antonietta-bianchi",
+    "assetModuleId": "PATIENT_LIST_asset_id",
+    "assignmentType": "Associated",
+    "deviceAssignmentToken": "7e4dda31-0c76-4234-a9ac-1f57cfa357ac",
+    "eventDate": "2016-09-27T17:25:54.372+0200",
+    "eventType": "Measurements",
+    "id": "57ea8f826682ecd04e5a732f",
+    "measurements": {
+        "Albumin": 3.0,
+        "Calcium": 2.0,
+        "Cholesterol": 12.0,
+        "ClarenceVolume": 32.0,
+        "CompleteBloodCount(CBC)": 23.0,
+        "Creatinine": 19.0,
+        "DiuresisVolume": 23.0,
+        "Hemoglobin": 90.0,
+        "ParathyroidHormone(PTH) ": 23.0,
+        "Phosphorus": 32.0,
+        "TotalProtein": 3.0,
+        "Triglycerides": 90.0
+    },
+    "measurementsSummary": "Creatinine: 19.0, Calcium: 2.0, CompleteBloodCount(CBC): 23.0, Albumin: 3.0, Hemoglobin: 90.0, Phosphorus: 32.0, DiuresisVolume: 23.0, ParathyroidHormone(PTH) : 23.0, TotalProtein: 3.0, Triglycerides: 90.0, ClarenceVolume: 32.0, Cholesterol: 12.0",
+    "metadata": {},
+    "receivedDate": "2016-09-27T17:25:54.372+0200",
+    "siteToken": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823"
+}
+
+per ottenere i valori di esami del sangue di antonietta bianchi...
+url: http://localhost:8080/sitewhere/api/assignments/7e4dda31-0c76-4234-a9ac-1f57cfa357ac/measurements (STESSO URL A CUI FARE LA RICHIESTA POST QUANDO SI PUBBLICANO
+DATI RELATIVI A QUELL'ASSIGNMENT)
+
+Il risultato è:
+
+{
+    "numResults": 1,
+    "results": [
+        {
+            "assetId": "bncnnt60l44c342q-antonietta-bianchi",
+            "assetModuleId": "PATIENT_LIST_asset_id",
+            "assignmentType": "Associated",
+            "deviceAssignmentToken": "7e4dda31-0c76-4234-a9ac-1f57cfa357ac",
+            "eventDate": "2016-09-27T17:25:54.372+0200",
+            "eventType": "Measurements",
+            "id": "57ea8f826682ecd04e5a732f",
+            "measurements": {
+                "Albumin": 3.0,
+                "Calcium": 2.0,
+                "Cholesterol": 12.0,
+                "ClarenceVolume": 32.0,
+                "CompleteBloodCount(CBC)": 23.0,
+                "Creatinine": 19.0,
+                "DiuresisVolume": 23.0,
+                "Hemoglobin": 90.0,
+                "ParathyroidHormone(PTH) ": 23.0,
+                "Phosphorus": 32.0,
+                "TotalProtein": 3.0,
+                "Triglycerides": 90.0
+            },
+            "measurementsSummary": "Creatinine: 19.0, Calcium: 2.0, CompleteBloodCount(CBC): 23.0, Albumin: 3.0, Hemoglobin: 90.0, Phosphorus: 32.0, DiuresisVolume: 23.0, ParathyroidHormone(PTH) : 23.0, TotalProtein: 3.0, Triglycerides: 90.0, ClarenceVolume: 32.0, Cholesterol: 12.0",
+            "metadata": {},
+            "receivedDate": "2016-09-27T17:25:54.372+0200",
+            "siteToken": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823"
+        }
+    ]
+}
+
+In questo caso c'è solo una misura fatta su quell'assignment token, se le misure fossero di più il risultato sarebbe:
+
+{
+    "numResults": 2,
+    "results": [
+        {
+            "assetId": "bncnnt60l44c342q-antonietta-bianchi",
+            "assetModuleId": "PATIENT_LIST_asset_id",
+            "assignmentType": "Associated",
+            "deviceAssignmentToken": "7e4dda31-0c76-4234-a9ac-1f57cfa357ac",
+            "eventDate": "2016-09-27T17:40:34.335+0200",
+            "eventType": "Measurements",
+            "id": "57ea92f26682ecd04e5a7330",
+            "measurements": {
+                "Albumin": 6.0,
+                "Calcium": 7.0,
+                "Cholesterol": 12.0,
+                "ClarenceVolume": 45.0,
+                "CompleteBloodCount(CBC)": 12.0,
+                "Creatinine": 23.0,
+                "DiuresisVolume": 34.0,
+                "Hemoglobin": 90.0,
+                "ParathyroidHormone(PTH) ": 23.0,
+                "Phosphorus": 67.0,
+                "TotalProtein": 2.0,
+                "Triglycerides": 87.0
+            },
+            "measurementsSummary": "Creatinine: 23.0, Calcium: 7.0, CompleteBloodCount(CBC): 12.0, Albumin: 6.0, Hemoglobin: 90.0, Phosphorus: 67.0, DiuresisVolume: 34.0, ParathyroidHormone(PTH) : 23.0, TotalProtein: 2.0, Triglycerides: 87.0, ClarenceVolume: 45.0, Cholesterol: 12.0",
+            "metadata": {},
+            "receivedDate": "2016-09-27T17:40:34.335+0200",
+            "siteToken": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823"
+        },
+        {
+            "assetId": "bncnnt60l44c342q-antonietta-bianchi",
+            "assetModuleId": "PATIENT_LIST_asset_id",
+            "assignmentType": "Associated",
+            "deviceAssignmentToken": "7e4dda31-0c76-4234-a9ac-1f57cfa357ac",
+            "eventDate": "2016-09-27T17:25:54.372+0200",
+            "eventType": "Measurements",
+            "id": "57ea8f826682ecd04e5a732f",
+            "measurements": {
+                "Albumin": 3.0,
+                "Calcium": 2.0,
+                "Cholesterol": 12.0,
+                "ClarenceVolume": 32.0,
+                "CompleteBloodCount(CBC)": 23.0,
+                "Creatinine": 19.0,
+                "DiuresisVolume": 23.0,
+                "Hemoglobin": 90.0,
+                "ParathyroidHormone(PTH) ": 23.0,
+                "Phosphorus": 32.0,
+                "TotalProtein": 3.0,
+                "Triglycerides": 90.0
+            },
+            "measurementsSummary": "Creatinine: 19.0, Calcium: 2.0, CompleteBloodCount(CBC): 23.0, Albumin: 3.0, Hemoglobin: 90.0, Phosphorus: 32.0, DiuresisVolume: 23.0, ParathyroidHormone(PTH) : 23.0, TotalProtein: 3.0, Triglycerides: 90.0, ClarenceVolume: 32.0, Cholesterol: 12.0",
+            "metadata": {},
+            "receivedDate": "2016-09-27T17:25:54.372+0200",
+            "siteToken": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823"
+        }
+    ]
+}
+
+Il risultato è relativo a misure con lo stesso assignment token, quindi due misure fatte dalla stessa persona con lo stesso dispositivo, ma in due momenti differenti.
