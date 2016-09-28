@@ -163,12 +163,12 @@ class testSitewhere(object):
 		post_url=self.url+"/assets/categories/fs-devices/hardware"
 		print post_url
 		data = {
-			"id": "2190",
-			"name": "Esami del Sangue",
-			"imageUrl": "http://www.laboratoriobalistreri.it/polopoly_fs/1.18133099.1406888453!/httpImage/img.jpg_gen/derivatives/landscape_490/img.jpg",
+			"id": "44566",
+			"name": "Diario Clinico",
+			"imageUrl": "http://www.deabyday.tv/data/guides/salute-e-benessere/consigli-in-pi-/Come-usare-la-cartella-clinica-correttamente/image_big_16_9/cartella-clinica.jpg",
 			"properties": {"type":"software"},
-			"sku": "BLAN-SOFT",
-			"description": "Software App for sending blood analysis"
+			"sku": "DCL-SOFT",
+			"description": "Applicazione software per l'invio dei dati relativi al diario clinico"
 		}
 
 		data = json.dumps(data, indent=4, sort_keys=True)
@@ -184,9 +184,9 @@ class testSitewhere(object):
 		post_url=self.url+"/specifications"
 		print post_url
 		data = {
-			"name" : "AppBloodAnalysis",
+			"name" : "SpecificationDiarioClinico",
 			"assetModuleId" : "fs-devices",
-			"assetId" : "2190",
+			"assetId" : "44566",
 			"containerPolicy" : "Standalone"
 		}
 
@@ -200,13 +200,13 @@ class testSitewhere(object):
 		return result
 
 	def post_device(self):
-		post_url=self.url+"/assignments"
+		post_url=self.url+"/devices"
 		print post_url
 		data = {
-			"hardwareId" : "4242-3421",
+			"hardwareId" : "98546-5443",
 			"siteToken" : "de7397e2-3855-4f4f-a8fd-d4c7ccd67823",
-			"specificationToken" : "ab4e3b64-5504-4140-8713-38bf58e18391",
-			"comments" : "Android App for sending blood analysis."
+			"specificationToken" : "12d697d5-68ad-407e-b464-c750b46a3bb4",
+			"comments" : "App Android per i dati del diario clinico."
 		}
 
 		data = json.dumps(data, indent=4, sort_keys=True)
@@ -222,10 +222,10 @@ class testSitewhere(object):
 		post_url=self.url+"/assignments"
 		print post_url
 		data = {
-			"deviceHardwareId" : "4242-3421",
+			"deviceHardwareId" : "98546-5443",
 			"assignmentType" : "Associated",
 			"assetModuleId" : "PATIENT_LIST_asset_id",
-			"assetId" : "bncnnt60l44c342q-antonietta-bianchi",
+			"assetId" : "rssgcm85c18c342q-giacomo-rossi",
 			"metadata": {}
 		}
 
@@ -269,7 +269,32 @@ class testSitewhere(object):
 		result = json.loads(result)
 		result = json.dumps(result, indent=4, sort_keys=True)
 		return result
-		
+
+	def send_alert_assign_token(self):
+		post_url = self.url+"/assignments/7e4dda31-0c76-4234-a9ac-1f57cfa357ac/alerts"
+		data = {
+			"eventDate" : "",
+			"message": "Problema nei valori misurati.",
+			"type": "Esami del sangue"
+		}
+		data = json.dumps(data, indent=4, sort_keys=True)
+		data = str(data)
+		print data
+		r = requests.post(post_url, data=data, headers=self.headers, auth=self.auth)
+		result = r.text
+		result = json.loads(result)
+		result = json.dumps(result, indent=4, sort_keys=True)
+		return result
+
+	def get_alerts_for_sites(self):
+		s=requests.Session()
+		get_url = self.url+"/sites/de7397e2-3855-4f4f-a8fd-d4c7ccd67823/alerts"
+		r = s.get(get_url, headers=self.headers, auth=self.auth)
+		result = r.content
+		result = json.loads(result)
+		result = json.dumps(result, indent=4, sort_keys=True)
+		return result
+
 
 if __name__ == "__main__":
 
@@ -290,6 +315,8 @@ if __name__ == "__main__":
 	print "13 - post_device"
 	print "14 - post_assignment"
 	print "15 - send_measurement_blood_analysis"
+	print "16 - send_alert_assign_token"
+	print "17 - get_alerts_for_sites"
 	
 	while True:
 		comm = raw_input("Insert command: ")
@@ -351,6 +378,12 @@ if __name__ == "__main__":
 		elif comm == "15":
 			blood_analysis = test.send_measurement_blood_analysis()
 			print blood_analysis
+		elif comm == "16":
+			new_alert = test.send_alert_assign_token()
+			print new_alert
+		elif comm == "17":
+			all_alerts = test.get_alerts_for_sites()
+			print all_alerts
 
 			
 		

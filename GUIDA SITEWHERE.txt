@@ -794,3 +794,74 @@ In questo caso c'è solo una misura fatta su quell'assignment token, se le misur
 }
 
 Il risultato è relativo a misure con lo stesso assignment token, quindi due misure fatte dalla stessa persona con lo stesso dispositivo, ma in due momenti differenti.
+
+********************************
+GESTIONE DEGLI ALERTS          *
+********************************
+l'alerts viene pubblicato con l'assignment token quindi relativo a un dispositivo unico associato a un unico paziente
+Richiesta:
+Insert command: 16
+{
+    "eventDate": "",
+    "message": "Problema nei valori misurati."
+}
+Risposta
+{
+    "assetId": "bncnnt60l44c342q-antonietta-bianchi",
+    "assetModuleId": "PATIENT_LIST_asset_id",
+    "assignmentType": "Associated",
+    "deviceAssignmentToken": "7e4dda31-0c76-4234-a9ac-1f57cfa357ac",
+    "eventDate": "2016-09-28T16:48:22.004+0200",
+    "eventType": "Alert",
+    "id": "57ebd836947e454a820b3b2e",
+    "level": "Info",
+    "message": "Problema nei valori misurati.",
+    "metadata": {},
+    "receivedDate": "2016-09-28T16:48:22.004+0200",
+    "siteToken": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823",
+    "source": "Device"
+}
+riconosce in automatico che la sorgente è un device
+
+****************
+GET alerts from site
+
+{
+    "numResults": 2,
+    "results": [
+        {
+            "assetId": "bncnnt60l44c342q-antonietta-bianchi",
+            "assetModuleId": "PATIENT_LIST_asset_id",
+            "assetName": "ANTONIETTA BIANCHI",
+            "assignmentType": "Associated",
+            "deviceAssignmentToken": "7e4dda31-0c76-4234-a9ac-1f57cfa357ac",
+            "eventDate": "2016-09-28T17:07:29.417+0200",
+            "eventType": "Alert",
+            "id": "57ebdcb1947e454a820b3b2f",
+            "level": "Info",
+            "message": "Problema nei valori misurati.",
+            "metadata": {},
+            "receivedDate": "2016-09-28T17:07:29.417+0200",
+            "siteToken": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823",
+            "source": "Device",
+            "type": "Esami del sangue"
+        },
+        {
+            "assetId": "bncnnt60l44c342q-antonietta-bianchi",
+            "assetModuleId": "PATIENT_LIST_asset_id",
+            "assetName": "ANTONIETTA BIANCHI",
+            "assignmentType": "Associated",
+            "deviceAssignmentToken": "7e4dda31-0c76-4234-a9ac-1f57cfa357ac",
+            "eventDate": "2016-09-28T16:48:22.004+0200",
+            "eventType": "Alert",
+            "id": "57ebd836947e454a820b3b2e",
+            "level": "Info",
+            "message": "Problema nei valori misurati.",
+            "metadata": {},
+            "receivedDate": "2016-09-28T16:48:22.004+0200",
+            "siteToken": "de7397e2-3855-4f4f-a8fd-d4c7ccd67823",
+            "source": "Device",
+            "type": null
+        }
+    ]
+}

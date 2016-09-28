@@ -1,0 +1,20 @@
+{
+
+	"sitewhere":{
+		"url":"",
+		"tenant_token":"",
+		"auth":{"username":"password"},
+		"site_token":""
+	},
+
+	"web_services":{
+
+		},
+
+
+	"mongoDB":{
+
+	}
+
+
+}
