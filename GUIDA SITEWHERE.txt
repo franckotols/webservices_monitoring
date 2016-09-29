@@ -865,3 +865,232 @@ GET alerts from site
         }
     ]
 }
+
+*****************************************
+Nuova persona in asset category person
+*****************************************
+Richiesta:
+{
+    "emailAddress": "email@email.it",
+    "id": "nome-cognome-12091982",
+    "imageUrl": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQB4dVacA67gn_f0CQ1YMZ-cqDucluN1pPoXnEGR1NCa4rutI76",
+    "name": "Nome Cognome",
+    "properties": {
+        "birthdate": "nascita",
+        "last name": "cognome",
+        "name": "nome",
+        "password": "user_password",
+        "phone": "phone",
+        "sex": "sesso",
+        "specializzazione": "spec"
+    },
+    "roles": [
+        ""
+    ],
+    "userName": "nome_cognome"
+}
+Risposta:
+{
+    "assetCategoryId": "lista_medici_asset_ID",
+    "emailAddress": "email@email.it",
+    "id": "nome-cognome-12091982",
+    "imageUrl": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQB4dVacA67gn_f0CQ1YMZ-cqDucluN1pPoXnEGR1NCa4rutI76",
+    "name": "Nome Cognome",
+    "properties": {
+        "birthdate": "nascita",
+        "last name": "cognome",
+        "name": "nome",
+        "password": "user_password",
+        "phone": "phone",
+        "sex": "sesso",
+        "specializzazione": "spec"
+    },
+    "roles": [
+        ""
+    ],
+    "type": "Person",
+    "userName": "nome_cognome"
+}
+NB Richiesta e risposta sono uguali
+
+***********************************************
+Creazione di un nuovo SITE
+**********************************************
+Richiesta:
+{
+    "description": "Sito ad utilizzo esclusivo dei medici. Qui vengono creati tutti gli assignments tra medico e device (in questo caso la app di raccolta dati) e generati gli alert diretti verso i pazienti, cioe' i messagi che vanno dal medico al paziente.",
+    "imageUrl": "http://cdn5.acolore.com/disegni/colori/201101/8c797eb7255388bd8466c86ded4f2dbb.png",
+    "map": {
+        "metadata": {},
+        "type": "mapquest"
+    },
+    "metadata": {},
+    "name": "Med Site"
+}
+Risposta:
+{
+    "createdBy": "franckotols",
+    "createdDate": "2016-09-28T23:36:17.633+0200",
+    "deleted": false,
+    "description": "Sito ad utilizzo esclusivo dei medici. Qui vengono creati tutti gli assignments tra medico e device (in questo caso la app di raccolta dati) e generati gli alert diretti verso i pazienti, cioe' i messagi che vanno dal medico al paziente.",
+    "imageUrl": "http://cdn5.acolore.com/disegni/colori/201101/8c797eb7255388bd8466c86ded4f2dbb.png",
+    "map": {
+        "metadata": {},
+        "type": "mapquest"
+    },
+    "metadata": {},
+    "name": "Med Site",
+    "token": "8108596e-97b2-45a9-aaaa-cf67ce6ad950"
+}
+
+
+
+**********************************************************************************************************
+**********************************************************************************************************
+**********************************************************************************************************
+**********************************************************************************************************
+**********************************************************************************************************
+**********************************************************************************************************
+**********************************************************************************************************
+IMPORTANTE PER LA TESI: ITER DI REGISTRAZIONE DEL MEDICO:
+1) registrazione dell'asset del medico
+2) creazione del device associato alla app per il monitoraggio
+3) creazione dell'assignment tra asset medico e device
+**********************************************************************************************************
+
+http://localhost:8080/sitewhere/api/assets/categories/lista_medici_asset_ID/persons
+{
+    "emailAddress": "tolufrancesco@gmail.com",
+    "id": "francesco-tolu-1881989",
+    "imageUrl": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQB4dVacA67gn_f0CQ1YMZ-cqDucluN1pPoXnEGR1NCa4rutI76",
+    "name": "FRANCESCO TOLU",
+    "properties": {
+        "birthdate": "18/8/1989",
+        "last name": "Tolu",
+        "name": "Francesco",
+        "password": "fra",
+        "phone": "3333333333",
+        "sex": "Male",
+        "specializzazione": "diabetologo"
+    },
+    "roles": [
+        ""
+    ],
+    "userName": "francesco_tolu"
+}
+http://localhost:8080/sitewhere/api/devices
+{
+    "comments": "Monitoring APP: FRANCESCO TOLU",
+    "hardwareId": "francesco-tolu-1881989-Android-App",
+    "siteToken": "8108596e-97b2-45a9-aaaa-cf67ce6ad950",
+    "specificationToken": "9cd95282-c1c7-4966-ae5e-c693e4fdc791"
+}
+{
+    "comments": "Monitoring APP: FRANCESCO TOLU",
+    "createdBy": "franckotols",
+    "createdDate": "2016-09-29T10:43:50.752+0200",
+    "deleted": false,
+    "deviceElementMappings": [],
+    "hardwareId": "francesco-tolu-1881989-Android-App",
+    "metadata": {},
+    "siteToken": "8108596e-97b2-45a9-aaaa-cf67ce6ad950",
+    "specification": {
+        "assetId": "monitoring-app-ID",
+        "assetImageUrl": "http://woltag.com/wp-content/photos/2014/09/Android-logo-640x480.png",
+        "assetModuleId": "fs-devices",
+        "assetName": "Monitoring App Android",
+        "containerPolicy": "Standalone",
+        "createdBy": "franckotols",
+        "createdDate": "2016-09-28T23:52:21.294+0200",
+        "deleted": false,
+        "metadata": {},
+        "name": "SpecificationMedApp",
+        "token": "9cd95282-c1c7-4966-ae5e-c693e4fdc791"
+    }
+}
+http://localhost:8080/sitewhere/api/assignments
+{
+    "assetId": "francesco-tolu-1881989",
+    "assetModuleId": "lista_medici_asset_ID",
+    "assignmentType": "Associated",
+    "deviceHardwareId": "francesco-tolu-1881989-Android-App",
+    "metadata": {}
+}
+{
+    "activeDate": "2016-09-29T10:43:50.899+0200",
+    "assetId": "francesco-tolu-1881989",
+    "assetImageUrl": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQB4dVacA67gn_f0CQ1YMZ-cqDucluN1pPoXnEGR1NCa4rutI76",
+    "assetModuleId": "lista_medici_asset_ID",
+    "assetName": "FRANCESCO TOLU",
+    "assignmentType": "Associated",
+    "associatedPerson": {
+        "assetCategoryId": "lista_medici_asset_ID",
+        "emailAddress": "tolufrancesco@gmail.com",
+        "id": "francesco-tolu-1881989",
+        "imageUrl": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQB4dVacA67gn_f0CQ1YMZ-cqDucluN1pPoXnEGR1NCa4rutI76",
+        "name": "FRANCESCO TOLU",
+        "properties": {
+            "birthdate": "18/8/1989",
+            "last name": "Tolu",
+            "name": "Francesco",
+            "password": "fra",
+            "phone": "3333333333",
+            "sex": "Male",
+            "specializzazione": "diabetologo"
+        },
+        "roles": [
+            ""
+        ],
+        "type": "Person",
+        "userName": "francesco_tolu"
+    },
+    "createdBy": "franckotols",
+    "createdDate": "2016-09-29T10:43:50.899+0200",
+    "deleted": false,
+    "device": {
+        "assetId": "monitoring-app-ID",
+        "assetImageUrl": "http://woltag.com/wp-content/photos/2014/09/Android-logo-640x480.png",
+        "assetName": "Monitoring App Android",
+        "assignmentToken": "086a88a2-a561-4e7d-8e5a-e2e94a3ef4ac",
+        "comments": "Monitoring APP: FRANCESCO TOLU",
+        "createdBy": "franckotols",
+        "createdDate": "2016-09-29T10:43:50.752+0200",
+        "deleted": false,
+        "deviceElementMappings": [],
+        "hardwareId": "francesco-tolu-1881989-Android-App",
+        "metadata": {},
+        "siteToken": "8108596e-97b2-45a9-aaaa-cf67ce6ad950",
+        "specificationToken": "9cd95282-c1c7-4966-ae5e-c693e4fdc791"
+    },
+    "deviceHardwareId": "francesco-tolu-1881989-Android-App",
+    "metadata": {},
+    "site": {
+        "createdBy": "franckotols",
+        "createdDate": "2016-09-28T23:36:17.633+0200",
+        "deleted": false,
+        "description": "Sito ad utilizzo esclusivo dei medici. Qui vengono creati tutti gli assignments tra medico e device (in questo caso la app di raccolta dati) e generati gli alert diretti verso i pazienti, cioe' i messagi che vanno dal medico al paziente.",
+        "imageUrl": "http://cdn5.acolore.com/disegni/colori/201101/8c797eb7255388bd8466c86ded4f2dbb.png",
+        "map": {
+            "metadata": {},
+            "type": "mapquest"
+        },
+        "metadata": {},
+        "name": "Med Site",
+        "token": "8108596e-97b2-45a9-aaaa-cf67ce6ad950"
+    },
+    "siteToken": "8108596e-97b2-45a9-aaaa-cf67ce6ad950",
+    "status": "Active",
+    "token": "086a88a2-a561-4e7d-8e5a-e2e94a3ef4ac"
+}
+
+**********************************************************************************************************
+**********************************************************************************************************
+**********************************************************************************************************
+**********************************************************************************************************
+**********************************************************************************************************
+**********************************************************************************************************
+**********************************************************************************************************
+**********************************************************************************************************
+**********************************************************************************************************
+**********************************************************************************************************
+

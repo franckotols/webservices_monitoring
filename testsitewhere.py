@@ -64,7 +64,7 @@ class testSitewhere(object):
 
 	def get_assets_categoryID_assets(self):
 		s=requests.Session()
-		get_url = self.url+"/assets/categories/PATIENT_LIST_asset_id/assets"
+		get_url = self.url+"/assets/categories/lista_medici_asset_ID/assets"
 		r = s.get(get_url, headers=self.headers, auth=self.auth)
 		result = r.content
 		result = json.loads(result)
@@ -163,12 +163,12 @@ class testSitewhere(object):
 		post_url=self.url+"/assets/categories/fs-devices/hardware"
 		print post_url
 		data = {
-			"id": "44566",
-			"name": "Diario Clinico",
-			"imageUrl": "http://www.deabyday.tv/data/guides/salute-e-benessere/consigli-in-pi-/Come-usare-la-cartella-clinica-correttamente/image_big_16_9/cartella-clinica.jpg",
+			"id": "monitoring-app-ID",
+			"name": "Monitoring App Android",
+			"imageUrl": "http://woltag.com/wp-content/photos/2014/09/Android-logo-640x480.png",
 			"properties": {"type":"software"},
-			"sku": "DCL-SOFT",
-			"description": "Applicazione software per l'invio dei dati relativi al diario clinico"
+			"sku": "MED-APP",
+			"description": "Applicazione software utilizzata dal medico per il monitoraggio dei parametri dei pazienti, in grado di inviare notifiche."
 		}
 
 		data = json.dumps(data, indent=4, sort_keys=True)
@@ -184,9 +184,9 @@ class testSitewhere(object):
 		post_url=self.url+"/specifications"
 		print post_url
 		data = {
-			"name" : "SpecificationDiarioClinico",
+			"name" : "SpecificationMedApp",
 			"assetModuleId" : "fs-devices",
-			"assetId" : "44566",
+			"assetId" : "monitoring-app-ID",
 			"containerPolicy" : "Standalone"
 		}
 
@@ -295,6 +295,51 @@ class testSitewhere(object):
 		result = json.dumps(result, indent=4, sort_keys=True)
 		return result
 
+	def post_new_person_asset(self):
+		post_url=self.url+"/assets/categories/lista_medici_asset_ID/persons"
+		print post_url
+		data = {
+			"id": "nome-cognome-12091982",
+			"name": "Nome Cognome",
+			"imageUrl": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQB4dVacA67gn_f0CQ1YMZ-cqDucluN1pPoXnEGR1NCa4rutI76",
+			"properties": {"name":"nome", "last name":"cognome", "password":"user_password", "sex":"sesso", "specializzazione":"spec","birthdate":"nascita", "phone":"phone"},
+			"userName": "nome_cognome",
+			"emailAddress": "email@email.it",
+			"roles":[""]
+		}
+
+		data = json.dumps(data, indent=4, sort_keys=True)
+		data = str(data)
+		print data
+		r = requests.post(post_url, data=data, headers=self.headers, auth=self.auth)
+		result = r.text
+		result = json.loads(result)
+		result = json.dumps(result, indent=4, sort_keys=True)
+		return result
+
+	def post_new_site(self):
+		post_url=self.url+"/sites"
+		print post_url
+		data = {
+			"name": "Med Site",
+			"description": "Sito ad utilizzo esclusivo dei medici. Qui vengono creati tutti gli assignments tra medico e device (in questo caso la app di raccolta dati) e generati gli alert diretti verso i pazienti, cioe' i messagi che vanno dal medico al paziente.",
+			"imageUrl": "http://cdn5.acolore.com/disegni/colori/201101/8c797eb7255388bd8466c86ded4f2dbb.png",
+			"map":{
+				"type":"mapquest",
+				"metadata":{}
+			},
+			"metadata":{}	
+		}
+
+		data = json.dumps(data, indent=4, sort_keys=True)
+		data = str(data)
+		print data
+		r = requests.post(post_url, data=data, headers=self.headers, auth=self.auth)
+		result = r.text
+		result = json.loads(result)
+		result = json.dumps(result, indent=4, sort_keys=True)
+		return result
+
 
 if __name__ == "__main__":
 
@@ -317,6 +362,8 @@ if __name__ == "__main__":
 	print "15 - send_measurement_blood_analysis"
 	print "16 - send_alert_assign_token"
 	print "17 - get_alerts_for_sites"
+	print "18 - post_new_person_asset"
+	print "19 - post_new_site"
 	
 	while True:
 		comm = raw_input("Insert command: ")
@@ -384,6 +431,12 @@ if __name__ == "__main__":
 		elif comm == "17":
 			all_alerts = test.get_alerts_for_sites()
 			print all_alerts
+		elif comm == "18":
+			new_person = test.post_new_person_asset()
+			print new_person
+		elif comm == "19":
+			new_site = test.post_new_site()
+			print new_site
 
 			
 		

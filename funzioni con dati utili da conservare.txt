@@ -1,0 +1,20 @@
+def post_hardware_device_asset(self):
+		post_url=self.url+"/assets/categories/fs-devices/hardware"
+		print post_url
+		data = {
+			"id": "monitoring-app-ID",
+			"name": "Monitoring App Android",
+			"imageUrl": "http://woltag.com/wp-content/photos/2014/09/Android-logo-640x480.png",
+			"properties": {"type":"software"},
+			"sku": "MED-APP",
+			"description": "Applicazione software utilizzata dal medico per il monitoraggio dei parametri dei pazienti, in grado di inviare notifiche."
+		}
+
+		data = json.dumps(data, indent=4, sort_keys=True)
+		data = str(data)
+		print data
+		r = requests.post(post_url, data=data, headers=self.headers, auth=self.auth)
+		result = r.text
+		result = json.loads(result)
+		result = json.dumps(result, indent=4, sort_keys=True)
+		return result
