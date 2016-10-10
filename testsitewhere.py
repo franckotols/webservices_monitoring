@@ -90,19 +90,14 @@ class testSitewhere(object):
 		return result
 
 	def send_measurement(self):
-		post_url=self.url+"/assignments/fbf83dd6-d2a6-4a39-9265-d5f879945f57/measurements"
-		print post_url
-		dict_test = {"prova":"antani","ciao":"miao"}
-		json_test = json.dumps(dict_test)
-		metadata = str(json_test)
-		
+		post_url=self.url+"/assignments/2cd1bd8b-6099-49ee-828c-dca865b42c35/measurements"
+		print post_url		
 		data = {
 			"eventDate" : "",
 			"measurements" : {
-				"test1" : 123,
-				"test2" : 76
+				"test.pressione":108
 			},
-			"metadata":{"situazione":"stabile","peso":"stabile"}
+			"metadata":{}
 		}
 
 		data = json.dumps(data, indent=4, sort_keys=True)
@@ -163,12 +158,12 @@ class testSitewhere(object):
 		post_url=self.url+"/assets/categories/fs-devices/hardware"
 		print post_url
 		data = {
-			"id": "monitoring-app-ID",
-			"name": "Monitoring App Android",
-			"imageUrl": "http://woltag.com/wp-content/photos/2014/09/Android-logo-640x480.png",
-			"properties": {"type":"software"},
-			"sku": "MED-APP",
-			"description": "Applicazione software utilizzata dal medico per il monitoraggio dei parametri dei pazienti, in grado di inviare notifiche."
+			"id": "test-pressione-device",
+			"name": "Device Pressione Test",
+			"imageUrl": "http://img.medicalexpo.it/images_me/photo-g/67891-133555.jpg",
+			"properties": {"type":"hardware"},
+			"sku": "PRESS-TEST",
+			"description": "Dispositivo per la misura della pressione. Per testare le richieste dal server a sitewhere."
 		}
 
 		data = json.dumps(data, indent=4, sort_keys=True)
@@ -184,9 +179,9 @@ class testSitewhere(object):
 		post_url=self.url+"/specifications"
 		print post_url
 		data = {
-			"name" : "SpecificationMedApp",
+			"name" : "Pressure Device Test Specification",
 			"assetModuleId" : "fs-devices",
-			"assetId" : "monitoring-app-ID",
+			"assetId" : "test-pressione-device",
 			"containerPolicy" : "Standalone"
 		}
 
@@ -203,10 +198,10 @@ class testSitewhere(object):
 		post_url=self.url+"/devices"
 		print post_url
 		data = {
-			"hardwareId" : "98546-5443",
-			"siteToken" : "de7397e2-3855-4f4f-a8fd-d4c7ccd67823",
+			"hardwareId" : "bncnnt60l44c342q-antonietta-bianchi-diario-clinico",
+			"siteToken" : " de7397e2-3855-4f4f-a8fd-d4c7ccd67823",
 			"specificationToken" : "12d697d5-68ad-407e-b464-c750b46a3bb4",
-			"comments" : "App Android per i dati del diario clinico."
+			"comments" : "Applicazione per l'invio dei dati del diario clinico."
 		}
 
 		data = json.dumps(data, indent=4, sort_keys=True)
@@ -222,10 +217,10 @@ class testSitewhere(object):
 		post_url=self.url+"/assignments"
 		print post_url
 		data = {
-			"deviceHardwareId" : "98546-5443",
+			"deviceHardwareId" : "bncnnt60l44c342q-antonietta-bianchi-diario-clinico",
 			"assignmentType" : "Associated",
 			"assetModuleId" : "PATIENT_LIST_asset_id",
-			"assetId" : "rssgcm85c18c342q-giacomo-rossi",
+			"assetId" : "bncnnt60l44c342q-antonietta-bianchi",
 			"metadata": {}
 		}
 
@@ -274,8 +269,8 @@ class testSitewhere(object):
 		post_url = self.url+"/assignments/7e4dda31-0c76-4234-a9ac-1f57cfa357ac/alerts"
 		data = {
 			"eventDate" : "",
-			"message": "Problema nei valori misurati.",
-			"type": "Esami del sangue"
+			"message": "Valori preoccupanti",
+			"type": "Diario Clinico"
 		}
 		data = json.dumps(data, indent=4, sort_keys=True)
 		data = str(data)
@@ -340,6 +335,75 @@ class testSitewhere(object):
 		result = json.dumps(result, indent=4, sort_keys=True)
 		return result
 
+	def get_measurement_series(self):
+		s=requests.Session()
+		get_url = self.url+"/assignments/7e4dda31-0c76-4234-a9ac-1f57cfa357ac/measurements/series"
+		r = s.get(get_url, headers=self.headers, auth=self.auth)
+		result = r.content
+		result = json.loads(result)
+		result = json.dumps(result, indent=4, sort_keys=True)
+		return result
+
+	def send_measurement_diario_clinico(self):
+		post_url=self.url+"/assignments/e6387982-fe31-409e-82a5-4883418918ab/measurements"
+		
+		
+		data = {
+			"eventDate" : "",
+			"measurements" : {
+				"vol_1_discharge": 0,
+				"total_UF": 0,
+				"skippedCycles": 0,
+				"lostTime": 0,
+				"glucose150_bags": 12,
+				"glucose250_bags": 13,
+				"glucose350_bags": 34,
+				"extran_bags": 45,
+				"heparin_bags": 56,
+				"insulin_bags": 65,
+				"antibiotic_bags": 0,
+				"totalVolume": 0,
+				"loadingVolume": 1,
+				"loadStopTime": 2,
+				"dischargeTime": 33,
+				"lastLoadingVolume": 0,
+				"cyclesNumber": 0,
+				"loadingVolume_TIDAL": 0,
+				"stopTime_TIDAL": 0,
+				"volumeUF_TIDAL": 3,
+				"totalDischarge_nCycles_TIDAL": 0
+			},
+			"metadata":{
+				"treatment_data": "15-9-2016",
+				"treatment_startTime": "11:45",
+				"treatment_endTime": "11:56",
+				"nausea": "false",
+				"vomit": "false",
+				"diarrhea": "false",
+				"dischargeProblems": "true"
+			}
+
+		}
+
+		data = json.dumps(data, indent=4, sort_keys=True)
+		data = str(data)
+		print data
+		r = requests.post(post_url, data=data, headers=self.headers, auth=self.auth)
+		result = r.text
+		result = json.loads(result)
+		result = json.dumps(result, indent=4, sort_keys=True)
+		return result
+
+	def get_assignmets_in_sites(self):
+		s=requests.Session()
+		get_url = self.url+"/sites/de7397e2-3855-4f4f-a8fd-d4c7ccd67823/assignments"
+		r = s.get(get_url, headers=self.headers, auth=self.auth)
+		result = r.content
+		result = json.loads(result)
+		result = json.dumps(result, indent=4, sort_keys=True)
+		return result
+
+
 
 if __name__ == "__main__":
 
@@ -364,7 +428,9 @@ if __name__ == "__main__":
 	print "17 - get_alerts_for_sites"
 	print "18 - post_new_person_asset"
 	print "19 - post_new_site"
-	
+	print "20 - get measurements series"
+	print "21 - send_measurement_diario_clinico"
+	print "22 - get_assignmets_in_sites"
 	while True:
 		comm = raw_input("Insert command: ")
 		if comm == "1":
@@ -391,14 +457,6 @@ if __name__ == "__main__":
 		elif comm == "8":
 			measurements = test.get_meaurements_by_assignment_token()
 			print measurements
-			###############################
-			# PER ACCEDERE AI METADATA    #
-			###############################
-			# dixt = json.loads(measurements)
-			# mydixt = dixt["results"]
-			# #print mydixt[0]["metadata"]
-			# for k in range(0,len(mydixt)):
-			# 	print json.dumps(mydixt[k]["metadata"])
 		elif comm == "9":
 			new_hardware_asset_category = test.post_hardware_asset_category()
 			print new_hardware_asset_category
@@ -406,11 +464,6 @@ if __name__ == "__main__":
 			new_device_asset_category = test.post_device_asset_category()
 			print new_device_asset_category
 		elif comm == "11":
-			# id_asset = raw_input("Insert id asset device: ")
-			# name = raw_input("Insert name: ")
-			# image_url = raw_input("Insert image url: ")
-			# sku = raw_input("Insert sku: ")
-			# description = raw_input("Insert description: ")
 			new_device = test.post_hardware_device_asset()
 			print new_device
 		elif comm == "12":
@@ -437,6 +490,15 @@ if __name__ == "__main__":
 		elif comm == "19":
 			new_site = test.post_new_site()
 			print new_site
+		elif comm == "20":
+			meas_series = test.get_measurement_series()
+			print meas_series
+		elif comm == "21":
+			meas_diario = test.send_measurement_diario_clinico()
+			print meas_diario
+		elif comm == "22":
+			assignments = test.get_assignmets_in_sites()
+			print assignments
 
 			
 		

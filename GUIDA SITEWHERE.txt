@@ -1094,3 +1094,274 @@ http://localhost:8080/sitewhere/api/assignments
 **********************************************************************************************************
 **********************************************************************************************************
 
+GET MEASUREMENT SERIES
+[
+    {
+        "entries": [
+            {
+                "measurementDate": "2016-09-27T14:40:40.286+0200",
+                "value": 76.0
+            }
+        ],
+        "measurementId": "test2"
+    },
+    {
+        "entries": [
+            {
+                "measurementDate": "2016-09-27T10:48:43.782+0200",
+                "value": 76.0
+            },
+            {
+                "measurementDate": "2016-09-27T10:57:13.273+0200",
+                "value": 76.0
+            }
+        ],
+        "measurementId": "glicemia"
+    },
+    {
+        "entries": [
+            {
+                "measurementDate": "2016-09-27T09:27:41.807+0200",
+                "value": 86.21
+            },
+            {
+                "measurementDate": "2016-09-27T09:55:17.843+0200",
+                "value": 86.21
+            },
+            {
+                "measurementDate": "2016-09-27T10:29:39.624+0200",
+                "value": 77.88
+            },
+            {
+                "measurementDate": "2016-09-27T10:38:15.013+0200",
+                "value": 23.0
+            },
+            {
+                "measurementDate": "2016-09-27T10:40:27.303+0200",
+                "value": 29.0
+            }
+        ],
+        "measurementId": "engine.temperature"
+    },
+    {
+        "entries": [
+            {
+                "measurementDate": "2016-09-27T14:40:40.286+0200",
+                "value": 123.0
+            }
+        ],
+        "measurementId": "test1"
+    },
+    {
+        "entries": [
+            {
+                "measurementDate": "2016-09-27T09:27:41.807+0200",
+                "value": 32.68
+            },
+            {
+                "measurementDate": "2016-09-27T09:55:17.843+0200",
+                "value": 32.68
+            },
+            {
+                "measurementDate": "2016-09-27T10:29:39.624+0200",
+                "value": 33.22
+            },
+            {
+                "measurementDate": "2016-09-27T10:30:15.609+0200",
+                "value": 33.22
+            },
+            {
+                "measurementDate": "2016-09-27T10:38:15.013+0200",
+                "value": 55.0
+            },
+            {
+                "measurementDate": "2016-09-27T10:40:27.303+0200",
+                "value": 112.0
+            }
+        ],
+        "measurementId": "fuel.level"
+    },
+    {
+        "entries": [
+            {
+                "measurementDate": "2016-09-27T10:48:43.782+0200",
+                "value": 123.0
+            },
+            {
+                "measurementDate": "2016-09-27T10:57:13.273+0200",
+                "value": 123.0
+            }
+        ],
+        "measurementId": "pressione"
+    },
+    {
+        "entries": [
+            {
+                "measurementDate": "2016-09-27T10:30:15.609+0200",
+                "value": 14.0
+            }
+        ],
+        "measurementId": "antani"
+    }
+]
+
+Esempio: assignment Antonietta Bianchi-Esami del sangue:
+
+[
+    {
+        "entries": [
+            {
+                "measurementDate": "2016-09-27T17:25:54.372+0200",
+                "value": 19.0
+            },
+            {
+                "measurementDate": "2016-09-27T17:40:34.335+0200",
+                "value": 23.0
+            }
+        ],
+        "measurementId": "Creatinine"
+    },
+    {
+        "entries": [
+            {
+                "measurementDate": "2016-09-27T17:25:54.372+0200",
+                "value": 2.0
+            },
+            {
+                "measurementDate": "2016-09-27T17:40:34.335+0200",
+                "value": 7.0
+            }
+        ],
+        "measurementId": "Calcium"
+    },
+    {
+        "entries": [
+            {
+                "measurementDate": "2016-09-27T17:25:54.372+0200",
+                "value": 23.0
+            },
+            {
+                "measurementDate": "2016-09-27T17:40:34.335+0200",
+                "value": 12.0
+            }
+        ],
+        "measurementId": "CompleteBloodCount(CBC)"
+    },
+    {
+        "entries": [
+            {
+                "measurementDate": "2016-09-27T17:25:54.372+0200",
+                "value": 3.0
+            },
+            {
+                "measurementDate": "2016-09-27T17:40:34.335+0200",
+                "value": 6.0
+            }
+        ],
+        "measurementId": "Albumin"
+    },
+    {
+        "entries": [
+            {
+                "measurementDate": "2016-09-27T17:25:54.372+0200",
+                "value": 90.0
+            },
+            {
+                "measurementDate": "2016-09-27T17:40:34.335+0200",
+                "value": 90.0
+            }
+        ],
+        "measurementId": "Hemoglobin"
+    },
+    {
+        "entries": [
+            {
+                "measurementDate": "2016-09-27T17:25:54.372+0200",
+                "value": 32.0
+            },
+            {
+                "measurementDate": "2016-09-27T17:40:34.335+0200",
+                "value": 67.0
+            }
+        ],
+        "measurementId": "Phosphorus"
+    },
+    {
+        "entries": [
+            {
+                "measurementDate": "2016-09-27T17:25:54.372+0200",
+                "value": 23.0
+            },
+            {
+                "measurementDate": "2016-09-27T17:40:34.335+0200",
+                "value": 34.0
+            }
+        ],
+        "measurementId": "DiuresisVolume"
+    },
+    {
+        "entries": [
+            {
+                "measurementDate": "2016-09-27T17:25:54.372+0200",
+                "value": 23.0
+            },
+            {
+                "measurementDate": "2016-09-27T17:40:34.335+0200",
+                "value": 23.0
+            }
+        ],
+        "measurementId": "ParathyroidHormone(PTH) "
+    },
+    {
+        "entries": [
+            {
+                "measurementDate": "2016-09-27T17:25:54.372+0200",
+                "value": 3.0
+            },
+            {
+                "measurementDate": "2016-09-27T17:40:34.335+0200",
+                "value": 2.0
+            }
+        ],
+        "measurementId": "TotalProtein"
+    },
+    {
+        "entries": [
+            {
+                "measurementDate": "2016-09-27T17:25:54.372+0200",
+                "value": 90.0
+            },
+            {
+                "measurementDate": "2016-09-27T17:40:34.335+0200",
+                "value": 87.0
+            }
+        ],
+        "measurementId": "Triglycerides"
+    },
+    {
+        "entries": [
+            {
+                "measurementDate": "2016-09-27T17:25:54.372+0200",
+                "value": 32.0
+            },
+            {
+                "measurementDate": "2016-09-27T17:40:34.335+0200",
+                "value": 45.0
+            }
+        ],
+        "measurementId": "ClarenceVolume"
+    },
+    {
+        "entries": [
+            {
+                "measurementDate": "2016-09-27T17:25:54.372+0200",
+                "value": 12.0
+            },
+            {
+                "measurementDate": "2016-09-27T17:40:34.335+0200",
+                "value": 12.0
+            }
+        ],
+        "measurementId": "Cholesterol"
+    }
+]

@@ -82,12 +82,12 @@ if __name__ == '__main__':
 	
 	con = Connection()
 
-	db = con['utils']
+	db = con['tenant-PATIENT_LIST_tenant_id']
+	assignments = db['assignments']
+	
 
-	spec= db.specializzazioni
-
-	docu = spec.find()
+	docu = assignments.find()
 
 	for k in docu:
 		print "\n\n"
-		print k
+		print k["token"]
