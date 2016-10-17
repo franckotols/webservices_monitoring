@@ -88,6 +88,19 @@ class SitewhereManager(object):
 		except:
 			return "error_string"
 
+	def get_assignments_in_site(self,site_token):
+		s=requests.Session()
+		get_url = self.url+"/sites/"+site_token+"/assignments"
+		try:
+			r = s.get(get_url, headers=self.headers, auth=self.auth)
+			result = r.content
+			result = json.loads(result)
+			result = json.dumps(result, indent=4, sort_keys=True)
+			return result
+		except:
+			return "error_string"
+		
+
 	def get_assignement(self, assign_token):
 		s=requests.Session()
 		get_url = self.url+"/assignments/"+assign_token

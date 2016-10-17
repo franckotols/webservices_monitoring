@@ -1,0 +1,648 @@
+sites
+-----------------------------------------
+{ 
+    "_id" : ObjectId("577a37e0b02a68bfcf7de9a0"), 
+    "name" : "Construction Site", 
+    "description" : "A construction site with many high-value assets that should not be taken offsite. \nThe system provides location tracking for the assets and notifies administrators if any of the assets move \noutside of the general site area or into areas where they are not allowed.", 
+    "imageUrl" : "https://s3.amazonaws.com/sitewhere-demo/construction/construction.jpg", 
+    "token" : "bb105f8d-3150-41f5-b9d1-db04965668d3", 
+    "mapData" : {
+        "type" : "mapquest", 
+        "metadata" : {
+            "zoomLevel" : "15", 
+            "centerLatitude" : "34.10469794977326", 
+            "centerLongitude" : "-84.23966646194458"
+        }
+    }, 
+    "createdDate" : ISODate("2016-07-04T10:18:08.983+0000"), 
+    "createdBy" : "system", 
+    "updatedDate" : ISODate("2016-09-26T18:24:27.333+0000"), 
+    "updatedBy" : "franckotols", 
+    "deleted" : false, 
+    "metadata" : {
+
+    }
+}
+{ 
+    "_id" : ObjectId("57e92d6a66823a4606a3f3d1"), 
+    "name" : "Health Monitoring Site", 
+    "description" : "Sito di test", 
+    "imageUrl" : "https://spinoff.nasa.gov/Spinoff2012/Images/hm_8.jpg", 
+    "token" : "de7397e2-3855-4f4f-a8fd-d4c7ccd67823", 
+    "mapData" : {
+        "type" : "mapquest", 
+        "metadata" : {
+            "zoomLevel" : "", 
+            "centerLatitude" : "", 
+            "centerLongitude" : ""
+        }
+    }, 
+    "createdDate" : ISODate("2016-09-26T14:15:06.407+0000"), 
+    "createdBy" : "franckotols", 
+    "updatedDate" : ISODate("2016-09-27T07:56:06.581+0000"), 
+    "updatedBy" : "franckotols", 
+    "deleted" : false, 
+    "metadata" : {
+
+    }
+}
+{ 
+    "_id" : ObjectId("57ec37d1947e454a820b3b31"), 
+    "name" : "Med Site", 
+    "description" : "Sito ad utilizzo esclusivo dei medici. Qui vengono creati tutti gli assignments tra medico e device (in questo caso la app di raccolta dati) e generati gli alert diretti verso i pazienti, cioe' i messagi che vanno dal medico al paziente.", 
+    "imageUrl" : "http://cdn5.acolore.com/disegni/colori/201101/8c797eb7255388bd8466c86ded4f2dbb.png", 
+    "token" : "8108596e-97b2-45a9-aaaa-cf67ce6ad950", 
+    "mapData" : {
+        "type" : "mapquest", 
+        "metadata" : {
+
+        }
+    }, 
+    "createdDate" : ISODate("2016-09-28T21:36:17.633+0000"), 
+    "createdBy" : "franckotols", 
+    "deleted" : false, 
+    "metadata" : {
+
+    }
+}
+
+
+
+assets categories
+--------------------------------------
+{ 
+    "_id" : ObjectId("577a37d8b02a68bfcf7de999"), 
+    "id" : "PATIENT_LIST_asset_id", 
+    "name" : "Patients List", 
+    "type" : "Person"
+}
+{ 
+    "_id" : ObjectId("57bdae9934f4c2c05a7a9f0d"), 
+    "id" : "lista_medici_asset_ID", 
+    "name" : "Lista Medici", 
+    "type" : "Person"
+}
+{ 
+    "_id" : ObjectId("57e93ed866824b3701711628"), 
+    "id" : "fs-devices", 
+    "name" : "Device Management", 
+    "type" : "Device"
+}
+
+assets
+------------------------------------------------
+{ 
+    "_id" : ObjectId("577a37e0b02a68bfcf7de99a"), 
+    "id" : "bncnnt60l44c342q-antonietta-bianchi", 
+    "name" : "ANTONIETTA BIANCHI", 
+    "type" : "Person", 
+    "category" : "PATIENT_LIST_asset_id", 
+    "image" : "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSeMhLE4mlN1K4KrmWh9e_qkKS46K5_F4I9zAPXoJH_3zQawLLycg", 
+    "properties" : [
+        {
+            "name" : "TAX code", 
+            "value" : "Bncnnt60l44c342q"
+        }, 
+        {
+            "name" : "last name", 
+            "value" : "Bianchi"
+        }, 
+        {
+            "name" : "address", 
+            "value" : "corso Ferrucci 54"
+        }, 
+        {
+            "name" : "birthdate", 
+            "value" : "4/7/1960"
+        }, 
+        {
+            "name" : "phone", 
+            "value" : "3331122123"
+        }, 
+        {
+            "name" : "city", 
+            "value" : "Torino"
+        }, 
+        {
+            "name" : "sex", 
+            "value" : "Female"
+        }, 
+        {
+            "name" : "user_disease", 
+            "value" : "Dialisi Peritoneale"
+        }, 
+        {
+            "name" : "name", 
+            "value" : "Antonietta"
+        }, 
+        {
+            "name" : "ZIP code", 
+            "value" : "10138"
+        }
+    ], 
+    "user" : "antonietta_bianchi", 
+    "email" : "antonio@gmail.com", 
+    "roles" : [
+
+    ]
+}
+{ 
+    "_id" : ObjectId("577a38d4b02a68bfcf7e0766"), 
+    "id" : "rssgcm85c18c342q-giacomo-rossi", 
+    "name" : "GIACOMO ROSSI", 
+    "type" : "Person", 
+    "category" : "PATIENT_LIST_asset_id", 
+    "image" : "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQB4dVacA67gn_f0CQ1YMZ-cqDucluN1pPoXnEGR1NCa4rutI76", 
+    "properties" : [
+        {
+            "name" : "TAX code", 
+            "value" : "rssgcm85c18c342q"
+        }, 
+        {
+            "name" : "last name", 
+            "value" : "Rossi"
+        }, 
+        {
+            "name" : "address", 
+            "value" : "corso Ferrucci 58"
+        }, 
+        {
+            "name" : "birthdate", 
+            "value" : "18/3/1985"
+        }, 
+        {
+            "name" : "phone", 
+            "value" : "3331166543"
+        }, 
+        {
+            "name" : "city", 
+            "value" : "Torino"
+        }, 
+        {
+            "name" : "sex", 
+            "value" : "Male"
+        }, 
+        {
+            "name" : "user_disease", 
+            "value" : "Esami del sangue"
+        }, 
+        {
+            "name" : "name", 
+            "value" : "Giacomo"
+        }, 
+        {
+            "name" : "ZIP code", 
+            "value" : "10138"
+        }
+    ], 
+    "user" : "giacomo_rossi", 
+    "email" : "giac@gmail.com", 
+    "roles" : [
+
+    ]
+}
+{ 
+    "_id" : ObjectId("577a8515b02ad620157d2e7f"), 
+    "id" : "tlofnc89m18i851f-francesco-tolu", 
+    "name" : "FRANCESCO TOLU", 
+    "type" : "Person", 
+    "category" : "PATIENT_LIST_asset_id", 
+    "image" : "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQB4dVacA67gn_f0CQ1YMZ-cqDucluN1pPoXnEGR1NCa4rutI76", 
+    "properties" : [
+        {
+            "name" : "TAX code", 
+            "value" : "TLOFNC89M18I851F"
+        }, 
+        {
+            "name" : "last name", 
+            "value" : "Tolu"
+        }, 
+        {
+            "name" : "address", 
+            "value" : "Via Brione 40"
+        }, 
+        {
+            "name" : "birthdate", 
+            "value" : "18/8/1989"
+        }, 
+        {
+            "name" : "phone", 
+            "value" : "3335522114"
+        }, 
+        {
+            "name" : "city", 
+            "value" : "Atzara"
+        }, 
+        {
+            "name" : "sex", 
+            "value" : "Male"
+        }, 
+        {
+            "name" : "user_disease", 
+            "value" : "Dialisi Peritoneale, Esami del sangue"
+        }, 
+        {
+            "name" : "name", 
+            "value" : "Francesco"
+        }, 
+        {
+            "name" : "ZIP code", 
+            "value" : "11223"
+        }
+    ], 
+    "user" : "francesco_tolu", 
+    "email" : "Antani@gmail.com", 
+    "roles" : [
+
+    ]
+}
+{ 
+    "_id" : ObjectId("57ea78cb6682ecd04e5a732a"), 
+    "id" : "esami-sangue-device", 
+    "name" : "Esami del Sangue", 
+    "type" : "Device", 
+    "category" : "fs-devices", 
+    "image" : "http://www.laboratoriobalistreri.it/polopoly_fs/1.18133099.1406888453!/httpImage/img.jpg_gen/derivatives/landscape_490/img.jpg", 
+    "properties" : [
+        {
+            "name" : "type", 
+            "value" : "software"
+        }
+    ], 
+    "sku" : "BLAN-SOFT", 
+    "description" : "Software App for sending blood analysis"
+}
+{ 
+    "_id" : ObjectId("57ebca5c947e454a820b3b29"), 
+    "id" : "diario-clinico-device", 
+    "name" : "Diario Clinico", 
+    "type" : "Device", 
+    "category" : "fs-devices", 
+    "image" : "http://www.deabyday.tv/data/guides/salute-e-benessere/consigli-in-pi-/Come-usare-la-cartella-clinica-correttamente/image_big_16_9/cartella-clinica.jpg", 
+    "properties" : [
+        {
+            "name" : "type", 
+            "value" : "software"
+        }
+    ], 
+    "sku" : "DCL-SOFT", 
+    "description" : "Applicazione software per l'invio dei dati relativi al diario clinico"
+}
+{ 
+    "_id" : ObjectId("57ec3b43947e454a820b3b32"), 
+    "id" : "monitoring-app-ID", 
+    "name" : "Monitoring App Android", 
+    "type" : "Device", 
+    "category" : "fs-devices", 
+    "image" : "http://woltag.com/wp-content/photos/2014/09/Android-logo-640x480.png", 
+    "properties" : [
+        {
+            "name" : "type", 
+            "value" : "software"
+        }
+    ], 
+    "sku" : "MED-APP", 
+    "description" : "Applicazione software utilizzata dal medico per il monitoraggio dei parametri dei pazienti, in grado di inviare notifiche."
+}
+{ 
+    "_id" : ObjectId("57ecd446f9c367a8c1aa8fd5"), 
+    "id" : "francesco-tolu-1881989", 
+    "name" : "FRANCESCO TOLU", 
+    "type" : "Person", 
+    "category" : "lista_medici_asset_ID", 
+    "image" : "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQB4dVacA67gn_f0CQ1YMZ-cqDucluN1pPoXnEGR1NCa4rutI76", 
+    "properties" : [
+        {
+            "name" : "password", 
+            "value" : "fra"
+        }, 
+        {
+            "name" : "birthdate", 
+            "value" : "18/8/1989"
+        }, 
+        {
+            "name" : "last name", 
+            "value" : "Tolu"
+        }, 
+        {
+            "name" : "phone", 
+            "value" : "3333333333"
+        }, 
+        {
+            "name" : "sex", 
+            "value" : "Male"
+        }, 
+        {
+            "name" : "name", 
+            "value" : "Francesco"
+        }, 
+        {
+            "name" : "specializzazione", 
+            "value" : "diabetologo"
+        }
+    ], 
+    "user" : "francesco_tolu", 
+    "email" : "tolufrancesco@gmail.com", 
+    "roles" : [
+        ""
+    ]
+}
+{ 
+    "_id" : ObjectId("57ece5e0f9c367a8c1aa8fd9"), 
+    "id" : "silvia-tolu-1481990", 
+    "name" : "SILVIA TOLU", 
+    "type" : "Person", 
+    "category" : "lista_medici_asset_ID", 
+    "image" : "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcSeMhLE4mlN1K4KrmWh9e_qkKS46K5_F4I9zAPXoJH_3zQawLLycg", 
+    "properties" : [
+        {
+            "name" : "password", 
+            "value" : "silvia"
+        }, 
+        {
+            "name" : "birthdate", 
+            "value" : "14/8/1990"
+        }, 
+        {
+            "name" : "last name", 
+            "value" : "Tolu"
+        }, 
+        {
+            "name" : "phone", 
+            "value" : "3333333333"
+        }, 
+        {
+            "name" : "sex", 
+            "value" : "Female"
+        }, 
+        {
+            "name" : "name", 
+            "value" : "Silvia"
+        }, 
+        {
+            "name" : "specializzazione", 
+            "value" : "nefrologo"
+        }
+    ], 
+    "user" : "silvia_tolu", 
+    "email" : "silvia@mail.it", 
+    "roles" : [
+        ""
+    ]
+}
+{ 
+    "_id" : ObjectId("57f4b7c8f9c3aa9356cd3277"), 
+    "id" : "test-pressione-device", 
+    "name" : "Device Pressione Test", 
+    "type" : "Device", 
+    "category" : "fs-devices", 
+    "image" : "http://img.medicalexpo.it/images_me/photo-g/67891-133555.jpg", 
+    "properties" : [
+        {
+            "name" : "type", 
+            "value" : "hardware"
+        }
+    ], 
+    "sku" : "PRESS-TEST", 
+    "description" : "Dispositivo per la misura della pressione. Per testare le richieste dal server a sitewhere."
+}
+------------------------------------------------------------------------------------------------------------------
+
+specifications
+------------------------------------------------
+
+{ 
+    "_id" : ObjectId("57ea7afc6682ecd04e5a732b"), 
+    "token" : "ab4e3b64-5504-4140-8713-38bf58e18391", 
+    "name" : "AppBloodAnalysis", 
+    "assetModuleId" : "fs-devices", 
+    "assetId" : "2190", 
+    "containerPolicy" : "Standalone", 
+    "createdDate" : ISODate("2016-09-27T13:58:20.424+0000"), 
+    "createdBy" : "franckotols", 
+    "deleted" : false, 
+    "metadata" : {
+
+    }
+}
+{ 
+    "_id" : ObjectId("57ebcaba947e454a820b3b2a"), 
+    "token" : "12d697d5-68ad-407e-b464-c750b46a3bb4", 
+    "name" : "SpecificationDiarioClinico", 
+    "assetModuleId" : "fs-devices", 
+    "assetId" : "44566", 
+    "containerPolicy" : "Standalone", 
+    "createdDate" : ISODate("2016-09-28T13:50:50.266+0000"), 
+    "createdBy" : "franckotols", 
+    "deleted" : false, 
+    "metadata" : {
+
+    }
+}
+{ 
+    "_id" : ObjectId("57ec3b95947e454a820b3b33"), 
+    "token" : "9cd95282-c1c7-4966-ae5e-c693e4fdc791", 
+    "name" : "SpecificationMedApp", 
+    "assetModuleId" : "fs-devices", 
+    "assetId" : "monitoring-app-ID", 
+    "containerPolicy" : "Standalone", 
+    "createdDate" : ISODate("2016-09-28T21:52:21.294+0000"), 
+    "createdBy" : "franckotols", 
+    "deleted" : false, 
+    "metadata" : {
+
+    }
+}
+{ 
+    "_id" : ObjectId("57f4b7d7f9c3aa9356cd3278"), 
+    "token" : "9b039765-793b-4c33-bec0-16b0e7acaead", 
+    "name" : "Pressure Device Test Specification", 
+    "assetModuleId" : "fs-devices", 
+    "assetId" : "test-pressione-device", 
+    "containerPolicy" : "Standalone", 
+    "createdDate" : ISODate("2016-10-05T08:20:39.624+0000"), 
+    "createdBy" : "franckotols", 
+    "deleted" : false, 
+    "metadata" : {
+
+    }
+}
+
+------------------------------------------------------------
+devices
+------------------------------------------------------------------------
+{ 
+    "_id" : ObjectId("57e97a96947e8c8dd6ff7a7e"), 
+    "hardwareId" : "123-453", 
+    "siteToken" : "de7397e2-3855-4f4f-a8fd-d4c7ccd67823", 
+    "specificationToken" : "dcf8de5b-c876-4ccf-802d-c86d3fdaea44", 
+    "parentHardwareId" : null, 
+    "comments" : "Android Tablet for testing ", 
+    "assignmentToken" : "fbf83dd6-d2a6-4a39-9265-d5f879945f57", 
+    "deviceElementMappings" : [
+
+    ], 
+    "createdDate" : ISODate("2016-09-26T19:44:22.344+0000"), 
+    "createdBy" : "franckotols", 
+    "deleted" : false, 
+    "metadata" : {
+
+    }
+}
+{ 
+    "_id" : ObjectId("57ea7d5a6682ecd04e5a732c"), 
+    "hardwareId" : "4242-3421", 
+    "siteToken" : "de7397e2-3855-4f4f-a8fd-d4c7ccd67823", 
+    "specificationToken" : "ab4e3b64-5504-4140-8713-38bf58e18391", 
+    "parentHardwareId" : null, 
+    "comments" : "Android App for sending blood analysis.", 
+    "assignmentToken" : "7e4dda31-0c76-4234-a9ac-1f57cfa357ac", 
+    "deviceElementMappings" : [
+
+    ], 
+    "createdDate" : ISODate("2016-09-27T14:08:26.485+0000"), 
+    "createdBy" : "franckotols", 
+    "deleted" : false, 
+    "metadata" : {
+
+    }
+}
+{ 
+    "_id" : ObjectId("57ebcbc2947e454a820b3b2b"), 
+    "hardwareId" : "98546-5443", 
+    "siteToken" : "de7397e2-3855-4f4f-a8fd-d4c7ccd67823", 
+    "specificationToken" : "12d697d5-68ad-407e-b464-c750b46a3bb4", 
+    "parentHardwareId" : null, 
+    "comments" : "App Android per i dati del diario clinico.", 
+    "assignmentToken" : "784d6547-2749-448c-a8b2-3a40968b7d22", 
+    "deviceElementMappings" : [
+
+    ], 
+    "createdDate" : ISODate("2016-09-28T13:55:14.410+0000"), 
+    "createdBy" : "franckotols", 
+    "deleted" : false, 
+    "metadata" : {
+
+    }
+}
+{ 
+    "_id" : ObjectId("57ecd446f9c367a8c1aa8fd6"), 
+    "hardwareId" : "francesco-tolu-1881989-Android-App", 
+    "siteToken" : "8108596e-97b2-45a9-aaaa-cf67ce6ad950", 
+    "specificationToken" : "9cd95282-c1c7-4966-ae5e-c693e4fdc791", 
+    "parentHardwareId" : null, 
+    "comments" : "Monitoring APP: FRANCESCO TOLU", 
+    "assignmentToken" : "086a88a2-a561-4e7d-8e5a-e2e94a3ef4ac", 
+    "deviceElementMappings" : [
+
+    ], 
+    "createdDate" : ISODate("2016-09-29T08:43:50.752+0000"), 
+    "createdBy" : "franckotols", 
+    "deleted" : false, 
+    "metadata" : {
+
+    }
+}
+{ 
+    "_id" : ObjectId("57ece5e0f9c367a8c1aa8fda"), 
+    "hardwareId" : "silvia-tolu-1481990-Android-App", 
+    "siteToken" : "8108596e-97b2-45a9-aaaa-cf67ce6ad950", 
+    "specificationToken" : "9cd95282-c1c7-4966-ae5e-c693e4fdc791", 
+    "parentHardwareId" : null, 
+    "comments" : "Monitoring APP: SILVIA TOLU", 
+    "assignmentToken" : "5e3c6b3c-1009-4b1b-8a74-50cf4d251765", 
+    "deviceElementMappings" : [
+
+    ], 
+    "createdDate" : ISODate("2016-09-29T09:58:56.612+0000"), 
+    "createdBy" : "franckotols", 
+    "deleted" : false, 
+    "metadata" : {
+
+    }
+}
+{ 
+    "_id" : ObjectId("57f4b918f9c3aa9356cd3279"), 
+    "hardwareId" : "rssgcm85c18c342q-giacomo-rossi-test-pressione", 
+    "siteToken" : "de7397e2-3855-4f4f-a8fd-d4c7ccd67823", 
+    "specificationToken" : "9b039765-793b-4c33-bec0-16b0e7acaead", 
+    "parentHardwareId" : null, 
+    "comments" : "Dispositivo di test per la misura della pressione.", 
+    "assignmentToken" : "2cd1bd8b-6099-49ee-828c-dca865b42c35", 
+    "deviceElementMappings" : [
+
+    ], 
+    "createdDate" : ISODate("2016-10-05T08:26:00.053+0000"), 
+    "createdBy" : "franckotols", 
+    "deleted" : false, 
+    "metadata" : {
+
+    }
+}
+{ 
+    "_id" : ObjectId("57fbf4c3f9c3e25ae2a00873"), 
+    "hardwareId" : "bncnnt60l44c342q-antonietta-bianchi-diario-clinico", 
+    "siteToken" : " de7397e2-3855-4f4f-a8fd-d4c7ccd67823", 
+    "specificationToken" : "12d697d5-68ad-407e-b464-c750b46a3bb4", 
+    "parentHardwareId" : null, 
+    "comments" : "Applicazione per l'invio dei dati del diario clinico.", 
+    "assignmentToken" : "c5da817e-4f9b-486c-973c-1ee49f62f1a1", 
+    "deviceElementMappings" : [
+
+    ], 
+    "createdDate" : ISODate("2016-10-10T20:06:27.516+0000"), 
+    "createdBy" : "franckotols", 
+    "deleted" : false, 
+    "metadata" : {
+
+    }
+}
+{ 
+    "_id" : ObjectId("57fca73df9c3e5baf0ff4bd2"), 
+    "hardwareId" : "rssgcm85c18c342q-giacomo-rossi-diario-clinico", 
+    "siteToken" : " de7397e2-3855-4f4f-a8fd-d4c7ccd67823", 
+    "specificationToken" : "12d697d5-68ad-407e-b464-c750b46a3bb4", 
+    "parentHardwareId" : null, 
+    "comments" : "Applicazione per l'invio dei dati del diario clinico.", 
+    "assignmentToken" : "60addb63-1445-4554-9104-22b4088002ae", 
+    "deviceElementMappings" : [
+
+    ], 
+    "createdDate" : ISODate("2016-10-11T08:47:57.409+0000"), 
+    "createdBy" : "franckotols", 
+    "deleted" : false, 
+    "metadata" : {
+
+    }
+}
+
+-------------------------------
+utils
+--------------------------
+diseases
+----------------------------
+{ 
+    "_id" : ObjectId("57e808eb537160202433a119"), 
+    "diseases" : [
+        "Dialisi Peritoneale", 
+        "Emodialisi", 
+        "Insufficienza renale", 
+        "Trapianto", 
+        "Diabete tipo I", 
+        "Diabete tipo II", 
+        "Esami del sangue", 
+        "Test delle urine"
+    ]
+}
+
+----------------------------
+specializzazioni
+-----------------------------
+{ 
+    "_id" : ObjectId("57e3f161537160235cbcb5e2"), 
+    "specializzazioni" : [
+        "diabetologo", 
+        "nefrologo", 
+        "urologo"
+    ]
+}
