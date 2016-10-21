@@ -4,7 +4,8 @@
 		"url":"",
 		"tenant_token":"",
 		"auth":{"username":"password"},
-		"site_token":""
+		"site_token_patients":"",
+		"site_token_physicians":""
 	},
 
 	"web_services":{
