@@ -236,7 +236,7 @@ class AuthenticationServer(object):
 		# GET REQUEST TO: http://localhost:8080/sitewhere/api/assets/categories/lista_medici_asset_ID/assets
 		#---------------------------------------------------------------------------------------------------
 		lista_medici = self.mySitewhere.get_assets_categoryID_assets(self.asset_med_id)
-		print lista_medici
+		#print lista_medici
 		if lista_medici != "error_string":
 			dixt = json.loads(lista_medici)
 			medici = dixt['results']
@@ -481,10 +481,45 @@ class Notifications(object):
 		#------------------------------------------------------------------------------------------------------
 		# GET REQUEST TO: http://localhost:8080/sitewhere/api/sites/de7397e2-3855-4f4f-a8fd-d4c7ccd67823/alerts
 		#------------------------------------------------------------------------------------------------------
-		notifiche = self.mySitewhere.get_alerts_for_sites(self.pat_site_token)
-		#print response
-		if notifiche != "error_string":
-			return notifiche
+		notifiche = []
+		request = self.mySitewhere.get_alerts_for_sites(self.pat_site_token)
+		print request
+		if request != "error_string":
+			print request
+			mydict = json.loads(request)
+			#print mydict
+			results = mydict["results"]
+			for i in range(0,len(results)):
+				asset_id = results[i]["assetId"]
+				asset_name = results[i]["assetName"]
+				assignment_token = results[i]["deviceAssignmentToken"]
+				alert_id = results[i]["id"]
+				if len(results[i]["metadata"])==0:
+					alert_status = ""
+				else:
+					alert_status = results[i]["metadata"]["is_read"]
+				alert_type = results[i]["type"]
+				print alert_status
+				print type(alert_status)
+				#NB IL FORMATO DELLA DATA E' DA CAMBIARE
+				event_date = results[i]["eventDate"]
+				alert_message = results[i]["message"]
+				data = {
+					"assetId": asset_id,
+					"assetName": asset_name,
+					"deviceAssignmentToken":assignment_token,
+					"id":alert_id,
+					"status":alert_status,
+					"type":alert_type,
+					"eventDate":event_date,
+					"message":alert_message
+				}
+				notifiche.append(data)
+			response = json.dumps({"results":notifiche},indent=4, sort_keys=True)
+			print response
+			return response
+
+			
 		else:
 			raise cherrypy.HTTPError(400, "Error")
 			

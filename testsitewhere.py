@@ -16,7 +16,7 @@ class testSitewhere(object):
 
 		self.id = id
 		
-		self.url = "http://giupe.webfactional.com/sitewhere/api"
+		self.url = "http://localhost:8080/sitewhere/api"
 		#il tenant e' lo stesso creato da giuseppe
 		self.tenant_token = 'sitewhere1234567890'
 		self.tenant_pat_id="default"
@@ -270,7 +270,10 @@ class testSitewhere(object):
 		data = {
 			"eventDate" : "",
 			"message": "Pressione bassa",
-			"type": "test-pressione"
+			"type": "test-pressione",
+			"metadata":{
+				"is_read": True
+			}
 		}
 		data = json.dumps(data, indent=4, sort_keys=True)
 		data = str(data)
@@ -283,7 +286,7 @@ class testSitewhere(object):
 
 	def get_alerts_for_sites(self):
 		s=requests.Session()
-		get_url = self.url+"/sites/de7397e2-3855-4f4f-a8fd-d4c7ccd67823/alerts"
+		get_url = self.url+"/sites/bb105f8d-3150-41f5-b9d1-db04965668d3/alerts"
 		r = s.get(get_url, headers=self.headers, auth=self.auth)
 		result = r.content
 		result = json.loads(result)
