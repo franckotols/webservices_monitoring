@@ -101,9 +101,21 @@ class SitewhereManager(object):
 			return "error_string"
 		
 
-	def get_assignement(self, assign_token):
+	def get_assignements(self, assign_token):
 		s=requests.Session()
 		get_url = self.url+"/assignments/"+assign_token
+		try:
+			r = s.get(get_url, headers=self.headers, auth=self.auth)
+			result = r.content
+			result = json.loads(result)
+			result = json.dumps(result, indent=4, sort_keys=True)
+			return result
+		except:
+			return "error_string"
+
+	def get_assignment_associated_with_asset(self,asset_module_id,asset_id):
+		s=requests.Session()
+		get_url = self.url+"/assets/modules/"+asset_module_id+"/assets/"+asset_id+"/assignments"
 		try:
 			r = s.get(get_url, headers=self.headers, auth=self.auth)
 			result = r.content

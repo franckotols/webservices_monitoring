@@ -166,12 +166,12 @@ class RegistrationServer(object):
 				if count == 3:
 					return "Registration successful"
 				else:
-					raise cherrypy.HTTPError(400, "Something went wrong")
+					raise cherrypy.HTTPError(400, "something_wrong")
 			else:
 				#codice messo a caso
-				raise cherrypy.HTTPError(400, "Utente gia' registrato")
+				raise cherrypy.HTTPError(400, "utente_registrato")
 		else:
-			raise cherrypy.HTTPError(400, "Something went wrong")
+			raise cherrypy.HTTPError(400, "something_wrong")
 		
 
 	def PUT (self, * uri, ** params): 
@@ -633,7 +633,7 @@ class Notifications(object):
 # La classe completa dovra' gestire poi tutte le letture su tutti i measurements e anche diario clinico e esami del sangue
 # Nella post deve essere ricevuto come params anche l'intervallo di tempo che si vuole esplorare
 #------------------------------------------------------------------------------------------------------------------------
-class TestPressione(object):
+class TestParametri(object):
 	exposed = True
 
 	def __init__(self):
@@ -741,22 +741,54 @@ class TestPressione(object):
 		return values
 			
 	def POST (self, * uri, ** params):
-		# print params
-		# pat_id = params["pat_id"]
-		# parametro = params["parametro"]
-		# if parametro == "pressione":
-		# 	device_id = pat_id+"-test-pressione"
-		# 	#--------------------------------------------------------------------------------------------------------------
-		# 	# devo fare una get su tutti gli assignment del Med Site, trovare quello relativo a quel device e quel paziente
-		# 	# e prendere il token. Non penso si possa fare con sitewhere, ma ci possono essere due strade. Una e' quella di
-		# 	# creare una lista di json dove ogni elemento ha l'id del device, del paziente e l'assignment token. L'altra e' 
-		# 	# quella di interrogare direttamente mongo
-		# 	#--------------------------------------------------------------------------------------------------------------
-		# 	con = MongoClient()
-		# 	db = con['tenant-'+self.tenant_pat_id]
-		# 	assignments = db["assignments"] #e' la collection
-		pass
-			
+
+		if uri[0]=="valorimedi":
+
+			tokens = []
+
+			today = datetime.date.today()
+			#processa l'intervallo su cui mediare
+			mean_interval = params["mean_interval"]
+			if mean_interval=="one_day":
+				days = 1
+			elif mean_interval == "three_days":
+				days = 3
+			elif mean_interval == "one_week":
+				days = 7
+			elif mean_interval == "three_weeks":
+				days = 21
+			elif mean_interval == "one_month":
+				days = 30
+			margin = datetime.timedelta(days = days)
+
+			#si va a generare gli id dei devices che sono standard
+			pat_id = params["id_pat"]
+			devices_ids = [
+				"iHealt_OpenApiWeight_"+pat_id+"_REAL_DEVICE_ID",
+				"iHealt_OpenApiSpO2_"+pat_id+"_REAL_DEVICE_ID",
+				"iHealt_OpenApiBP_"+pat_id+"_REAL_DEVICE_ID",
+				"iHealt_OpenApiBG_"+pat_id+"_REAL_DEVICE_ID"
+			]
+			#chiede gli assignment di quello specifico paziente
+			#si potrebbe fare anche con i roles
+			json_resp = self.mySitewhere.get_assignment_associated_with_asset(self.asset_pat_id,pat_id)
+			if json_resp != "error_string":
+				mydict = json.loads(json_resp)
+				results = mydict["results"]
+				#va a prendere gli assignments relativi ai parametri
+				#ci saranno anche quelli per il diario clinico, esami del sangue e test urine
+				for k in range(0,len(results)):
+					if results[k]["deviceHardwareId"] in devices_ids:
+						#se il device id e' nei selezionati allora lo prende e gli accoppia l'assignment token
+						tokens.append({"device_id":results[k]["deviceHardwareId"],"assignment_token":results[k]["token"]})
+				
+				#queste tre righe non servono perchè deve prendere anche i dati prima
+				response = json.dumps(tokens,indent=4, sort_keys=True)
+				print response
+				return response
+			else:
+				raise cherrypy.HTTPError(400, "error")
+
 
 
 	def PUT (self, * uri, ** params): 
@@ -841,39 +873,35 @@ class TestDiarioClinico(object):
 		dev_id = pat_id+"-diario-clinico"
 		date = params["date"]
 		token = ""
-		# con = MongoClient()
-		# db = con['tenant-'+self.tenant_pat_id]
-		# coll = db["assignments"] #e' la collection
-		# assignments = coll.find()
-		response = self.mySitewhere.get_assignments_in_site(self.pat_site_token)
-		#print response
-		if response != "error_string":
-			mydict = json.loads(response)
-			assignments = mydict["results"]
-			for k in assignments:
-				if k["assetId"] == pat_id and k["deviceHardwareId"] == dev_id:
-					token = k["token"]
-					print token
-					break
-			if token == "":
-				return "no_token"
-			else:
-				json_resp = self.mySitewhere.get_meaurements_by_assignment_token(token)
-				print json_resp
-				mydict = json.loads(json_resp)
-				measurements = mydict["results"]
-				for j in range(0,len(measurements)):
-					date_meas = measurements[j]["metadata"]["treatment_data"]
-					print date_meas
-					print date
-					if date_meas == date:
-						selected = json.dumps(measurements[j]["measurements"], indent=4, sort_keys=True)
-						return selected
-						break
-					else:
-						return "Non ci sono misure in quella data"
-		else:
-			raise cherrypy.HTTPError(500, "no_connection")
+		response = self.mySitewhere.get_assignment_associated_with_asset(self.pat_asset_id,pat_id)
+		print response
+		# if response != "error_string":
+		# 	mydict = json.loads(response)
+		# 	assignments = mydict["results"]
+		# 	for k in assignments:
+		# 		if k["assetId"] == pat_id and k["deviceHardwareId"] == dev_id:
+		# 			token = k["token"]
+		# 			print token
+		# 			break
+		# 	if token == "":
+		# 		return "no_token"
+		# 	else:
+		# 		json_resp = self.mySitewhere.get_meaurements_by_assignment_token(token)
+		# 		print json_resp
+		# 		mydict = json.loads(json_resp)
+		# 		measurements = mydict["results"]
+		# 		for j in range(0,len(measurements)):
+		# 			date_meas = measurements[j]["metadata"]["treatment_data"]
+		# 			print date_meas
+		# 			print date
+		# 			if date_meas == date:
+		# 				selected = json.dumps(measurements[j]["measurements"], indent=4, sort_keys=True)
+		# 				return selected
+		# 				break
+		# 			else:
+		# 				raise cherrypy.HTTPError(400,"no_measurements")
+		# else:
+		# 	raise cherrypy.HTTPError(400, "no_connection")
 
 
 			
@@ -961,7 +989,7 @@ if __name__ == '__main__':
 	cherrypy.tree.mount (DiseaseServer(),	'/diseases',	conf)
 	cherrypy.tree.mount (SearchPatientServer(),	'/searchPatient',	conf)
 	cherrypy.tree.mount (Notifications(), '/notifications', conf)
-	cherrypy.tree.mount (TestPressione(), '/pressione', conf)
+	cherrypy.tree.mount (TestParametri(), '/parametri', conf)
 	cherrypy.tree.mount (TestDiarioClinico(), '/diarioclinico', conf)
 	cherrypy.tree.mount (TestServer(), '/test',conf)
 	cherrypy.server.socket_host = '192.168.137.1'

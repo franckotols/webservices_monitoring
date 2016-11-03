@@ -64,7 +64,7 @@ class testSitewhere(object):
 
 	def get_assets_categoryID_assets(self):
 		s=requests.Session()
-		get_url = self.url+"/assets/categories/lista_medici_asset_ID/assets"
+		get_url = self.url+"/assets/categories/PATIENT_LIST_asset_id/assets"
 		r = s.get(get_url, headers=self.headers, auth=self.auth)
 		result = r.content
 		result = json.loads(result)
@@ -158,11 +158,11 @@ class testSitewhere(object):
 		post_url=self.url+"/assets/categories/fs-devices/hardware"
 		print post_url
 		data = {
-			"id": "test-pressione-device",
-			"name": "Device Pressione Test",
-			"imageUrl": "http://img.medicalexpo.it/images_me/photo-g/67891-133555.jpg",
+			"id": "iHealt_Blood_Pressure_assetID",
+			"name": "iHealt Blood Pressure Monitor",
+			"imageUrl": "https://ihealthlabs.com/files/6314/1564/3481/iHealth_BP5_PDP5a.png",
 			"properties": {"type":"hardware"},
-			"sku": "PRESS-TEST",
+			"sku": "iHBPtest",
 			"description": "Dispositivo per la misura della pressione. Per testare le richieste dal server a sitewhere."
 		}
 
@@ -179,10 +179,11 @@ class testSitewhere(object):
 		post_url=self.url+"/specifications"
 		print post_url
 		data = {
-			"name" : "Pressure Device Test Specification",
+			"name" : "Blood Pressure Monitor Specification",
 			"assetModuleId" : "fs-devices",
-			"assetId" : "test-pressione-device",
-			"containerPolicy" : "Standalone"
+			"assetId" : "iHealt_Blood_Pressure_assetID",
+			"containerPolicy" : "Standalone",
+			"token":"Specification_token_OpenApiBP"
 		}
 
 		data = json.dumps(data, indent=4, sort_keys=True)
@@ -198,9 +199,9 @@ class testSitewhere(object):
 		post_url=self.url+"/devices"
 		print post_url
 		data = {
-			"hardwareId" : "bncnnt60l44c342q-antonietta-bianchi-test-pressione",
+			"hardwareId" : "iHealt_OpenApiBP_bncnnt60l44c342q-antonietta-bianchi_REAL_DEVICE_ID",
 			"siteToken" : "bb105f8d-3150-41f5-b9d1-db04965668d3",
-			"specificationToken" : "5b44cc41-f37b-4254-b72c-04585ae969fe",
+			"specificationToken" : "Specification_token_OpenApiBP",
 			"comments" : "Dispositivo di test per la misura della pressione."
 		}
 
@@ -217,7 +218,7 @@ class testSitewhere(object):
 		post_url=self.url+"/assignments"
 		print post_url
 		data = {
-			"deviceHardwareId" : "bncnnt60l44c342q-antonietta-bianchi-test-pressione",
+			"deviceHardwareId" : "iHealt_OpenApiBP_bncnnt60l44c342q-antonietta-bianchi_REAL_DEVICE_ID",
 			"assignmentType" : "Associated",
 			"assetModuleId" : "PATIENT_LIST_asset_id",
 			"assetId" : "bncnnt60l44c342q-antonietta-bianchi",
@@ -449,6 +450,15 @@ class testSitewhere(object):
 		result = json.dumps(result, indent=4, sort_keys=True)
 		return result
 
+	def get_assignment_associated_with_asset(self):
+		s=requests.Session()
+		get_url = self.url+"/assets/modules/PATIENT_LIST_asset_id/assets/rssgcm85c18c342q-giacomo-rossi/assignments"
+		r = s.get(get_url, headers=self.headers, auth=self.auth)
+		result = r.content
+		result = json.loads(result)
+		result = json.dumps(result, indent=4, sort_keys=True)
+		return result
+
 
 
 if __name__ == "__main__":
@@ -478,6 +488,7 @@ if __name__ == "__main__":
 	print "20 - get measurements series"
 	print "21 - send_measurement_diario_clinico"
 	print "22 - get_assignmets_in_sites"
+	print "23 - get_assignment_associated_with_asset"
 	while True:
 		comm = raw_input("Insert command: ")
 		if comm == "1":
@@ -548,6 +559,9 @@ if __name__ == "__main__":
 			print meas_diario
 		elif comm == "22":
 			assignments = test.get_assignmets_in_sites()
+			print assignments
+		elif comm == "23":
+			assignments = test.get_assignment_associated_with_asset()
 			print assignments
 
 			

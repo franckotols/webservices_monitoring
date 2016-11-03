@@ -1365,3 +1365,43 @@ Esempio: assignment Antonietta Bianchi-Esami del sangue:
         "measurementId": "Cholesterol"
     }
 ]
+
+###########################################################################################################################
+GET ASSIGNMENTS BY ASSETMODULEID AND ASSETID
+###########################################################################################################################
+
+http://localhost:8080/sitewhere/api/assets/modules/PATIENT_LIST_asset_id/assets/rssgcm85c18c342q-giacomo-rossi/assignments
+
+{
+    "numResults": 2,
+    "results": [
+        {
+            "activeDate": "2016-10-11T20:17:19.433+0200",
+            "assetId": "rssgcm85c18c342q-giacomo-rossi",
+            "assetModuleId": "PATIENT_LIST_asset_id",
+            "assignmentType": "Associated",
+            "createdBy": "admin",
+            "createdDate": "2016-10-11T20:17:19.433+0200",
+            "deleted": false,
+            "deviceHardwareId": "rssgcm85c18c342q-giacomo-rossi-test-pressione",
+            "metadata": {},
+            "siteToken": "bb105f8d-3150-41f5-b9d1-db04965668d3",
+            "status": "Active",
+            "token": "676066f6-478a-4882-84ae-dfd1b28cb4d7"
+        },
+        {
+            "activeDate": "2016-10-11T19:17:47.968+0200",
+            "assetId": "rssgcm85c18c342q-giacomo-rossi",
+            "assetModuleId": "PATIENT_LIST_asset_id",
+            "assignmentType": "Associated",
+            "createdBy": "admin",
+            "createdDate": "2016-10-11T19:17:47.968+0200",
+            "deleted": false,
+            "deviceHardwareId": "rssgcm85c18c342q-giacomo-rossi-diario-clinico",
+            "metadata": {},
+            "siteToken": "bb105f8d-3150-41f5-b9d1-db04965668d3",
+            "status": "Active",
+            "token": "4249ec34-2731-4ee3-bc32-3a64996d1221"
+        }
+    ]
+}
