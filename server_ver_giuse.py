@@ -23,9 +23,6 @@ class RegistrationServer(object):
 		self.url = self.my_dict["sitewhere"]["url"]
 		#il tenant e' lo stesso creato da giuseppe
 		self.tenant_token = self.my_dict["sitewhere"]["tenant_token"]
-		self.tenant_id=self.my_dict["sitewhere"]["tenant_id"]
-		self.tenant_name=self.my_dict["sitewhere"]["tenant_name"]
-		self.tenant_logo=self.my_dict["sitewhere"]["tenant_logo"]
 		self.auth=(self.my_dict["sitewhere"]["auth"]["username"], self.my_dict["sitewhere"]["auth"]["password"])
 
 		#In realta' la riga sotto non e' necessaria perche' e' inclusa in ogni metodo della classe SitewhereManager
@@ -57,7 +54,7 @@ class RegistrationServer(object):
 
 	#To read config_file
 	def get_config_file(self):
-		myfile = open("config.json","r")
+		myfile = open("config2.json","r")
 		stringa = myfile.read()
 		dictionary = json.loads(stringa)
 		myfile.close()
@@ -192,9 +189,6 @@ class AuthenticationServer(object):
 		self.url = self.my_dict["sitewhere"]["url"]
 		#il tenant e' lo stesso creato da giuseppe
 		self.tenant_token = self.my_dict["sitewhere"]["tenant_token"]
-		self.tenant_id=self.my_dict["sitewhere"]["tenant_id"]
-		self.tenant_name=self.my_dict["sitewhere"]["tenant_name"]
-		self.tenant_logo=self.my_dict["sitewhere"]["tenant_logo"]
 		self.auth=(self.my_dict["sitewhere"]["auth"]["username"], self.my_dict["sitewhere"]["auth"]["password"])
 
 		#In realta' la riga sotto non e' necessaria perche' e' inclusa in ogni metodo della classe SitewhereManager
@@ -224,14 +218,13 @@ class AuthenticationServer(object):
 		self.db_sitewhere = self.my_dict["mongo"]["db_sitewhere"]
 		self.db_utils = self.my_dict["mongo"]["db_utils"]
 
-		#To read config_file
+	#To read config_file
 	def get_config_file(self):
-		myfile = open("config.json","r")
+		myfile = open("config2.json","r")
 		stringa = myfile.read()
 		dictionary = json.loads(stringa)
 		myfile.close()
 		return dictionary
-
 		
 		
 	def GET (self, *uri, **params):
@@ -298,9 +291,6 @@ class DiseaseServer(object):
 		self.url = self.my_dict["sitewhere"]["url"]
 		#il tenant e' lo stesso creato da giuseppe
 		self.tenant_token = self.my_dict["sitewhere"]["tenant_token"]
-		self.tenant_id=self.my_dict["sitewhere"]["tenant_id"]
-		self.tenant_name=self.my_dict["sitewhere"]["tenant_name"]
-		self.tenant_logo=self.my_dict["sitewhere"]["tenant_logo"]
 		self.auth=(self.my_dict["sitewhere"]["auth"]["username"], self.my_dict["sitewhere"]["auth"]["password"])
 
 		#In realta' la riga sotto non e' necessaria perche' e' inclusa in ogni metodo della classe SitewhereManager
@@ -330,9 +320,9 @@ class DiseaseServer(object):
 		self.db_sitewhere = self.my_dict["mongo"]["db_sitewhere"]
 		self.db_utils = self.my_dict["mongo"]["db_utils"]
 
-		#To read config_file
+	#To read config_file
 	def get_config_file(self):
-		myfile = open("config.json","r")
+		myfile = open("config2.json","r")
 		stringa = myfile.read()
 		dictionary = json.loads(stringa)
 		myfile.close()
@@ -374,9 +364,6 @@ class SearchPatientServer(object):
 		self.url = self.my_dict["sitewhere"]["url"]
 		#il tenant e' lo stesso creato da giuseppe
 		self.tenant_token = self.my_dict["sitewhere"]["tenant_token"]
-		self.tenant_id=self.my_dict["sitewhere"]["tenant_id"]
-		self.tenant_name=self.my_dict["sitewhere"]["tenant_name"]
-		self.tenant_logo=self.my_dict["sitewhere"]["tenant_logo"]
 		self.auth=(self.my_dict["sitewhere"]["auth"]["username"], self.my_dict["sitewhere"]["auth"]["password"])
 
 		#In realta' la riga sotto non e' necessaria perche' e' inclusa in ogni metodo della classe SitewhereManager
@@ -406,9 +393,9 @@ class SearchPatientServer(object):
 		self.db_sitewhere = self.my_dict["mongo"]["db_sitewhere"]
 		self.db_utils = self.my_dict["mongo"]["db_utils"]
 
-		#To read config_file
+	#To read config_file
 	def get_config_file(self):
-		myfile = open("config.json","r")
+		myfile = open("config2.json","r")
 		stringa = myfile.read()
 		dictionary = json.loads(stringa)
 		myfile.close()
@@ -441,9 +428,11 @@ class SearchPatientServer(object):
 				
 				first_name = dixt['results'][i]['properties']['name']
 				last_name = dixt['results'][i]['properties']['last name']
-				user_diseases = dixt['results'][i]['properties']['user_disease']
+				str_diseases = dixt['results'][i]['properties']['diseases']
+				diseases = json.loads(str_diseases)
+				user_diseases = diseases["diseases_list"]
 				name = first_name+" "+last_name
-				user_diseases = user_diseases.split(", ")
+				#user_diseases = user_diseases.split(", ")
 				print "*************"
 				print name
 				print user_diseases
@@ -496,9 +485,6 @@ class Notifications(object):
 		self.url = self.my_dict["sitewhere"]["url"]
 		#il tenant e' lo stesso creato da giuseppe
 		self.tenant_token = self.my_dict["sitewhere"]["tenant_token"]
-		self.tenant_id=self.my_dict["sitewhere"]["tenant_id"]
-		self.tenant_name=self.my_dict["sitewhere"]["tenant_name"]
-		self.tenant_logo=self.my_dict["sitewhere"]["tenant_logo"]
 		self.auth=(self.my_dict["sitewhere"]["auth"]["username"], self.my_dict["sitewhere"]["auth"]["password"])
 
 		#In realta' la riga sotto non e' necessaria perche' e' inclusa in ogni metodo della classe SitewhereManager
@@ -528,9 +514,9 @@ class Notifications(object):
 		self.db_sitewhere = self.my_dict["mongo"]["db_sitewhere"]
 		self.db_utils = self.my_dict["mongo"]["db_utils"]
 
-		#To read config_file
+	#To read config_file
 	def get_config_file(self):
-		myfile = open("config.json","r")
+		myfile = open("config2.json","r")
 		stringa = myfile.read()
 		dictionary = json.loads(stringa)
 		myfile.close()
@@ -544,7 +530,6 @@ class Notifications(object):
 		#------------------------------------------------------------------------------------------------------
 		notifiche = []
 		request = self.mySitewhere.get_alerts_for_sites(self.pat_site_token)
-		print request
 		if request != "error_string":
 			print request
 			mydict = json.loads(request)
@@ -555,13 +540,8 @@ class Notifications(object):
 				asset_name = results[i]["assetName"]
 				assignment_token = results[i]["deviceAssignmentToken"]
 				alert_id = results[i]["id"]
-				if len(results[i]["metadata"])==0:
-					alert_status = ""
-				else:
-					alert_status = results[i]["metadata"]["is_read"]
 				alert_type = results[i]["type"]
-				print alert_status
-				print type(alert_status)
+				
 				#NB IL FORMATO DELLA DATA E' DA CAMBIARE
 				event_date = results[i]["eventDate"]
 				alert_message = results[i]["message"]
@@ -570,7 +550,7 @@ class Notifications(object):
 					"assetName": asset_name,
 					"deviceAssignmentToken":assignment_token,
 					"id":alert_id,
-					"status":alert_status,
+					"status":"true",
 					"type":alert_type,
 					"eventDate":event_date,
 					"message":alert_message
@@ -592,28 +572,28 @@ class Notifications(object):
 		#modificare dati su sitewhere, per far si che lo stato di lettura della notifica venga salvato anche su 
 		#sitewhere si utilizza un valore nei metadata con chiave 'is_read' e lo si modifica direttamente da mongo
 		#---------------------------------------------------------------------------------------------------------
-		print params
-		alert_id = params["alert_id"]
-		alert_status = params["alert_status"]
-		client = MongoClient()
-		client = MongoClient('localhost', 27017)
-		db = client[self.db_sitewhere]
-		collection = db['events']
-		#events = collection.find()
-		event = collection.find_one({'_id':ObjectId(str(alert_id))})
-		#print event
-		if alert_status == "checked":
-			collection.update({'_id':ObjectId(str(alert_id))},{'$set': {'metadata.is_read':'true'}})
-			print "*********"
-			print event
+		# print params
+		# alert_id = params["alert_id"]
+		# alert_status = params["alert_status"]
+		# client = MongoClient()
+		# client = MongoClient('localhost', 27017)
+		# db = client[self.db_sitewhere]
+		# collection = db['events']
+		# #events = collection.find()
+		# event = collection.find_one({'_id':ObjectId(str(alert_id))})
+		# #print event
+		# if alert_status == "checked":
+		# 	collection.update({'_id':ObjectId(str(alert_id))},{'$set': {'metadata.is_read':'true'}})
+		# 	print "*********"
+		# 	print event
 					
-		elif alert_status == "not_checked":
-			collection.update({'_id':ObjectId(str(alert_id))},{'$set': {'metadata.is_read':'false'}})
-			print "*************"
-			print event
-		else:
-			pass
-			
+		# elif alert_status == "not_checked":
+		# 	collection.update({'_id':ObjectId(str(alert_id))},{'$set': {'metadata.is_read':'false'}})
+		# 	print "*************"
+		# 	print event
+		# else:
+		# 	pass
+		pass
 				
 
 	def PUT (self, * uri, ** params): 
@@ -633,16 +613,11 @@ class TestParametri(object):
 	def __init__(self):
 
 		self.id = id
-		
-		self.id = id
 		self.my_dict = self.get_config_file()
 		
 		self.url = self.my_dict["sitewhere"]["url"]
 		#il tenant e' lo stesso creato da giuseppe
 		self.tenant_token = self.my_dict["sitewhere"]["tenant_token"]
-		self.tenant_id=self.my_dict["sitewhere"]["tenant_id"]
-		self.tenant_name=self.my_dict["sitewhere"]["tenant_name"]
-		self.tenant_logo=self.my_dict["sitewhere"]["tenant_logo"]
 		self.auth=(self.my_dict["sitewhere"]["auth"]["username"], self.my_dict["sitewhere"]["auth"]["password"])
 
 		#In realta' la riga sotto non e' necessaria perche' e' inclusa in ogni metodo della classe SitewhereManager
@@ -672,9 +647,9 @@ class TestParametri(object):
 		self.db_sitewhere = self.my_dict["mongo"]["db_sitewhere"]
 		self.db_utils = self.my_dict["mongo"]["db_utils"]
 
-		#To read config_file
+	#To read config_file
 	def get_config_file(self):
-		myfile = open("config.json","r")
+		myfile = open("config2.json","r")
 		stringa = myfile.read()
 		dictionary = json.loads(stringa)
 		myfile.close()
@@ -738,8 +713,16 @@ class TestParametri(object):
 
 		if uri[0]=="valorimedi":
 
+			print params
 			tokens = []
+			pressione = []
+			massa = []
+			spo2 = []
+			glicemia = []
 
+			####################################
+			# GESTIONE DELLA DATA
+			####################################
 			today = datetime.date.today()
 			#processa l'intervallo su cui mediare
 			mean_interval = params["mean_interval"]
@@ -754,6 +737,7 @@ class TestParametri(object):
 			elif mean_interval == "one_month":
 				days = 30
 			margin = datetime.timedelta(days = days)
+			print margin
 
 			#si va a generare gli id dei devices che sono standard
 			pat_id = params["id_pat"]
@@ -772,14 +756,122 @@ class TestParametri(object):
 				#va a prendere gli assignments relativi ai parametri
 				#ci saranno anche quelli per il diario clinico, esami del sangue e test urine
 				for k in range(0,len(results)):
+					#fa un check su tutti gli assignment e poi va a prendere quelli di interesse
 					if results[k]["deviceHardwareId"] in devices_ids:
+						#check su ogni device di interesse
+						if results[k]["deviceHardwareId"] == "iHealt_OpenApiBP_"+pat_id+"_REAL_DEVICE_ID":
+							#SERVONO PER CALCOLARE I VALORI MEDI
+							systolic_array = []
+							diastolic_array = []
+							json_resp_meas = self.mySitewhere.get_meaurements_by_assignment_token(results[k]["token"])
+							if json_resp_meas != "error_string":
+								dixt = json.loads(json_resp_meas)
+								dixt_res = dixt["results"]
+								print "**************"
+								print "pressione"
+								print "**************"
+								if len(dixt_res) == 0:
+									pass
+								else:
+									#print dixt_res[0]								
+									for j in range(0,len(dixt_res)):
+										event_date = dixt_res[j]["eventDate"]
+										day_date = event_date.split("T")
+										#date management
+										date = day_date[0]
+										date = date.split("-")
+										year = date[0]
+										month = date[1]
+										day = date[2]
+										day_time = day_date[1]
+										day_time = day_time.split(".")
+										day_time = day_time[0]
+										date_meas = datetime.date(int(year),int(month),int(day))
+										#########################
+										# chek on the date - OK!
+										# print date_meas
+										# print today
+										# print margin
+										# print today - margin
+										#########################					
+										if date_meas >= (today-margin) and date_meas <= today: #da controllare questa riga
+											systolic = dixt_res[j]["measurements"]["systolic"]
+											diastolic = dixt_res[j]["measurements"]["diastolic"]
+											#PER FARE LA MEDIA
+											systolic_array.append(systolic)
+											diastolic_array.append(diastolic)
+											#QUESTA PARTE RISULTEREBBE PIU' UTILE PER I GRAFICI
+											value_dict = {"eventDate":event_date,"systolic":systolic,"diastolic":diastolic}
+											value_json = json.dumps(value_dict)
+											pressione.append(value_json)
+									print "*****"
+									#######################################################################################################
+									#######################################################################################################
+									# PUNTO IN CUI VIENE FATTA LA MEDIA
+									#######################################################################################################
+									#######################################################################################################
+									mean_systolic = float(sum(systolic_array)/len(systolic_array))
+									mean_diastolic = float(sum(diastolic_array)/len(diastolic_array))
+									json_result_mean = json.dumps({"mean_systolic":str(mean_systolic),"mean_diastolic":str(mean_diastolic)})
+									print json_result_mean
+									#print pressione
+							else:
+								raise cherrypy.HTTPError(400, "error")
+						
+						elif results[k]["deviceHardwareId"] == "iHealt_OpenApiBG_"+pat_id+"_REAL_DEVICE_ID":
+							json_resp_meas = self.mySitewhere.get_meaurements_by_assignment_token(results[k]["token"])
+							if json_resp_meas != "error_string":
+								dixt = json.loads(json_resp_meas)
+								dixt_res = dixt["results"]
+								print "**************"
+								print "glicemia"
+								print "**************"
+								if len(dixt_res) == 0:
+									pass
+								else:
+									print dixt_res[0]
+							else:
+								raise cherrypy.HTTPError(400, "error")
+						elif results[k]["deviceHardwareId"] == "iHealt_OpenApiSpO2_"+pat_id+"_REAL_DEVICE_ID":
+							json_resp_meas = self.mySitewhere.get_meaurements_by_assignment_token(results[k]["token"])
+							if json_resp_meas != "error_string":
+								dixt = json.loads(json_resp_meas)
+								dixt_res = dixt["results"]
+								print "**************"
+								print "spo2"
+								print "**************"
+								if len(dixt_res) == 0:
+									pass
+								else:
+									print dixt_res[0]
+							else:
+								raise cherrypy.HTTPError(400, "error")
+						elif results[k]["deviceHardwareId"] == "iHealt_OpenApiWeight_"+pat_id+"_REAL_DEVICE_ID":
+							json_resp_meas = self.mySitewhere.get_meaurements_by_assignment_token(results[k]["token"])
+							if json_resp_meas != "error_string":
+								dixt = json.loads(json_resp_meas)
+								dixt_res = dixt["results"]
+								print "**************"
+								print "massa"
+								print "**************"
+								if len(dixt_res) == 0:
+									pass
+								else:
+									print dixt_res[0]
+							else:
+								raise cherrypy.HTTPError(400, "error")
+						else:
+							pass
 						#se il device id e' nei selezionati allora lo prende e gli accoppia l'assignment token
 						tokens.append({"device_id":results[k]["deviceHardwareId"],"assignment_token":results[k]["token"]})
+
 				
 				#queste tre righe non servono perche deve prendere anche i dati prima
 				response = json.dumps(tokens,indent=4, sort_keys=True)
+				print "**************"
 				print response
-				return response
+				
+				
 			else:
 				raise cherrypy.HTTPError(400, "error")
 
@@ -813,9 +905,6 @@ class TestDiarioClinico(object):
 		self.url = self.my_dict["sitewhere"]["url"]
 		#il tenant e' lo stesso creato da giuseppe
 		self.tenant_token = self.my_dict["sitewhere"]["tenant_token"]
-		self.tenant_id=self.my_dict["sitewhere"]["tenant_id"]
-		self.tenant_name=self.my_dict["sitewhere"]["tenant_name"]
-		self.tenant_logo=self.my_dict["sitewhere"]["tenant_logo"]
 		self.auth=(self.my_dict["sitewhere"]["auth"]["username"], self.my_dict["sitewhere"]["auth"]["password"])
 
 		#In realta' la riga sotto non e' necessaria perche' e' inclusa in ogni metodo della classe SitewhereManager
@@ -845,9 +934,9 @@ class TestDiarioClinico(object):
 		self.db_sitewhere = self.my_dict["mongo"]["db_sitewhere"]
 		self.db_utils = self.my_dict["mongo"]["db_utils"]
 
-		#To read config_file
+	#To read config_file
 	def get_config_file(self):
-		myfile = open("config.json","r")
+		myfile = open("config2.json","r")
 		stringa = myfile.read()
 		dictionary = json.loads(stringa)
 		myfile.close()
@@ -916,9 +1005,6 @@ class TestServer(object):
 		self.url = self.my_dict["sitewhere"]["url"]
 		#il tenant e' lo stesso creato da giuseppe
 		self.tenant_token = self.my_dict["sitewhere"]["tenant_token"]
-		self.tenant_id=self.my_dict["sitewhere"]["tenant_id"]
-		self.tenant_name=self.my_dict["sitewhere"]["tenant_name"]
-		self.tenant_logo=self.my_dict["sitewhere"]["tenant_logo"]
 		self.auth=(self.my_dict["sitewhere"]["auth"]["username"], self.my_dict["sitewhere"]["auth"]["password"])
 
 		#In realta' la riga sotto non e' necessaria perche' e' inclusa in ogni metodo della classe SitewhereManager
@@ -948,9 +1034,9 @@ class TestServer(object):
 		self.db_sitewhere = self.my_dict["mongo"]["db_sitewhere"]
 		self.db_utils = self.my_dict["mongo"]["db_utils"]
 
-		#To read config_file
+	#To read config_file
 	def get_config_file(self):
-		myfile = open("config.json","r")
+		myfile = open("config2.json","r")
 		stringa = myfile.read()
 		dictionary = json.loads(stringa)
 		myfile.close()

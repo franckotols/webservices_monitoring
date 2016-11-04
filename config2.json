@@ -1,0 +1,39 @@
+{
+	"sitewhere":{
+		
+		"url":"http://giupe.webfactional.com/sitewhere/api",
+		"tenant_token":"IoT_Smart_Health_tenant_token",
+		
+		"auth":{		
+			"username":"giuseppe",		
+			"password":"francesco"
+		},
+
+		"sites":{
+			"pat_site_token":"IOTREMOTEDISEASESMONITORING_site_token_ID",
+			"med_site_token":"PHYS_APPS_MSGS_site_token"
+		},
+
+		"assets":{
+			"pat_asset_id":"PATIENT_LIST_asset_id",
+			"pat_asset_name":"Patients List",
+			"med_asset_id":"PHYSICIAN_LIST_asset_id",
+			"med_asset_name":"Physicians List",
+			"device_asset_id":"PHYSICIAN_APPLICATION_asset_id",
+			"device_asset_name":"",
+			"app_asset_id":"PHYSICIAN_APPLICATION_ASSET_ID"
+		},
+
+		"tokens":{
+			"app_specification_token":"Specification_token_physician_application"
+		}
+
+
+	},
+
+	"mongo":{
+		"db_sitewhere":"tenant-default",
+		"db_utils":"utils"
+	}
+
+}
