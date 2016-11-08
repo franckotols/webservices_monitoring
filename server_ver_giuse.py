@@ -145,9 +145,13 @@ class RegistrationServer(object):
 				#--------------------------------------------------------------------------------------------------
 				# POST REQUEST: Registrazione del medico, del device e dell'assignment tra medico e device
 				#--------------------------------------------------------------------------------------------------
+				#questa funzione serve per creare la prima volta l'asset e la specification relativi all'applicazione del medico
+				#se esistono gia' non dovrebbe succedere niente
+				self.mySitewhere.init_asset_specification(self.device_asset_id,self.asset_app_id,self.app_specification_token)
+				self.mySitewhere.create_command(self.app_specification_token)
 				nuovo_medico = self.mySitewhere.post_new_person_asset(self.asset_med_id, med_id, med_name, imm_url, properties, med_username, email)
 				print nuovo_medico
-				if nuovo_medico != "error_string":
+				if nuovo_medico != "error_string":					
 					count = count+1
 					nuovo_device = self.mySitewhere.post_device(hardware_id, self.med_site_token, self.app_specification_token, comments)
 					print nuovo_device
@@ -720,6 +724,8 @@ class TestParametri(object):
 			spo2 = []
 			glicemia = []
 
+
+
 			####################################
 			# GESTIONE DELLA DATA
 			####################################
@@ -735,7 +741,7 @@ class TestParametri(object):
 			elif mean_interval == "three_weeks":
 				days = 21
 			elif mean_interval == "one_month":
-				days = 30
+				days = 31
 			margin = datetime.timedelta(days = days)
 			print margin
 
@@ -810,15 +816,23 @@ class TestParametri(object):
 									# PUNTO IN CUI VIENE FATTA LA MEDIA
 									#######################################################################################################
 									#######################################################################################################
-									mean_systolic = float(sum(systolic_array)/len(systolic_array))
-									mean_diastolic = float(sum(diastolic_array)/len(diastolic_array))
-									json_result_mean = json.dumps({"mean_systolic":str(mean_systolic),"mean_diastolic":str(mean_diastolic)})
-									print json_result_mean
-									#print pressione
+									#controllo sulla dimensione del vettore pressione, se e' vuoto deve poter dire alla app che non ci sono 
+									#valori da mediare 
+									if len(pressione)>0:
+										mean_systolic = float(sum(systolic_array)/len(systolic_array))
+										mean_diastolic = float(sum(diastolic_array)/len(diastolic_array))
+										json_result_mean = json.dumps({"mean_systolic":str(mean_systolic),"mean_diastolic":str(mean_diastolic)})
+										print json_result_mean
+										#print pressione
+									else:
+										json_result_mean = json.dumps({"mean_systolic":"no_values","mean_diastolic":"no_values"})
+										print json_result_mean
+										#print pressione
+
 							else:
 								raise cherrypy.HTTPError(400, "error")
 						
-						elif results[k]["deviceHardwareId"] == "iHealt_OpenApiBG_"+pat_id+"_REAL_DEVICE_ID":
+						elif results[k]["deviceHardwareId"] == "iHealt_OpenApiBG_"+pat_id+"_REAL_DEVICE_ID":							
 							json_resp_meas = self.mySitewhere.get_meaurements_by_assignment_token(results[k]["token"])
 							if json_resp_meas != "error_string":
 								dixt = json.loads(json_resp_meas)
@@ -830,9 +844,11 @@ class TestParametri(object):
 									pass
 								else:
 									print dixt_res[0]
+									#NON SONO STATE ANCORA PRESE MISURE SULLA GLICEMIA
 							else:
 								raise cherrypy.HTTPError(400, "error")
 						elif results[k]["deviceHardwareId"] == "iHealt_OpenApiSpO2_"+pat_id+"_REAL_DEVICE_ID":
+							blood_oxygen_values_array = []
 							json_resp_meas = self.mySitewhere.get_meaurements_by_assignment_token(results[k]["token"])
 							if json_resp_meas != "error_string":
 								dixt = json.loads(json_resp_meas)
@@ -844,9 +860,61 @@ class TestParametri(object):
 									pass
 								else:
 									print dixt_res[0]
+									for j in range(0,len(dixt_res)):
+										event_date = dixt_res[j]["eventDate"]
+										day_date = event_date.split("T")
+										#date management
+										date = day_date[0]
+										date = date.split("-")
+										year = date[0]
+										month = date[1]
+										day = date[2]
+										day_time = day_date[1]
+										day_time = day_time.split(".")
+										day_time = day_time[0]
+										date_meas = datetime.date(int(year),int(month),int(day))
+										#########################
+										# chek on the date - OK!
+										# print date_meas
+										# print today
+										# print margin
+										# print today - margin
+										#########################					
+										if date_meas >= (today-margin) and date_meas <= today: #da controllare questa riga
+											blood_oxygen_value = dixt_res[j]["measurements"]["blood_oxygen_value"]
+											#Dovrebbe esserci pure la frequenza cardiaca
+											#PER FARE LA MEDIA
+											blood_oxygen_values_array.append(blood_oxygen_value)
+											#dovrebbe esserci pure per la frequenza cardiaca
+											#QUESTA PARTE RISULTEREBBE PIU' UTILE PER I GRAFICI
+											value_dict = {"eventDate":event_date,"blood_oxygen_array":blood_oxygen_value}
+											value_json = json.dumps(value_dict)
+											spo2.append(value_json)
+
+									print "*****"
+									#######################################################################################################
+									#######################################################################################################
+									# PUNTO IN CUI VIENE FATTA LA MEDIA
+									#######################################################################################################
+									#######################################################################################################
+									#controllo sulla dimensione del vettore pressione, se e' vuoto deve poter dire alla app che non ci sono 
+									#valori da mediare 
+									if len(spo2)>0:
+										mean_blood_oxygen = float(sum(blood_oxygen_values_array)/len(blood_oxygen_values_array))
+										#dovrebbe esserci anche per la frequenza cardiaca
+										json_result_mean = json.dumps({"mean_blood_oxygen":str(mean_blood_oxygen)})
+										print json_result_mean
+										#print spo2
+									else:
+										json_result_mean = json.dumps({"mean_blood_oxygen":"no_values"})
+										print json_result_mean
+										#print spo2
+
 							else:
 								raise cherrypy.HTTPError(400, "error")
 						elif results[k]["deviceHardwareId"] == "iHealt_OpenApiWeight_"+pat_id+"_REAL_DEVICE_ID":
+							weight_array = []
+							bmi_array = []
 							json_resp_meas = self.mySitewhere.get_meaurements_by_assignment_token(results[k]["token"])
 							if json_resp_meas != "error_string":
 								dixt = json.loads(json_resp_meas)
@@ -858,6 +926,55 @@ class TestParametri(object):
 									pass
 								else:
 									print dixt_res[0]
+									for j in range(0,len(dixt_res)):
+										event_date = dixt_res[j]["eventDate"]
+										day_date = event_date.split("T")
+										#date management
+										date = day_date[0]
+										date = date.split("-")
+										year = date[0]
+										month = date[1]
+										day = date[2]
+										day_time = day_date[1]
+										day_time = day_time.split(".")
+										day_time = day_time[0]
+										date_meas = datetime.date(int(year),int(month),int(day))
+										#########################
+										# chek on the date - OK!
+										# print date_meas
+										# print today
+										# print margin
+										# print today - margin
+										#########################					
+										if date_meas >= (today-margin) and date_meas <= today: #da controllare questa riga
+											weight_value = dixt_res[j]["measurements"]["weight"]
+											bmi_value = dixt_res[j]["measurements"]["BMI"]
+											#PER FARE LA MEDIA
+											weight_array.append(weight_value)
+											bmi_array.append(bmi_value)											
+											#QUESTA PARTE RISULTEREBBE PIU' UTILE PER I GRAFICI
+											value_dict = {"eventDate":event_date,"weight":weight_value,"BMI":bmi_value}
+											value_json = json.dumps(value_dict)
+											massa.append(value_json)
+
+									print "*****"
+									#######################################################################################################
+									#######################################################################################################
+									# PUNTO IN CUI VIENE FATTA LA MEDIA
+									#######################################################################################################
+									#######################################################################################################
+									#controllo sulla dimensione del vettore pressione, se e' vuoto deve poter dire alla app che non ci sono 
+									#valori da mediare 
+									if len(massa)>0:
+										mean_weight = float(sum(weight_array)/len(weight_array))
+										mean_bmi = float(sum(bmi_array)/len(bmi_array))
+										json_result_mean = json.dumps({"mean_weight":str(mean_weight),"mean_bmi":str(mean_bmi)})
+										print json_result_mean
+										#print massa
+									else:
+										json_result_mean = json.dumps({"mean_weight":"no_values", "mean_bmi":"no_values"})
+										print json_result_mean
+										#print massa
 							else:
 								raise cherrypy.HTTPError(400, "error")
 						else:
@@ -867,15 +984,179 @@ class TestParametri(object):
 
 				
 				#queste tre righe non servono perche deve prendere anche i dati prima
-				response = json.dumps(tokens,indent=4, sort_keys=True)
-				print "**************"
-				print response
+				#response = json.dumps(tokens,indent=4, sort_keys=True)
+				#print "**************"
+				#print response
 				
 				
 			else:
 				raise cherrypy.HTTPError(400, "error")
 
 
+
+	def PUT (self, * uri, ** params): 
+		pass
+
+	def DELETE (self, * uri, ** params):
+		pass
+
+
+#------------------------------------------------------------------------------------------------------------------------
+# Classe di Test mandare i dati utili per i grafici
+#------------------------------------------------------------------------------------------------------------------------
+class TestGrafici(object):
+	exposed = True
+
+	def __init__(self):
+
+		self.id = id
+		self.my_dict = self.get_config_file()
+		
+		self.url = self.my_dict["sitewhere"]["url"]
+		#il tenant e' lo stesso creato da giuseppe
+		self.tenant_token = self.my_dict["sitewhere"]["tenant_token"]
+		self.auth=(self.my_dict["sitewhere"]["auth"]["username"], self.my_dict["sitewhere"]["auth"]["password"])
+
+		#In realta' la riga sotto non e' necessaria perche' e' inclusa in ogni metodo della classe SitewhereManager
+		self.headers = {'X-Sitewhere-Tenant': self.tenant_token}
+
+		self.mySitewhere = SitewhereManager(self.url, self.tenant_token, self.auth)
+
+		#SITES
+		self.pat_site_token = self.my_dict["sitewhere"]["sites"]["pat_site_token"]
+		self.med_site_token = self.my_dict["sitewhere"]["sites"]["med_site_token"]
+		
+
+		#ASSET DEVICE
+		self.device_asset_id = self.my_dict["sitewhere"]["assets"]["device_asset_id"]
+
+		#ASSET MEDICI PROPERTIES
+		self.asset_med_id= self.my_dict["sitewhere"]["assets"]["med_asset_id"]
+		self.asset_med_name= self.my_dict["sitewhere"]["assets"]["med_asset_name"]
+		self.asset_app_id= self.my_dict["sitewhere"]["assets"]["app_asset_id"]
+		self.app_specification_token = self.my_dict["sitewhere"]["tokens"]["app_specification_token"]
+
+		#ASSET PAZIENTI PROPERTIES
+		self.asset_pat_id= self.my_dict["sitewhere"]["assets"]["pat_asset_id"]
+		self.asset_pat_name= self.my_dict["sitewhere"]["assets"]["pat_asset_name"]
+
+		#DataBase
+		self.db_sitewhere = self.my_dict["mongo"]["db_sitewhere"]
+		self.db_utils = self.my_dict["mongo"]["db_utils"]
+
+	#To read config_file
+	def get_config_file(self):
+		myfile = open("config2.json","r")
+		stringa = myfile.read()
+		dictionary = json.loads(stringa)
+		myfile.close()
+		return dictionary
+		
+		
+	def GET (self, *uri, **params):
+
+		print params
+		print params
+		tokens = []
+		pressione = []
+		massa = []
+		spo2 = []
+		glicemia = []
+
+		pat_id = "ptrgpp88l01c342z-giuseppe-petralia"
+		devices_ids = [
+			"iHealt_OpenApiWeight_"+pat_id+"_REAL_DEVICE_ID",
+			"iHealt_OpenApiSpO2_"+pat_id+"_REAL_DEVICE_ID",
+			"iHealt_OpenApiBP_"+pat_id+"_REAL_DEVICE_ID",
+			"iHealt_OpenApiBG_"+pat_id+"_REAL_DEVICE_ID"
+		]
+
+		json_resp = self.mySitewhere.get_assignment_associated_with_asset(self.asset_pat_id,pat_id)
+		if json_resp != "error_string":
+			mydict = json.loads(json_resp)
+			results = mydict["results"]
+			#va a prendere gli assignments relativi ai parametri
+			#ci saranno anche quelli per il diario clinico, esami del sangue e test urine
+			for k in range(0,len(results)):
+				#fa un check su tutti gli assignment e poi va a prendere quelli di interesse
+				if results[k]["deviceHardwareId"] in devices_ids:
+					#check su ogni device di interesse
+					if results[k]["deviceHardwareId"] == "iHealt_OpenApiBP_"+pat_id+"_REAL_DEVICE_ID":
+						json_resp_meas = self.mySitewhere.get_meaurements_by_assignment_token(results[k]["token"])
+						if json_resp_meas != "error_string":
+							dixt = json.loads(json_resp_meas)
+							dixt_res = dixt["results"]
+							for j in range(0,len(dixt_res)):
+								systolic = dixt_res[j]["measurements"]["systolic"]
+								diastolic = dixt_res[j]["measurements"]["diastolic"]
+								primaryDate = dixt_res[j]["eventDate"]
+								splitted_date1 = primaryDate.split(".")
+								secondaryDate = splitted_date1[0]
+								splitted_date2 = secondaryDate.split("T")
+								date = splitted_date2[0]
+								date = date.replace("-","/")
+								print "********"
+								print date
+								value_dict = {"eventDate":date,"systolic":systolic,"diastolic":diastolic}
+								#value_json = json.dumps(value_dict)
+								pressione.append(value_dict)
+						else:
+							raise cherrypy.HTTPError(400,"error")
+			print pressione
+			print len(pressione)
+			return json.dumps({"results":pressione})
+		else:
+			raise cherrypy.HTTPError(400,"error")
+
+			
+	def POST (self, * uri, ** params):
+		print params
+		print params
+		tokens = []
+		pressione = []
+		massa = []
+		spo2 = []
+		glicemia = []
+
+		pat_id = params["id_pat"]
+		devices_ids = [
+			"iHealt_OpenApiWeight_"+pat_id+"_REAL_DEVICE_ID",
+			"iHealt_OpenApiSpO2_"+pat_id+"_REAL_DEVICE_ID",
+			"iHealt_OpenApiBP_"+pat_id+"_REAL_DEVICE_ID",
+			"iHealt_OpenApiBG_"+pat_id+"_REAL_DEVICE_ID"
+		]
+
+		json_resp = self.mySitewhere.get_assignment_associated_with_asset(self.asset_pat_id,pat_id)
+		if json_resp != "error_string":
+			mydict = json.loads(json_resp)
+			results = mydict["results"]
+			#va a prendere gli assignments relativi ai parametri
+			#ci saranno anche quelli per il diario clinico, esami del sangue e test urine
+			for k in range(0,len(results)):
+				#fa un check su tutti gli assignment e poi va a prendere quelli di interesse
+				if results[k]["deviceHardwareId"] in devices_ids:
+					#check su ogni device di interesse
+					if results[k]["deviceHardwareId"] == "iHealt_OpenApiBP_"+pat_id+"_REAL_DEVICE_ID":
+						json_resp_meas = self.mySitewhere.get_meaurements_by_assignment_token(results[k]["token"])
+						if json_resp_meas != "error_string":
+							dixt = json.loads(json_resp_meas)
+							dixt_res = dixt["results"]
+							for j in range(0,len(dixt_res)):
+								systolic = dixt_res[j]["measurements"]["systolic"]
+								diastolic = dixt_res[j]["measurements"]["diastolic"]
+								primaryDate = dixt_res[j]["eventDate"]
+								splitted_date = primaryDate.split(".")
+								date = splitted_date[0]
+								print "********"
+								print date
+								value_dict = {"eventDate":event_date,"systolic":systolic,"diastolic":diastolic}
+								value_json = json.dumps(value_dict)
+								pressione.append(value_json)
+						else:
+							raise cherrypy.HTTPError(400,"error")
+			return json.dumps({"results":pressione})
+		else:
+			raise cherrypy.HTTPError(400,"error")
 
 	def PUT (self, * uri, ** params): 
 		pass
@@ -893,6 +1174,8 @@ class TestParametri(object):
 # volta per cercare i measurements che stanno sotto quel token e che sono stati fatti in quella data passata nei params.
 # Questo stesso iter dovrebbe essere seguito per i dati relativi agli esami del sangue. 
 #----------------------------------------------------------------------------------------------------------------------------
+
+
 
 class TestDiarioClinico(object):
 	exposed = True
@@ -994,66 +1277,6 @@ class TestDiarioClinico(object):
 	def DELETE (self, * uri, ** params):
 		pass
 
-class TestServer(object):
-	exposed = True
-
-	def __init__(self):
-
-		self.id = id
-		self.my_dict = self.get_config_file()
-		
-		self.url = self.my_dict["sitewhere"]["url"]
-		#il tenant e' lo stesso creato da giuseppe
-		self.tenant_token = self.my_dict["sitewhere"]["tenant_token"]
-		self.auth=(self.my_dict["sitewhere"]["auth"]["username"], self.my_dict["sitewhere"]["auth"]["password"])
-
-		#In realta' la riga sotto non e' necessaria perche' e' inclusa in ogni metodo della classe SitewhereManager
-		self.headers = {'X-Sitewhere-Tenant': self.tenant_token}
-
-		self.mySitewhere = SitewhereManager(self.url, self.tenant_token, self.auth)
-
-		#SITES
-		self.pat_site_token = self.my_dict["sitewhere"]["sites"]["pat_site_token"]
-		self.med_site_token = self.my_dict["sitewhere"]["sites"]["med_site_token"]
-		
-
-		#ASSET DEVICE
-		self.device_asset_id = self.my_dict["sitewhere"]["assets"]["device_asset_id"]
-
-		#ASSET MEDICI PROPERTIES
-		self.asset_med_id= self.my_dict["sitewhere"]["assets"]["med_asset_id"]
-		self.asset_med_name= self.my_dict["sitewhere"]["assets"]["med_asset_name"]
-		self.asset_app_id= self.my_dict["sitewhere"]["assets"]["app_asset_id"]
-		self.app_specification_token = self.my_dict["sitewhere"]["tokens"]["app_specification_token"]
-
-		#ASSET PAZIENTI PROPERTIES
-		self.asset_pat_id= self.my_dict["sitewhere"]["assets"]["pat_asset_id"]
-		self.asset_pat_name= self.my_dict["sitewhere"]["assets"]["pat_asset_name"]
-
-		#DataBase
-		self.db_sitewhere = self.my_dict["mongo"]["db_sitewhere"]
-		self.db_utils = self.my_dict["mongo"]["db_utils"]
-
-	#To read config_file
-	def get_config_file(self):
-		myfile = open("config2.json","r")
-		stringa = myfile.read()
-		dictionary = json.loads(stringa)
-		myfile.close()
-		return dictionary
-		
-		
-	def GET (self, *uri, **params):
-		pass
-		
-	def POST (self, * uri, ** params):
-		print params
-
-	def PUT (self, * uri, ** params): 
-		pass
-
-	def DELETE (self, * uri, ** params):
-		pass
 
 
 if __name__ == '__main__': 
@@ -1071,7 +1294,7 @@ if __name__ == '__main__':
 	cherrypy.tree.mount (Notifications(), '/notifications', conf)
 	cherrypy.tree.mount (TestParametri(), '/parametri', conf)
 	cherrypy.tree.mount (TestDiarioClinico(), '/diarioclinico', conf)
-	cherrypy.tree.mount (TestServer(), '/test',conf)
+	cherrypy.tree.mount (TestGrafici(), '/testgrafici', conf)
 	cherrypy.server.socket_host = '192.168.137.1'
 	cherrypy.config.update({'server.socket_port':9090})
 	cherrypy.engine.start()	

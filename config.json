@@ -40,7 +40,8 @@
 
 	"mongo":{
 		"db_sitewhere":"tenant-default",
-		"db_utils":"utils"
+		"db_utils":"utils",
+		"db_dialysis_diary":"dialysis_diary"
 	}
 
 }

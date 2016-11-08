@@ -33,6 +33,7 @@
 
 	"mongo":{
 		"db_sitewhere":"tenant-default",
+		"db_dialysis_diary":"dialysis_diary",
 		"db_utils":"utils"
 	}
 

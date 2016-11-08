@@ -20,11 +20,8 @@ class SitewhereManager(object):
 		self.id = id
 		
 		self.url = url
-		#il tenant e' lo stesso creato da giuseppe
 		self.tenant_token = tenant_token
 		self.auth= auth
-
-		#Interno a Sitewhere, non c'e' bisogno di inserirlo come parametro, e' sempre lo stesso
 		self.headers = {'X-Sitewhere-Tenant': self.tenant_token, "content-type":"application/json"}
 
 
@@ -262,6 +259,30 @@ class SitewhereManager(object):
 		except:
 			return "error_string"
 
+	def post_app_asset_device(self,id_category_devices):
+		post_url=self.url+"/assets/categories/"+id_category_devices+"/hardware"
+		print post_url
+		data = {
+			"id": "PHYSICIAN_APPLICATION_ASSET_ID",
+			"name": "Monitoring App Android",
+			"imageUrl": "http://clok.contrarium.net/images/c/ce/Android.png",
+			"properties": {"type":"hardware"},
+			"sku": "MED-APP",
+			"description": "Applicazione software utilizzata dal medico per il monitoraggio dei parametri dei pazienti, in grado di inviare notifiche."
+		}
+
+		data = json.dumps(data, indent=4, sort_keys=True)
+		data = str(data)
+		print data
+		try:
+			r = requests.post(post_url, data=data, headers=self.headers, auth=self.auth)
+			result = r.text
+			result = json.loads(result)
+			result = json.dumps(result, indent=4, sort_keys=True)
+			return result
+		except:
+			return "error_string"
+
 	def post_new_person_asset(self, id_category_persons, id_person, name, image_url, properties, username, email):
 		post_url=self.url+"/assets/categories/"+id_category_persons+"/persons"
 		print post_url
@@ -309,6 +330,50 @@ class SitewhereManager(object):
 			return result
 		except:
 			return "error_string"
+
+##########################################################################################################
+# PARTE DELLA LIBRERIA UTILE PER L'INIZIALIZZAZIONE DELL'ASSET E DELLA SPECIFICATION PER L'APPLICAZIONE 
+# DEL MEDICO
+##########################################################################################################
+
+	def init_asset_specification(self,id_category_devices,asset_id,specification_token):
+		url_asset=self.url+"/assets/categories/"+id_category_devices+"/hardware"
+		data_asset = {
+			"id": asset_id,
+			"name": "Monitoring App Android",
+			"imageUrl": "http://clok.contrarium.net/images/c/ce/Android.png",
+			"properties": {"type":"hardware"},
+			"sku": "MED-APP",
+			"description": "Applicazione software utilizzata dal medico per il monitoraggio dei parametri dei pazienti, in grado di inviare notifiche."
+		}
+		url_spec=self.url+"/specifications"
+		data_specification = {
+			"name" : "Physician App Specification",
+			"assetModuleId" : id_category_devices,
+			"assetId" : asset_id,
+			"containerPolicy" : "Standalone",
+			"token":specification_token
+		}
+
+		data_asset = json.dumps(data_asset, indent=4, sort_keys=True)
+		data_asset = str(data_asset)
+		r_asset = requests.post(url_asset, data=data_asset, headers=self.headers, auth=self.auth)
+
+		data_specification = json.dumps(data_specification, indent=4, sort_keys=True)
+		data_specification = str(data_specification)
+		r_specification = requests.post(url_spec, data=data_specification, headers=self.headers, auth=self.auth)
+
+	def create_command(self,specification_token):
+		post_url = self.url+"/specifications/"+specification_token+"/commands"
+		data = {
+			"name": "comm_physician"
+		}
+
+		data = json.dumps(data, indent=4, sort_keys=True)
+		data = str(data)
+		r = requests.post(post_url, data=data, headers=self.headers, auth=self.auth)
+
+		
 
 	def post_device(self, hardwareId, siteToken, specificationToken, comments):
 		post_url=self.url+"/devices"

@@ -1,0 +1,45 @@
+
+Date d1,d2,d3,d4,d5;
+
+
+
+/*
+         * Test di inserimento dati
+         */
+        String ds1 = "06/11/2016";
+        String ds2 = "06/12/2016";
+        String ds3 = "06/13/2016";
+        String ds4 = "06/14/2016";
+        String ds5 = "06/15/2016";
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+        try {
+            d1 = format.parse(ds1);
+            d2 = format.parse(ds2);
+            d3 = format.parse(ds3);
+            d4 = format.parse(ds4);
+            d5 = format.parse(ds5);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+        series = new LineGraphSeries<>(new DataPoint[]{
+                new DataPoint(d1,12),
+                new DataPoint(d2,13),
+                new DataPoint(d3,11),
+                new DataPoint(d4,14),
+                new DataPoint(d5,17)
+        });
+        graph.addSeries(series);
+        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(MainActivity.this));
+
+        graph.getGridLabelRenderer().setNumHorizontalLabels(5);
+        graph.getViewport().setMinX(d1.getTime());
+        graph.getViewport().setMaxX(d5.getTime());
+        graph.getViewport().setMinY(11);
+        graph.getViewport().setMaxY(17);
+        graph.getViewport().setXAxisBoundsManual(true);
+
+// as we use dates as labels, the human rounding to nice readable numbers
+// is not necessary
+        graph.getGridLabelRenderer().setHumanRounding(false);

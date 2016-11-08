@@ -148,9 +148,13 @@ class RegistrationServer(object):
 				#--------------------------------------------------------------------------------------------------
 				# POST REQUEST: Registrazione del medico, del device e dell'assignment tra medico e device
 				#--------------------------------------------------------------------------------------------------
+				#questa funzione serve per creare la prima volta l'asset e la specification relativi all'applicazione del medico
+				#se esistono gia' non dovrebbe succedere niente
+				self.mySitewhere.init_asset_specification(self.device_asset_id,self.asset_app_id,self.app_specification_token)
+				self.mySitewhere.create_command(self.app_specification_token)
 				nuovo_medico = self.mySitewhere.post_new_person_asset(self.asset_med_id, med_id, med_name, imm_url, properties, med_username, email)
 				print nuovo_medico
-				if nuovo_medico != "error_string":
+				if nuovo_medico != "error_string":					
 					count = count+1
 					nuovo_device = self.mySitewhere.post_device(hardware_id, self.med_site_token, self.app_specification_token, comments)
 					print nuovo_device
@@ -162,7 +166,7 @@ class RegistrationServer(object):
 							count=count+1
 				#--------------------------------------------------------------------------------------------------
 				# POST REQUEST: Se tutti e tre i passi sono andati a buon fine....
-				#--------------------------------------------------------------------------------------------------			
+				#--------------------------------------------------------------------------------------------------					
 				if count == 3:
 					return "Registration successful"
 				else:
@@ -441,9 +445,11 @@ class SearchPatientServer(object):
 				
 				first_name = dixt['results'][i]['properties']['name']
 				last_name = dixt['results'][i]['properties']['last name']
-				user_diseases = dixt['results'][i]['properties']['user_disease']
+				str_diseases = dixt['results'][i]['properties']['diseases']
+				diseases = json.loads(str_diseases)
+				user_diseases = diseases["diseases_list"]
 				name = first_name+" "+last_name
-				user_diseases = user_diseases.split(", ")
+				#user_diseases = user_diseases.split(", ")
 				print "*************"
 				print name
 				print user_diseases
@@ -791,15 +797,17 @@ class TestParametri(object):
 	def DELETE (self, * uri, ** params):
 		pass
 
+
 #----------------------------------------------------------------------------------------------------------------------------
 # Classe di Test per la gestione dei dati del diario clinico.
 # La POST riceve come parametri l'id del paziente e la data in cui si vuole vedere il diario clinico. L'id del diario
 # clinico del paziente viene creato in automatico perche' si presume sia sempre lo stesso, ovvero id-paziente-diario-clinico.
-# Una volta ricevuti i parametri nella POST viene richiamata una GET a sitewhere per ottenere tutti gli assignments fatti per
+# SE FOSSE SU SITEWHERE -> Una volta ricevuti i parametri nella POST viene richiamata una GET a sitewhere per ottenere tutti gli assignments fatti per
 # quel site, e si va a cercare il token dell'assignment che ha come hardwareID il diario clinico e come assetID quello del 
 # paziente(deve essere uguale a quello ricevuto come param). Una volta trovato il token ci sara' un ulteriore GET, questa 
 # volta per cercare i measurements che stanno sotto quel token e che sono stati fatti in quella data passata nei params.
 # Questo stesso iter dovrebbe essere seguito per i dati relativi agli esami del sangue. 
+# SICCOME NON E' SU SITEWHERE -> si va direttamente a interrogare mongo
 #----------------------------------------------------------------------------------------------------------------------------
 
 class TestDiarioClinico(object):
@@ -843,7 +851,9 @@ class TestDiarioClinico(object):
 
 		#DataBase
 		self.db_sitewhere = self.my_dict["mongo"]["db_sitewhere"]
+		self.db_dialysis_diary = self.my_dict["mongo"]["db_dialysis_diary"]
 		self.db_utils = self.my_dict["mongo"]["db_utils"]
+
 
 		#To read config_file
 	def get_config_file(self):
@@ -855,47 +865,34 @@ class TestDiarioClinico(object):
 		
 		
 	def GET (self, *uri, **params):
-		pass
+		#GET PER IL TESTING
+		pat_id = "rssplo88c18c342q-paolo-rossi"
+		client = MongoClient()
+		client = MongoClient('localhost', 27017)
+		db = client[self.db_dialysis_diary]
+		collection = db['dp_diaries']
+		#events = collection.find()
+		measurements_dp = collection.find({'userId':pat_id})
+		for k in measurements_dp:
+			print "*************"
+			print k["request"]["eventDate"]
+			print k["request"]["measurements"]
 				
 		
 	def POST (self, * uri, ** params):
 
-		selected = ""
-
 		print params
-		pat_id = params["pat_id"]
-		dev_id = pat_id+"-diario-clinico"
-		date = params["date"]
-		token = ""
-		response = self.mySitewhere.get_assignment_associated_with_asset(self.pat_asset_id,pat_id)
-		print response
-		# if response != "error_string":
-		# 	mydict = json.loads(response)
-		# 	assignments = mydict["results"]
-		# 	for k in assignments:
-		# 		if k["assetId"] == pat_id and k["deviceHardwareId"] == dev_id:
-		# 			token = k["token"]
-		# 			print token
-		# 			break
-		# 	if token == "":
-		# 		return "no_token"
-		# 	else:
-		# 		json_resp = self.mySitewhere.get_meaurements_by_assignment_token(token)
-		# 		print json_resp
-		# 		mydict = json.loads(json_resp)
-		# 		measurements = mydict["results"]
-		# 		for j in range(0,len(measurements)):
-		# 			date_meas = measurements[j]["metadata"]["treatment_data"]
-		# 			print date_meas
-		# 			print date
-		# 			if date_meas == date:
-		# 				selected = json.dumps(measurements[j]["measurements"], indent=4, sort_keys=True)
-		# 				return selected
-		# 				break
-		# 			else:
-		# 				raise cherrypy.HTTPError(400,"no_measurements")
-		# else:
-		# 	raise cherrypy.HTTPError(400, "no_connection")
+		pat_id = params["pat_id"] #da mandare con l'applicazione
+		#VALUTARE SE E' UTILE UN PARAMETRO PER DISCRIMINARE TRA DIALISI PERITONEALE E EMODIALISI. Credo che sia la 
+		#cosa migliore, per non avere due servizi web del diario e uno degli esami del sangue
+		client = MongoClient()
+		client = MongoClient('localhost', 27017)
+		db = client[self.db_dialysis_diary]
+		collection = db['dp_diaries']
+		#events = collection.find()
+		event = collection.find({'userId':pat_id})
+
+		
 
 
 			
@@ -905,7 +902,13 @@ class TestDiarioClinico(object):
 	def DELETE (self, * uri, ** params):
 		pass
 
-class TestServer(object):
+#----------------------------------------------------------------------------------------------------------------------------
+# Classe di Test per la gestione dei dati degli esami del sangue
+# GET utilizzata per il test
+# la POST prendera' come params l'id del paziente e la data
+#----------------------------------------------------------------------------------------------------------------------------
+
+class TestEsamiSangue(object):
 	exposed = True
 
 	def __init__(self):
@@ -946,7 +949,9 @@ class TestServer(object):
 
 		#DataBase
 		self.db_sitewhere = self.my_dict["mongo"]["db_sitewhere"]
+		self.db_dialysis_diary = self.my_dict["mongo"]["db_dialysis_diary"]
 		self.db_utils = self.my_dict["mongo"]["db_utils"]
+
 
 		#To read config_file
 	def get_config_file(self):
@@ -958,11 +963,33 @@ class TestServer(object):
 		
 		
 	def GET (self, *uri, **params):
-		pass
+		#GET PER IL TESTING
+		pat_id = "rssplo88c18c342q-paolo-rossi"
+		client = MongoClient()
+		client = MongoClient('localhost', 27017)
+		db = client[self.db_dialysis_diary]
+		collection = db['blood_test_diaries']
+		#events = collection.find()
+		measurements_dp = collection.find({'userId':pat_id})
+		for k in measurements_dp:
+			print "*************"
+			print k["request"]["eventDate"]
+			print k["request"]["measurements"]
+				
 		
 	def POST (self, * uri, ** params):
-		print params
 
+		print params
+		pat_id = params["pat_id"] #da mandare con l'applicazione
+		#VALUTARE SE E' UTILE UN PARAMETRO PER DISCRIMINARE TRA DIALISI PERITONEALE E EMODIALISI. Credo che sia la 
+		#cosa migliore, per non avere due servizi web del diario e uno degli esami del sangue
+		client = MongoClient()
+		client = MongoClient('localhost', 27017)
+		db = client[self.db_dialysis_diary]
+		collection = db['blood_test_diaries']
+		#events = collection.find()
+		event = collection.find({'userId':pat_id})
+			
 	def PUT (self, * uri, ** params): 
 		pass
 
@@ -985,7 +1012,7 @@ if __name__ == '__main__':
 	cherrypy.tree.mount (Notifications(), '/notifications', conf)
 	cherrypy.tree.mount (TestParametri(), '/parametri', conf)
 	cherrypy.tree.mount (TestDiarioClinico(), '/diarioclinico', conf)
-	cherrypy.tree.mount (TestServer(), '/test',conf)
+	cherrypy.tree.mount (TestEsamiSangue(), '/esamisangue', conf)
 	cherrypy.server.socket_host = '192.168.137.1'
 	cherrypy.config.update({'server.socket_port':9090})
 	cherrypy.engine.start()	
