@@ -443,15 +443,16 @@ class SitewhereManager(object):
 		except:
 			return "error_string"
 
-	def send_alert_assign_token(self, assign_token, message, alert_type):
+	def send_alert_assign_token(self, assign_token, message, alert_type, metadata):
 		post_url = self.url+"/assignments/"+assign_token+"/alerts"
 		data = {
 			"eventDate" : "",
 			"message": message,
-			"type": alert_type
+			"type": alert_type,
+			"metadata": metadata
 		}
 		data = json.dumps(data, indent=4, sort_keys=True)
-		data = str(data)
+		
 		print data
 		try:
 			r = requests.post(post_url, data=data, headers=self.headers, auth=self.auth)

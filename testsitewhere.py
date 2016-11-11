@@ -267,11 +267,10 @@ class testSitewhere(object):
 		post_url = self.url+"/assignments/a85f0c26-1c7a-47d1-918d-b1f56254640e/alerts"
 		data = {
 			"eventDate" : "",
-			"message": "Il paziente Giuseppe Petralia dovrebbe stare attento alle sue emorroidi",
+			"message": "prova con altri metadata",
 			"type": "phy-message",
 			"metadata":{
-				"patient_id": "ptrgpp88l01c342z-giuseppe-petralia",
-				"is_message": "yes"
+				"patient_id": "ptrgpp88l01c342z-giuseppe-petralia"
 			}
 		}
 		data = json.dumps(data, indent=4, sort_keys=True)
@@ -457,6 +456,108 @@ class testSitewhere(object):
 		result = json.dumps(result, indent=4, sort_keys=True)
 		return result
 
+	def initialize_giupe_sitewhere_with_patients(self):
+		#Questa funzione mi serve per inserire manualmente e con un solo click alcuni pazienti fittizzi che mi servono
+		#per la gestione del diario clinico, test delle urine e degli esami del sangue. I pazienti saranno tre:
+		# - uno che ha nelle diseases Dialisi Peritoneale e esami del sangue, quindi mi servira' come esempio per il diario
+		#   della peritoneale
+		# - uno che ha nelle diseases Trapiantato e Test Urine, quindi mi servira' come esempio per il test
+		#   delle urine
+		# - uno che ha nelle diseases Emodialisi e esami del sangue, quindi mi servira' come esempio per il diario
+		#   dell'emodialisi
+
+		post_url=self.url+"/assets/categories/PATIENT_LIST_asset_id/persons"
+		print post_url
+		data1 = {
+			"id": "rssplo88c18c342q-paolo-rossi",
+			"name": "PAOLO ROSSI",
+			"imageUrl": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQB4dVacA67gn_f0CQ1YMZ-cqDucluN1pPoXnEGR1NCa4rutI76",
+			"properties": 
+				{
+					"TAX code":"rssplo88c18c342q",
+					"name":"Paolo",
+					"last name":"Rossi",
+					"address":"corso Ferrucci 67",
+					"city":"Torino",
+					"sex":"Male",
+					"diseases":"{\"diseases_list\":[\"Dialisi Peritoneale\",\"Esami del sangue\"]}",
+					"birthdate":"18/3/1985",
+					"phone":"3331231543",
+					"ZIP code":"10143"
+				},
+			"userName": "paolo_rossi",
+			"emailAddress": "paolorossi@mail.com",
+			"roles":[""]
+		}
+
+		data2 = {
+			"id": "fbavrd82a01l219d-fabio-verdi",
+			"name": "FABIO VERDI",
+			"imageUrl": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQB4dVacA67gn_f0CQ1YMZ-cqDucluN1pPoXnEGR1NCa4rutI76",
+			"properties": 
+				{
+					"TAX code":"fbavrd82a01l219d",
+					"name":"Fabio",
+					"last name":"Verdi",
+					"address":"via filadelfia 123",
+					"city":"Torino",
+					"sex":"Male",
+					"diseases":"{\"diseases_list\":[\"Emodialisi\",\"Esami del sangue\"]}",
+					"birthdate":"01/1/1982",
+					"phone":"3331198743",
+					"ZIP code":"10173"
+				},
+			"userName": "fabio_verdi",
+			"emailAddress": "fabioverdi@mail.com",
+			"roles":[""]
+		}
+
+		data3 = {
+			"id": "gvnsnn81e19h501w-giovanni-sanna",
+			"name": "GIOVANNI SANNA",
+			"imageUrl": "https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcQB4dVacA67gn_f0CQ1YMZ-cqDucluN1pPoXnEGR1NCa4rutI76",
+			"properties": 
+				{
+					"TAX code":"gvnsnn81e19h501w",
+					"name":"Giovanni",
+					"last name":"Sanna",
+					"address":"via cagliari 12",
+					"city":"Roma",
+					"sex":"Male",
+					"diseases":"{\"diseases_list\":[\"Trapianto\",\"Test delle Urine\"]}",
+					"birthdate":"19/9/1981",
+					"phone":"3313431543",
+					"ZIP code":"10143"
+				},
+			"userName": "giovanni_sanna",
+			"emailAddress": "giovannisanna@mail.com",
+			"roles":[""]
+		}
+
+		data1 = json.dumps(data1, indent=4, sort_keys=True)
+		data1 = str(data1)
+		r1 = requests.post(post_url, data=data1, headers=self.headers, auth=self.auth)
+		result1 = r1.content
+		result1 = json.loads(result1)
+		result1 = json.dumps(result1, indent=4, sort_keys=True)
+		print result1
+		#############################################
+		data2 = json.dumps(data2, indent=4, sort_keys=True)
+		data2 = str(data2)
+		r2 = requests.post(post_url, data=data2, headers=self.headers, auth=self.auth)
+		result2 = r2.content
+		result2 = json.loads(result2)
+		result2 = json.dumps(result2, indent=4, sort_keys=True)
+		print result2
+		###############################################################
+		data3 = json.dumps(data3, indent=4, sort_keys=True)
+		data3 = str(data3)
+		r3 = requests.post(post_url, data=data3, headers=self.headers, auth=self.auth)
+		result3 = r3.content
+		result3 = json.loads(result3)
+		result3 = json.dumps(result3, indent=4, sort_keys=True)
+		print result3
+
 
 
 if __name__ == "__main__":
@@ -487,6 +588,7 @@ if __name__ == "__main__":
 	print "21 - send_measurement_diario_clinico"
 	print "22 - get_assignmets_in_sites"
 	print "23 - get_assignment_associated_with_asset"
+	print "24 - initialize_giupe_sitewhere_with_patients"
 	while True:
 		comm = raw_input("Insert command: ")
 		if comm == "1":
@@ -561,6 +663,9 @@ if __name__ == "__main__":
 		elif comm == "23":
 			assignments = test.get_assignment_associated_with_asset()
 			print assignments
+		elif comm == "24":
+			test.initialize_giupe_sitewhere_with_patients()
+
 
 			
 		
