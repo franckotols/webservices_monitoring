@@ -253,12 +253,13 @@ class AuthenticationServer(object):
 		password = params["Password"]
 		username = toglispazi_startend(username)
 		password = toglispazi_startend(password)
+		physician_id = ""
 		
 		#---------------------------------------------------------------------------------------------------
 		# GET REQUEST TO: http://localhost:8080/sitewhere/api/assets/categories/lista_medici_asset_ID/assets
 		#---------------------------------------------------------------------------------------------------
 		lista_medici = self.mySitewhere.get_assets_categoryID_assets(self.asset_med_id)
-		#print lista_medici
+		print lista_medici
 		if lista_medici != "error_string":
 			dixt = json.loads(lista_medici)
 			medici = dixt['results']
@@ -266,11 +267,15 @@ class AuthenticationServer(object):
 
 			for i in range(0,(len(medici))):
 				if username == medici[i]["emailAddress"] and password == medici[i]["properties"]["password"]:
+					physician_id = medici[i]["id"]
+					print physician_id
 					flag = True
 					break
 
+
 			if flag == True:
-				return "login_succesful"
+				response = json.dumps({"results":{"status":"login_succesful", "physician_id":physician_id}})
+				return response
 				#
 			else:
 				raise cherrypy.HTTPError(400, "wrong_params")
@@ -1179,20 +1184,34 @@ class PhysicianMessageManagerWebService(object):
 	def POST (self, * uri, ** params):
 		
 		print params
-		pat_id = params["pat_id"]
-		
+		pat_id = params["pat_id"]		
 		message = params["message"]
+		physician_id = params["physician_id"]
 		metadata = {"patient_id":pat_id,"is_message":"yes"}
 		alert_type = "phy-message"
-		ass_token = "a85f0c26-1c7a-47d1-918d-b1f56254640e"
-		#prima mi servono gli assignment del site, in modo da prendere l'assign_token
-		#per ora lo metto manuale
-		request = self.mySitewhere.send_alert_assign_token(ass_token, message, alert_type, metadata)
-		if request != "error_string":
-			print request
-			return "good request"
+		assignment_token = ""
+
+		#RICERCA DELL'ASSIGNMENT TOKEN
+		dev_phy_id = physician_id+"-Android-App"
+		assignments_for_phy_sitewhere = self.mySitewhere.get_assignment_associated_with_asset(self.asset_med_id,physician_id)
+		if assignments_for_phy_sitewhere != "error_string":
+			dixt = json.loads(assignments_for_phy_sitewhere)
+			assignment_list = dixt['results']
+			flag = False
+			for i in range(0,(len(assignment_list))):
+				if assignment_list[i]["deviceHardwareId"]==dev_phy_id:
+					assignment_token = assignment_list[i]["token"]
+					flag = True
+					break
+			#INVIO DELL'ALERT A SITEWHERE DOPO AVER RICEVUTO UN MESSAGGIO COME STRINGA DALL'APPLICAZIONE
+			request = self.mySitewhere.send_alert_assign_token(assignment_token, message, alert_type, metadata)
+			if request != "error_string":
+				print request
+				return "good request"
+			else:
+				raise cherrypy.HTTPError(400,"error")
 		else:
-			raise cherrypy.HTTPError(400,"error")
+				raise cherrypy.HTTPError(400,"error")
 				
 	def PUT (self, * uri, ** params): 
 		pass
@@ -1212,7 +1231,7 @@ class PhysicianMessageManagerWebService(object):
 # SICCOME NON E' SU SITEWHERE -> si va direttamente a interrogare mongo
 #----------------------------------------------------------------------------------------------------------------------------
 
-class TestDiarioClinico(object):
+class DiaryDpWebService(object):
 	exposed = True
 
 	def __init__(self):
@@ -1267,6 +1286,8 @@ class TestDiarioClinico(object):
 		
 	def GET (self, *uri, **params):
 		#GET PER IL TESTING
+		values= []
+
 		pat_id = "rssplo88c18c342q-paolo-rossi"
 		client = MongoClient()
 		client = MongoClient('localhost', 27017)
@@ -1276,8 +1297,27 @@ class TestDiarioClinico(object):
 		measurements_dp = collection.find({'userId':pat_id})
 		for k in measurements_dp:
 			print "*************"
-			print k["request"]["eventDate"]
-			print k["request"]["measurements"]
+			#print k["request"]["eventDate"]
+			#print k["request"]["measurements"]
+			date_str = k["request"]["eventDate"]
+			#print date_str
+			measurements = k["request"]["measurements"]
+			conc = k["request"]["measurements"]["sameConcentration"]
+			gluco = k["request"]["measurements"]["glucose350_bags"]
+			#DATA IN UN FORMATO COMODO DA LEGGERE
+			date_str = date_str.split("T")
+			day_of_year = date_str[0]
+			date_str2 = date_str[1]
+			date_str2 = date_str2.split(".")
+			time_of_day = date_str2[0]
+			date = day_of_year+" "+time_of_day
+			json_object = {"eventDate":date,"measurements":measurements}
+			values.append(json_object)
+		values = values[::-1]
+		response = {"results":values}
+		print json.dumps(response)
+		return json.dumps(response)
+		
 				
 		
 	def POST (self, * uri, ** params):
@@ -1453,23 +1493,7 @@ class UrinAnalysisProvider(object):
 		
 	def GET (self, *uri, **params):
 		#GET PER IL TESTING
-
-		values = []
-
-		pat_id = "gvnsnn81e19h501w-giovanni-sanna" #da mandare con l'applicazione
-		client = MongoClient()
-		client = MongoClient('localhost', 27017)
-		db = client["urinanalysis"]
-		collection = db[pat_id]
-		analysis = collection.find()
-		for k in analysis:
-			measurements = k["measurements"]
-			manufacturer = k["manufacturer"]
-			date = k["date"]
-			item = {"measurements":measurements, "date":str(date),"manufacturer":manufacturer}
-			values.append(json.dumps(item))
-		print values
-		return values
+		pass
 		
 	def POST (self, * uri, ** params):
 
@@ -1485,12 +1509,15 @@ class UrinAnalysisProvider(object):
 		analysis = collection.find()
 		for k in analysis:
 			measurements = k["measurements"]
+			print k["measurements"]["blo"]
 			manufacturer = k["manufacturer"]
 			date = k["date"]
 			item = {"measurements":measurements, "date":str(date),"manufacturer":manufacturer}
-			values.append(json.dumps(item))
-		print values
-		return values
+			values.append(item)
+		values = values[::-1]
+		response = {"results":values}
+		print json.dumps(response)
+		return json.dumps(response)
 
 		
 
@@ -1518,7 +1545,7 @@ if __name__ == '__main__':
 	cherrypy.tree.mount (SearchPatientServer(),	'/searchPatient',	conf)
 	cherrypy.tree.mount (Notifications(), '/notifications', conf)
 	cherrypy.tree.mount (ParametriValoriMedi(), '/parametri/valorimedi', conf)
-	cherrypy.tree.mount (TestDiarioClinico(), '/diarioclinico', conf)
+	cherrypy.tree.mount (DiaryDpWebService(), '/api/diaryDp', conf)
 	cherrypy.tree.mount (TestGrafici(), '/testgrafici', conf)
 	cherrypy.tree.mount (UrinAnalysisProvider(), '/api/urinanalysis',conf)
 	cherrypy.tree.mount (PhysicianMessageManagerWebService(), '/api/messagefromphysician',conf)

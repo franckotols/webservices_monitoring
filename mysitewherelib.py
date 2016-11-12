@@ -454,13 +454,13 @@ class SitewhereManager(object):
 		data = json.dumps(data, indent=4, sort_keys=True)
 		
 		print data
-		try:
-			r = requests.post(post_url, data=data, headers=self.headers, auth=self.auth)
+		r = requests.post(post_url, data=data, headers=self.headers, auth=self.auth)
+		if r.status_code == 200:
 			result = r.text
 			result = json.loads(result)
 			result = json.dumps(result, indent=4, sort_keys=True)
 			return result
-		except:
+		else:
 			return "error_string"
 
 	
