@@ -115,6 +115,7 @@ class SitewhereManager(object):
 		get_url = self.url+"/assets/modules/"+asset_module_id+"/assets/"+asset_id+"/assignments"
 		try:
 			r = s.get(get_url, headers=self.headers, auth=self.auth)
+
 			result = r.content
 			result = json.loads(result)
 			result = json.dumps(result, indent=4, sort_keys=True)
@@ -134,12 +135,43 @@ class SitewhereManager(object):
 		except:
 			return "error_string"
 
+	def get_measurements_series_by_assignment_token_measurementID(self,assign_token,measurementID,startDate,endDate):
+		s=requests.Session()
+		get_url=self.url+"/assignments/"+assign_token+"/measurements/series"
+		values = []
+		#inizializzo un numero alto in modo da avere pochi cicli		
+		isTerminated = False
+		while isTerminated == False:
+			size = 1000
+			param = {"pageSize":size, "startDate":startDate,"endDate":endDate,"measurementIds":measurementID}
+			r = s.get(get_url, headers=self.headers, auth=self.auth, params=param)
+			result = r.content
+			my_dict = json.loads(result)
+			if len(my_dict)==0:
+				break
+			if len(my_dict)>0:
+				entries = my_dict[0]["entries"]
+				if len(entries)==0:
+					isTerminated=True
+					break
+				if len(entries)<size:					
+					for i in range(0,len(entries)):
+						values.append(entries[i])
+					isTerminated = True										
+				else:
+					size = size+1000
+		result = {"entries":values}				
+		result = json.dumps(result, indent=4, sort_keys=True)
+		return result
+		
+		
+
 	def get_alerts_for_sites(self, site_token):
 		s=requests.Session()
 		get_url = self.url+"/sites/"+site_token+"/alerts"
 		try:
 			r = s.get(get_url, headers=self.headers, auth=self.auth)
-			result = r.content
+			result = r.content			
 			result = json.loads(result)
 			result = json.dumps(result, indent=4, sort_keys=True)
 			return result
