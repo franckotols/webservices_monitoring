@@ -1,0 +1,16 @@
+Giuseppe Petralia:
+#params={"physician_ID":"francesco-tolu-1881989", "api":"get_alerts_read_and_notread", "specs":{}}
+#params={"physician_ID":"francesco-tolu-1881989", "api":"change_alert_status", "specs":{"alert_id": "581cb277e4b07909421c69e3", "new_status": "not_read"}}
+#params={"physician_ID":"francesco-tolu-1881989", "api":"get_alert_info_from_alert_id", "specs":{"alert_ID":"581cb277e4b07909421c69e3"}}
+params={"physician_ID":"francesco-tolu-1881989", "api":"get_list_of_not_read_alerts", "specs":{}} 
+
+questi sono tre esempi di params
+ per tre diverse API
+ vanno messi al solito nella richiesta fatta coaddr="https://giupe.webfactional.com/health"
+sec=urllib.urlencode(params)
+s=requests.Session()
+r=s.get(addr,params=sec, verify=False)
+print ("STATUS CODE:\t"+str(r.status_code))
+print ("\nMESSAGE:\t"+str(r.content))sì
+ con l'unica differenza (se non ricordo male) che la seconda richesta si fa con una PUT e non GET
+ 

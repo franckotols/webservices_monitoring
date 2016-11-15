@@ -232,25 +232,13 @@ class testSitewhere(object):
 		return result
 
 	def send_measurement_blood_analysis(self):
-		post_url=self.url+"/assignments/7e4dda31-0c76-4234-a9ac-1f57cfa357ac/measurements"
+		post_url=self.url+"/assignments/749c7ca0-997c-467b-b64e-2f2ac3710ed4/measurements"
 		
 		
 		data = {
-			"eventDate" : "",
+			"eventDate" : "2016-11-14T00:00:00.000+0000",
 			"measurements" : {
-				"Creatinine": 34,
-				"Creatinine": 23,
-				"DiuresisVolume": 34,
-				"ClarenceVolume": 45,
-				"TotalProtein": 2,
-				"Albumin": 6,
-				"Calcium": 7,
-				"Phosphorus": 67,
-				"CompleteBloodCount(CBC)": 12,
-				"ParathyroidHormone(PTH) ": 23,
-				"Hemoglobin": 90,
-				"Triglycerides": 87,
-				"Cholesterol": 12
+				"blood_oxygen_value": 98
 			}
 		}
 
@@ -480,7 +468,7 @@ class testSitewhere(object):
 					"address":"corso Ferrucci 67",
 					"city":"Torino",
 					"sex":"Male",
-					"diseases":"{\"diseases_list\":[\"Dialisi Peritoneale\",\"Esami del sangue\"]}",
+					"diseases":"{\"diseases_list\":[\"Dialisi Peritoneale\",\"Esami del Sangue\"]}",
 					"birthdate":"18/3/1985",
 					"phone":"3331231543",
 					"ZIP code":"10143"
@@ -502,7 +490,7 @@ class testSitewhere(object):
 					"address":"via filadelfia 123",
 					"city":"Torino",
 					"sex":"Male",
-					"diseases":"{\"diseases_list\":[\"Emodialisi\",\"Esami del sangue\"]}",
+					"diseases":"{\"diseases_list\":[\"Emodialisi\",\"Esami del Sangue\"]}",
 					"birthdate":"01/1/1982",
 					"phone":"3331198743",
 					"ZIP code":"10173"

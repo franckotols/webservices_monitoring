@@ -540,52 +540,71 @@ class Notifications(object):
 		
 	def GET (self, *uri, **params):
 
-		#------------------------------------------------------------------------------------------------------
-		# GET REQUEST TO: http://localhost:8080/sitewhere/api/sites/de7397e2-3855-4f4f-a8fd-d4c7ccd67823/alerts
-		#------------------------------------------------------------------------------------------------------
-		notifiche = []
-		request = self.mySitewhere.get_alerts_for_sites(self.pat_site_token)
-		if request != "error_string":
-			print request
-			mydict = json.loads(request)
-			#print mydict
-			results = mydict["results"]
-			for i in range(0,len(results)):
-				asset_id = results[i]["assetId"]
-				asset_name = results[i]["assetName"]
-				assignment_token = results[i]["deviceAssignmentToken"]
-				alert_id = results[i]["id"]
-				alert_type = results[i]["type"]
+		# #------------------------------------------------------------------------------------------------------
+		# # GET REQUEST TO: http://localhost:8080/sitewhere/api/sites/de7397e2-3855-4f4f-a8fd-d4c7ccd67823/alerts
+		# #------------------------------------------------------------------------------------------------------
+		# notifiche = []
+		# request = self.mySitewhere.get_alerts_for_sites(self.pat_site_token)
+		# if request != "error_string":
+		# 	print request
+		# 	mydict = json.loads(request)
+		# 	#print mydict
+		# 	results = mydict["results"]
+		# 	for i in range(0,len(results)):
+		# 		asset_id = results[i]["assetId"]
+		# 		asset_name = results[i]["assetName"]
+		# 		assignment_token = results[i]["deviceAssignmentToken"]
+		# 		alert_id = results[i]["id"]
+		# 		alert_type = results[i]["type"]
 				
-				#NB IL FORMATO DELLA DATA E' DA CAMBIARE
-				date_str = results[i]["eventDate"]
-				date_str = date_str.split("T")
-				day_of_year = date_str[0]
-				date_str2 = date_str[1]
-				date_str2 = date_str2.split(".")
-				time_of_day = date_str2[0]
-				date = day_of_year+" "+time_of_day
-				alert_message = results[i]["message"]
-				data = {
-					"assetId": asset_id,
-					"assetName": asset_name,
-					"deviceAssignmentToken":assignment_token,
-					"id":alert_id,
-					"status":"true",
-					"type":alert_type,
-					"eventDate":date,
-					"message":alert_message
-				}
-				notifiche.append(data)
-			response = json.dumps({"results":notifiche},indent=4, sort_keys=True)
-			print response
-			return response
+		# 		#NB IL FORMATO DELLA DATA E' DA CAMBIARE
+		# 		date_str = results[i]["eventDate"]
+		# 		date_str = date_str.split("T")
+		# 		day_of_year = date_str[0]
+		# 		date_str2 = date_str[1]
+		# 		date_str2 = date_str2.split(".")
+		# 		time_of_day = date_str2[0]
+		# 		date = day_of_year+" "+time_of_day
+		# 		alert_message = results[i]["message"]
+		# 		data = {
+		# 			"assetId": asset_id,
+		# 			"assetName": asset_name,
+		# 			"deviceAssignmentToken":assignment_token,
+		# 			"id":alert_id,
+		# 			"status":"true",
+		# 			"type":alert_type,
+		# 			"eventDate":date,
+		# 			"message":alert_message
+		# 		}
+		# 		notifiche.append(data)
+		# 	response = json.dumps({"results":notifiche},indent=4, sort_keys=True)
+		# 	print response
+		# 	return response
 
 			
-		else:
-			raise cherrypy.HTTPError(400, "Error")
-			
-		
+		# else:
+		# 	raise cherrypy.HTTPError(400, "Error")
+
+		# #------------------------------------------------------------------------------------------------------
+		# # Prova con service di giuseppe
+		# #------------------------------------------------------------------------------------------------------
+		params={"physician_ID":"francesco-tolu-1881989", "api":"get_alerts_read_and_notread", "specs":{}}
+		addr="https://giupe.webfactional.com/health"
+		sec=urllib.urlencode(params)
+		s=requests.Session()
+		r=s.get(addr,params=sec, verify=False)
+		print r.status_code
+		print r.content
+		if r.status_code==200:
+			print request
+			mydict = json.loads(r)
+			#print mydict
+			r_dico = mydict["r"]
+			for i in range(0,len(r)):
+				asset_id = r_dict[i]["assetId"]
+				asset_name = r_dict[i]["assetName"]
+				assignment_token = r_dict[i]["deviceAssignmentToken"]
+				alert_id = r_dict[i]["id"]
 
 	def POST (self, * uri, ** params):
 		#---------------------------------------------------------------------------------------------------------
@@ -686,11 +705,18 @@ class MeanValuesParametersWebService(object):
 			array = []
 			dictionary = json.loads(json_response)
 			entries = dictionary["entries"]
-			for j in range(0,len(entries)):
-				value = entries[j]["value"]
-				array.append(value)
-			mean = float(sum(array)/len(array))
-			return int(mean)
+			print entries
+			print len(entries)
+			if len(entries>0):
+				for j in range(0,len(entries)):
+					value = entries[j]["value"]
+					array.append(value)
+				mean = float(sum(array)/len(array))
+				print mean
+				return int(mean)
+			else:
+				return "ciao"
+				
 
 		response_of_server = {}
 
@@ -740,6 +766,7 @@ class MeanValuesParametersWebService(object):
 					if results[k]["deviceHardwareId"] == "iHealt_OpenApiBP_"+pat_id+"_REAL_DEVICE_ID":
 						token = results[k]["token"]
 						systolic_1st = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"systolic",start_date_1st_string,end_date_1st_string)
+						print systolic_1st
 						mean_systolic_1st = calcola_media(systolic_1st)
 						systolic_2nd = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"systolic",start_date_2nd_string,end_date_2nd_string)
 						mean_systolic_2nd = calcola_media(systolic_2nd)
@@ -775,52 +802,52 @@ class MeanValuesParametersWebService(object):
 						heart_rate_2nd = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"heart_rate",start_date_2nd_string,end_date_2nd_string)
 						mean_heart_rate_2nd = calcola_media(heart_rate_2nd)
 						response_of_server.update({"heart_rate":{"1st_month":mean_heart_rate_1st,"2nd_month":mean_heart_rate_2nd}})
-					# elif results[k]["deviceHardwareId"] == "iHealt_OpenApiWeight_"+pat_id+"_REAL_DEVICE_ID":
-					# 	token = results[k]["token"]
-					# 	#meas = self.mySitewhere.get_meaurements_by_assignment_token(token)
-					# 	#print meas
-					# 	#peso
-					# 	weight_1st = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"weight",start_date_1st_string,end_date_1st_string)
-					# 	mean_weight_1st = calcola_media(weight_1st)
-					# 	weight_2nd = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"weight",start_date_2nd_string,end_date_2nd_string)
-					# 	mean_weight_2nd = calcola_media(weight_2nd)
-					# 	response_of_server.update({"weight":{"1st_month":mean_weight_1st,"2nd_month":mean_weight_2nd}})
-					# 	#bmi
-					# 	BMI_1st = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"BMI",start_date_1st_string,end_date_1st_string)
-					# 	mean_BMI_1st = calcola_media(BMI_1st)
-					# 	BMI_2nd = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"BMI",start_date_2nd_string,end_date_2nd_string)
-					# 	mean_BMI_2nd = calcola_media(BMI_2nd)
-					# 	response_of_server.update({"BMI":{"1st_month":mean_BMI_1st,"2nd_month":mean_BMI_2nd}})
-					# 	#massa magra
-					# 	fat_level_1st = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"fat_level",start_date_1st_string,end_date_1st_string)
-					# 	mean_fat_level_1st = calcola_media(fat_level_1st)
-					# 	fat_level_2nd = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"fat_level",start_date_2nd_string,end_date_2nd_string)
-					# 	mean_fat_level_2nd = calcola_media(fat_level_2nd)
-					# 	response_of_server.update({"fat_level":{"1st_month":mean_fat_level_1st,"2nd_month":mean_fat_level_2nd}})
-					# 	#grasso corporeo
-					# 	body_fat_1st = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"body_fat",start_date_1st_string,end_date_1st_string)
-					# 	mean_body_fat_1st = calcola_media(body_fat_1st)
-					# 	body_fat_2nd = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"body_fat",start_date_2nd_string,end_date_2nd_string)
-					# 	mean_body_fat_2nd = calcola_media(body_fat_2nd)
-					# 	response_of_server.update({"body_fat":{"1st_month":mean_body_fat_1st,"2nd_month":mean_body_fat_2nd}})
-					# 	#acqua corporea
-					# 	body_water_1st = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"body_water",start_date_1st_string,end_date_1st_string)
-					# 	mean_body_water_1st = calcola_media(body_water_1st)
-					# 	body_water_2nd = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"body_water",start_date_2nd_string,end_date_2nd_string)
-					# 	mean_body_water_2nd = calcola_media(body_water_2nd)
-					# 	response_of_server.update({"body_water":{"1st_month":mean_body_water_1st,"2nd_month":mean_body_water_2nd}})
-					# 	#massa muscolare
-					# 	muscle_weight_1st = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"muscle_weight",start_date_1st_string,end_date_1st_string)
-					# 	mean_muscle_weight_1st = calcola_media(muscle_weight_1st)
-					# 	muscle_weight_2nd = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"muscle_weight",start_date_2nd_string,end_date_2nd_string)
-					# 	mean_muscle_weight_2nd = calcola_media(muscle_weight_2nd)
-					# 	response_of_server.update({"muscle_weight":{"1st_month":mean_muscle_weight_1st,"2nd_month":mean_muscle_weight_2nd}})
-					# 	#massa ossea
-					# 	bone_value_1st = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"bone_value",start_date_1st_string,end_date_1st_string)
-					# 	mean_bone_value_1st = calcola_media(bone_value_1st)
-					# 	bone_value_2nd = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"bone_value",start_date_2nd_string,end_date_2nd_string)
-					# 	mean_bone_value_2nd = calcola_media(bone_value_2nd)
-					# 	response_of_server.update({"bone_value":{"1st_month":mean_bone_value_1st,"2nd_month":mean_bone_value_2nd}})
+					elif results[k]["deviceHardwareId"] == "iHealt_OpenApiWeight_"+pat_id+"_REAL_DEVICE_ID":
+						token = results[k]["token"]
+						#meas = self.mySitewhere.get_meaurements_by_assignment_token(token)
+						#print meas
+						#peso
+						weight_1st = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"weight",start_date_1st_string,end_date_1st_string)
+						mean_weight_1st = calcola_media(weight_1st)
+						weight_2nd = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"weight",start_date_2nd_string,end_date_2nd_string)
+						mean_weight_2nd = calcola_media(weight_2nd)
+						response_of_server.update({"weight":{"1st_month":mean_weight_1st,"2nd_month":mean_weight_2nd}})
+						#bmi
+						BMI_1st = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"BMI",start_date_1st_string,end_date_1st_string)
+						mean_BMI_1st = calcola_media(BMI_1st)
+						BMI_2nd = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"BMI",start_date_2nd_string,end_date_2nd_string)
+						mean_BMI_2nd = calcola_media(BMI_2nd)
+						response_of_server.update({"BMI":{"1st_month":mean_BMI_1st,"2nd_month":mean_BMI_2nd}})
+						#massa magra
+						fat_level_1st = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"fat_level",start_date_1st_string,end_date_1st_string)
+						mean_fat_level_1st = calcola_media(fat_level_1st)
+						fat_level_2nd = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"fat_level",start_date_2nd_string,end_date_2nd_string)
+						mean_fat_level_2nd = calcola_media(fat_level_2nd)
+						response_of_server.update({"fat_level":{"1st_month":mean_fat_level_1st,"2nd_month":mean_fat_level_2nd}})
+						#grasso corporeo
+						body_fat_1st = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"body_fat",start_date_1st_string,end_date_1st_string)
+						mean_body_fat_1st = calcola_media(body_fat_1st)
+						body_fat_2nd = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"body_fat",start_date_2nd_string,end_date_2nd_string)
+						mean_body_fat_2nd = calcola_media(body_fat_2nd)
+						response_of_server.update({"body_fat":{"1st_month":mean_body_fat_1st,"2nd_month":mean_body_fat_2nd}})
+						#acqua corporea
+						body_water_1st = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"body_water",start_date_1st_string,end_date_1st_string)
+						mean_body_water_1st = calcola_media(body_water_1st)
+						body_water_2nd = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"body_water",start_date_2nd_string,end_date_2nd_string)
+						mean_body_water_2nd = calcola_media(body_water_2nd)
+						response_of_server.update({"body_water":{"1st_month":mean_body_water_1st,"2nd_month":mean_body_water_2nd}})
+						#massa muscolare
+						muscle_weight_1st = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"muscle_weight",start_date_1st_string,end_date_1st_string)
+						mean_muscle_weight_1st = calcola_media(muscle_weight_1st)
+						muscle_weight_2nd = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"muscle_weight",start_date_2nd_string,end_date_2nd_string)
+						mean_muscle_weight_2nd = calcola_media(muscle_weight_2nd)
+						response_of_server.update({"muscle_weight":{"1st_month":mean_muscle_weight_1st,"2nd_month":mean_muscle_weight_2nd}})
+						#massa ossea
+						bone_value_1st = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"bone_value",start_date_1st_string,end_date_1st_string)
+						mean_bone_value_1st = calcola_media(bone_value_1st)
+						bone_value_2nd = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"bone_value",start_date_2nd_string,end_date_2nd_string)
+						mean_bone_value_2nd = calcola_media(bone_value_2nd)
+						response_of_server.update({"bone_value":{"1st_month":mean_bone_value_1st,"2nd_month":mean_bone_value_2nd}})
 
 
 			return json.dumps(response_of_server)
@@ -1075,6 +1102,7 @@ class TestGrafici(object):
 			if len(array)==0:
 				return "empty"			
 			else:
+				#array = array[::-1]
 				return array
 
 
@@ -1140,6 +1168,7 @@ class TestGrafici(object):
 						token = results[k]["token"]
 						print token
 						sitewhere_response = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,parametro,start_date_string,end_date_string)
+						print sitewhere_response
 						values = trova_valori(sitewhere_response)
 						break
 			if values != "empty":
@@ -1560,6 +1589,105 @@ class UrinAnalysisProvider(object):
 
 	def DELETE (self, * uri, ** params):
 		pass
+
+
+class TESTSERVERGRAFICI(object):
+	exposed = True
+
+	def __init__(self):
+
+		self.id = id
+		self.my_dict = self.get_config_file()
+		
+		self.url = self.my_dict["sitewhere"]["url"]
+		#il tenant e' lo stesso creato da giuseppe
+		self.tenant_token = self.my_dict["sitewhere"]["tenant_token"]
+		self.auth=(self.my_dict["sitewhere"]["auth"]["username"], self.my_dict["sitewhere"]["auth"]["password"])
+
+		#In realta' la riga sotto non e' necessaria perche' e' inclusa in ogni metodo della classe SitewhereManager
+		self.headers = {'X-Sitewhere-Tenant': self.tenant_token}
+
+		self.mySitewhere = SitewhereManager(self.url, self.tenant_token, self.auth)
+
+		#SITES
+		self.pat_site_token = self.my_dict["sitewhere"]["sites"]["pat_site_token"]
+		self.med_site_token = self.my_dict["sitewhere"]["sites"]["med_site_token"]
+		
+
+		#ASSET DEVICE
+		self.device_asset_id = self.my_dict["sitewhere"]["assets"]["device_asset_id"]
+
+		#ASSET MEDICI PROPERTIES
+		self.asset_med_id= self.my_dict["sitewhere"]["assets"]["med_asset_id"]
+		self.asset_med_name= self.my_dict["sitewhere"]["assets"]["med_asset_name"]
+		self.asset_app_id= self.my_dict["sitewhere"]["assets"]["app_asset_id"]
+		self.app_specification_token = self.my_dict["sitewhere"]["tokens"]["app_specification_token"]
+
+		#ASSET PAZIENTI PROPERTIES
+		self.asset_pat_id= self.my_dict["sitewhere"]["assets"]["pat_asset_id"]
+		self.asset_pat_name= self.my_dict["sitewhere"]["assets"]["pat_asset_name"]
+
+		
+
+		#DataBase
+		self.db_sitewhere = self.my_dict["mongo"]["db_sitewhere"]
+		self.db_dialysis_diary = self.my_dict["mongo"]["db_dialysis_diary"]
+		self.db_utils = self.my_dict["mongo"]["db_utils"]
+
+
+		#To read config_file
+	def get_config_file(self):
+		myfile = open("config2.json","r")
+		stringa = myfile.read()
+		dictionary = json.loads(stringa)
+		myfile.close()
+		return dictionary
+		
+		
+	def GET (self, *uri, **params):
+		#GET PER IL TESTING
+		pass
+		
+	def POST (self, * uri, ** params):
+
+
+		values = [
+			{
+				"measurementDate":"2016-11-14T00:00:00.000+0000",
+				"value":123
+				},
+			{
+				"measurementDate":"2016-11-13T00:00:00.000+0000",
+				"value":126
+				},
+			{
+				"measurementDate":"2016-11-12T00:00:00.000+0000",
+				"value":132
+				},
+			{
+				"measurementDate":"2016-11-111T00:00:00.000+0000",
+				"value":120
+				},
+			{
+				"measurementDate":"2016-11-10T00:00:00.000+0000",
+				"value":118
+				}
+		]
+
+
+		return json.dumps({"results":values})
+
+
+		
+
+
+			
+	def PUT (self, * uri, ** params): 
+		pass
+
+	def DELETE (self, * uri, ** params):
+		pass
+
 
 
 
