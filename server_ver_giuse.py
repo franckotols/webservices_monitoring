@@ -1358,13 +1358,12 @@ class DiaryDpWebService(object):
 		measurements_dp = collection.find({'userId':pat_id})
 		for k in measurements_dp:
 			print "*************"
+			#print k
 			#print k["request"]["eventDate"]
 			#print k["request"]["measurements"]
 			date_str = k["request"]["eventDate"]
 			#print date_str
 			measurements = k["request"]["measurements"]
-			conc = k["request"]["measurements"]["sameConcentration"]
-			gluco = k["request"]["measurements"]["glucose350_bags"]
 			#DATA IN UN FORMATO COMODO DA LEGGERE
 			date_str = date_str.split("T")
 			day_of_year = date_str[0]
@@ -1376,7 +1375,7 @@ class DiaryDpWebService(object):
 			values.append(json_object)
 		values = values[::-1]
 		response = {"results":values}
-		print json.dumps(response)
+		print json.dumps(response,indent=4, sort_keys=True)
 		return json.dumps(response)
 		
 				
@@ -1385,14 +1384,36 @@ class DiaryDpWebService(object):
 
 		print params
 		pat_id = params["pat_id"] #da mandare con l'applicazione
+		values = []
 		#VALUTARE SE E' UTILE UN PARAMETRO PER DISCRIMINARE TRA DIALISI PERITONEALE E EMODIALISI. Credo che sia la 
-		#cosa migliore, per non avere due servizi web del diario e uno degli esami del sangue
 		client = MongoClient()
 		client = MongoClient('localhost', 27017)
 		db = client[self.db_dialysis_diary]
 		collection = db['dp_diaries']
 		#events = collection.find()
-		event = collection.find({'userId':pat_id})
+		measurements_dp = collection.find({'userId':pat_id})
+		print measurements_dp
+		for k in measurements_dp:
+			print "*************"
+			#print k
+			#print k["request"]["eventDate"]
+			#print k["request"]["measurements"]
+			date_str = k["request"]["eventDate"]
+			#print date_str
+			measurements = k["request"]["measurements"]
+			#DATA IN UN FORMATO COMODO DA LEGGERE
+			date_str = date_str.split("T")
+			day_of_year = date_str[0]
+			date_str2 = date_str[1]
+			date_str2 = date_str2.split(".")
+			time_of_day = date_str2[0]
+			date = day_of_year+" "+time_of_day
+			json_object = {"eventDate":date,"measurements":measurements}
+			values.append(json_object)
+		values = values[::-1]
+		response = {"results":values}
+		print json.dumps(response,indent=4, sort_keys=True)
+		return json.dumps(response)
 
 		
 
@@ -1403,6 +1424,115 @@ class DiaryDpWebService(object):
 
 	def DELETE (self, * uri, ** params):
 		pass
+
+
+##########################################################################################################
+#GESTIONE DEL DIARIO CLINICO DELL'EMODIALISI
+#########################################################################################################
+class DiaryDpWebService(object):
+	exposed = True
+
+	def __init__(self):
+
+		self.id = id
+		self.my_dict = self.get_config_file()
+		
+		self.url = self.my_dict["sitewhere"]["url"]
+		#il tenant e' lo stesso creato da giuseppe
+		self.tenant_token = self.my_dict["sitewhere"]["tenant_token"]
+		self.auth=(self.my_dict["sitewhere"]["auth"]["username"], self.my_dict["sitewhere"]["auth"]["password"])
+
+		#In realta' la riga sotto non e' necessaria perche' e' inclusa in ogni metodo della classe SitewhereManager
+		self.headers = {'X-Sitewhere-Tenant': self.tenant_token}
+
+		self.mySitewhere = SitewhereManager(self.url, self.tenant_token, self.auth)
+
+		#SITES
+		self.pat_site_token = self.my_dict["sitewhere"]["sites"]["pat_site_token"]
+		self.med_site_token = self.my_dict["sitewhere"]["sites"]["med_site_token"]
+		
+
+		#ASSET DEVICE
+		self.device_asset_id = self.my_dict["sitewhere"]["assets"]["device_asset_id"]
+
+		#ASSET MEDICI PROPERTIES
+		self.asset_med_id= self.my_dict["sitewhere"]["assets"]["med_asset_id"]
+		self.asset_med_name= self.my_dict["sitewhere"]["assets"]["med_asset_name"]
+		self.asset_app_id= self.my_dict["sitewhere"]["assets"]["app_asset_id"]
+		self.app_specification_token = self.my_dict["sitewhere"]["tokens"]["app_specification_token"]
+
+		#ASSET PAZIENTI PROPERTIES
+		self.asset_pat_id= self.my_dict["sitewhere"]["assets"]["pat_asset_id"]
+		self.asset_pat_name= self.my_dict["sitewhere"]["assets"]["pat_asset_name"]
+
+		
+
+		#DataBase
+		self.db_sitewhere = self.my_dict["mongo"]["db_sitewhere"]
+		self.db_dialysis_diary = self.my_dict["mongo"]["db_dialysis_diary"]
+		self.db_utils = self.my_dict["mongo"]["db_utils"]
+
+
+		#To read config_file
+	def get_config_file(self):
+		myfile = open("config2.json","r")
+		stringa = myfile.read()
+		dictionary = json.loads(stringa)
+		myfile.close()
+		return dictionary
+		
+		
+	def GET (self, *uri, **params):
+		pass
+				
+		
+	def POST (self, * uri, ** params):
+
+		print params
+		pat_id = params["pat_id"] #da mandare con l'applicazione
+		values = []
+		#VALUTARE SE E' UTILE UN PARAMETRO PER DISCRIMINARE TRA DIALISI PERITONEALE E EMODIALISI. Credo che sia la 
+		client = MongoClient()
+		client = MongoClient('localhost', 27017)
+		db = client[self.db_dialysis_diary]
+		collection = db['dp_diaries']
+		#events = collection.find()
+		measurements_dp = collection.find({'userId':pat_id})
+		print measurements_dp
+		for k in measurements_dp:
+			print "*************"
+			#print k
+			#print k["request"]["eventDate"]
+			#print k["request"]["measurements"]
+			date_str = k["request"]["eventDate"]
+			#print date_str
+			measurements = k["request"]["measurements"]
+			#DATA IN UN FORMATO COMODO DA LEGGERE
+			date_str = date_str.split("T")
+			day_of_year = date_str[0]
+			date_str2 = date_str[1]
+			date_str2 = date_str2.split(".")
+			time_of_day = date_str2[0]
+			date = day_of_year+" "+time_of_day
+			json_object = {"eventDate":date,"measurements":measurements}
+			values.append(json_object)
+		if len(values)>0:
+			response = {"results":values}
+			print json.dumps(response)
+			return json.dumps(response)
+		else:
+			raise cherrypy.HTTPError(400,"no_values")
+		
+		
+
+
+			
+	def PUT (self, * uri, ** params): 
+		pass
+
+	def DELETE (self, * uri, ** params):
+		pass
+
 
 #----------------------------------------------------------------------------------------------------------------------------
 # Classe di Test per la gestione dei dati degli esami del sangue
@@ -1466,32 +1596,47 @@ class TestEsamiSangue(object):
 		
 		
 	def GET (self, *uri, **params):
-		#GET PER IL TESTING
-		pat_id = "rssplo88c18c342q-paolo-rossi"
-		client = MongoClient()
-		client = MongoClient('localhost', 27017)
-		db = client[self.db_dialysis_diary]
-		collection = db['blood_test_diaries']
-		#events = collection.find()
-		measurements_dp = collection.find({'userId':pat_id})
-		for k in measurements_dp:
-			print "*************"
-			print k["request"]["eventDate"]
-			print k["request"]["measurements"]
+		pass
 				
 		
 	def POST (self, * uri, ** params):
 
 		print params
 		pat_id = params["pat_id"] #da mandare con l'applicazione
+		values = []
 		#VALUTARE SE E' UTILE UN PARAMETRO PER DISCRIMINARE TRA DIALISI PERITONEALE E EMODIALISI. Credo che sia la 
-		#cosa migliore, per non avere due servizi web del diario e uno degli esami del sangue
 		client = MongoClient()
 		client = MongoClient('localhost', 27017)
 		db = client[self.db_dialysis_diary]
 		collection = db['blood_test_diaries']
 		#events = collection.find()
-		event = collection.find({'userId':pat_id})
+		measurements_dp = collection.find({'userId':pat_id})
+		print measurements_dp
+		for k in measurements_dp:
+			print "*************"
+			#print k
+			#print k["request"]["eventDate"]
+			#print k["request"]["measurements"]
+			date_str = k["request"]["eventDate"]
+			#print date_str
+			measurements = k["request"]["measurements"]
+			#DATA IN UN FORMATO COMODO DA LEGGERE
+			date_str = date_str.split("T")
+			day_of_year = date_str[0]
+			date_str2 = date_str[1]
+			date_str2 = date_str2.split(".")
+			time_of_day = date_str2[0]
+			date = day_of_year+" "+time_of_day
+			json_object = {"eventDate":date,"measurements":measurements}
+			
+			values.append(json_object)
+		values = values[::-1]
+		if len(values)>0:
+			response = {"results":values}
+			print json.dumps(response)
+			return json.dumps(response)
+		else:
+			raise cherrypy.HTTPError(400,"no_values")
 			
 	def PUT (self, * uri, ** params): 
 		pass
@@ -1576,9 +1721,12 @@ class UrinAnalysisProvider(object):
 			item = {"measurements":measurements, "date":str(date),"manufacturer":manufacturer}
 			values.append(item)
 		values = values[::-1]
-		response = {"results":values}
-		print json.dumps(response)
-		return json.dumps(response)
+		if len(values)>0:
+			response = {"results":values}
+			print json.dumps(response)
+			return json.dumps(response)
+		else:
+			raise cherrypy.HTTPError(400,"no_values")
 
 		
 
