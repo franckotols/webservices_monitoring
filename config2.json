@@ -1,4 +1,7 @@
 {
+	"giupe":{
+		"addr_alerts":"http://giupe.webfactional.com/health"
+		},
 	"sitewhere":{
 		
 		"url":"http://giupe.webfactional.com/sitewhere/api",
