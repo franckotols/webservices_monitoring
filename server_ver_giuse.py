@@ -790,8 +790,9 @@ class MeanValuesParametersWebService(object):
 					value = entries[j]["value"]
 					array.append(value)
 				mean = float(sum(array)/len(array))
+				return round(mean, 1)
 			else:
-				return "-"
+				return 10000
 				
 
 		dev_id = ""
@@ -800,7 +801,7 @@ class MeanValuesParametersWebService(object):
 
 		pat_id = params["id_pat"]
 		print pat_id
-		print self.asset_pat_id
+		#print self.asset_pat_id
 		devices_ids = [
 			"iHealt_OpenApiWeight_"+pat_id+"_REAL_DEVICE_ID",
 			"iHealt_OpenApiSpO2_"+pat_id+"_REAL_DEVICE_ID",
@@ -869,7 +870,7 @@ class MeanValuesParametersWebService(object):
 							mean_blood_oxygen_1st = calcola_media(blood_oxygen_1st)
 							blood_oxygen_2nd = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"blood_oxygen_value",start_date_2nd_string,end_date_2nd_string)
 							mean_blood_oxygen_2nd = calcola_media(blood_oxygen_2nd)
-							response_of_server.update({"blood_oxygen":{"1st_month":mean_blood_oxygen_1st,"2nd_month":mean_blood_oxygen_2nd}})
+							response_of_server.update({"spo2":{"1st_month":mean_blood_oxygen_1st,"2nd_month":mean_blood_oxygen_2nd}})
 						elif results[k]["deviceHardwareId"] == "iHealt_VirtualApiHeart_"+pat_id+"_REAL_DEVICE_ID":
 							token = results[k]["token"]
 							#meas = self.mySitewhere.get_meaurements_by_assignment_token(token)
@@ -895,13 +896,13 @@ class MeanValuesParametersWebService(object):
 							BMI_2nd = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"BMI",start_date_2nd_string,end_date_2nd_string)
 							mean_BMI_2nd = calcola_media(BMI_2nd)
 							response_of_server.update({"BMI":{"1st_month":mean_BMI_1st,"2nd_month":mean_BMI_2nd}})
-							#massa magra
-							fat_level_1st = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"fat_level",start_date_1st_string,end_date_1st_string)
-							mean_fat_level_1st = calcola_media(fat_level_1st)
-							fat_level_2nd = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"fat_level",start_date_2nd_string,end_date_2nd_string)
-							mean_fat_level_2nd = calcola_media(fat_level_2nd)
-							response_of_server.update({"fat_level":{"1st_month":mean_fat_level_1st,"2nd_month":mean_fat_level_2nd}})
-							#grasso corporeo
+							#massa magra #NON ESISTE??
+							# fat_level_1st = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"fat_level",start_date_1st_string,end_date_1st_string)
+							# mean_fat_level_1st = calcola_media(fat_level_1st)
+							# fat_level_2nd = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"fat_level",start_date_2nd_string,end_date_2nd_string)
+							# mean_fat_level_2nd = calcola_media(fat_level_2nd)
+							# response_of_server.update({"fat_level":{"1st_month":mean_fat_level_1st,"2nd_month":mean_fat_level_2nd}})
+							# #grasso corporeo
 							body_fat_1st = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"body_fat",start_date_1st_string,end_date_1st_string)
 							mean_body_fat_1st = calcola_media(body_fat_1st)
 							body_fat_2nd = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"body_fat",start_date_2nd_string,end_date_2nd_string)
@@ -927,8 +928,8 @@ class MeanValuesParametersWebService(object):
 							response_of_server.update({"bone_value":{"1st_month":mean_bone_value_1st,"2nd_month":mean_bone_value_2nd}})
 
 
-				print json.dumps({"results":response_of_server},indent=4, sort_keys=True)
-				return json.dumps({"results":response_of_server})
+				#print json.dumps(response_of_server,indent=4, sort_keys=True)
+				return json.dumps(response_of_server)
 			else:
 				raise cherrypy.HTTPError(400,"no_device")
 		else:
@@ -1033,6 +1034,7 @@ class PointValuesParametersWebService(object):
 		
 		date_str = params["date"]
 		values = {}
+		count = 0
 
 		if date_str != "":
 			#print date_str
@@ -1045,74 +1047,91 @@ class PointValuesParametersWebService(object):
 			#print to_date_object
 			from_date_str = datetime.datetime.strftime(from_date_object,'%Y-%m-%d')+"T00:00:00.000+0000"
 			to_date_str = datetime.datetime.strftime(to_date_object,'%Y-%m-%d')+"T00:00:00.000+0000"
-			print from_date_str
-			print to_date_str
-
-			#ricerca degli assignment token
-			json_resp = self.mySitewhere.get_assignment_associated_with_asset(self.asset_pat_id,pat_id)
-			#print json_resp
-			if json_resp != "error_string":
-				mydict = json.loads(json_resp)
-				results = mydict["results"]
-				if len(results)>0:
-					#va a prendere gli assignments relativi ai parametri
-					for k in range(0,len(results)):
-						#fa un check su tutti gli assignment e poi va a prendere quelli di interesse
-						if results[k]["deviceHardwareId"] in devices_ids:
-							#check su ogni device di interesse
-							if results[k]["deviceHardwareId"] == "iHealt_OpenApiBP_"+pat_id+"_REAL_DEVICE_ID":
-								token = results[k]["token"]
-								valori_sist = []
-								valori_diast = []
-								systolic = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"systolic",from_date_str,to_date_str)
-								diastolic = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"diastolic",from_date_str,to_date_str)
-								valori_sist = trova_valori_puntuali(systolic)
-								valori_diast = trova_valori_puntuali(diastolic)
-								values.update({"systolic":valori_sist,"diastolic":valori_diast})
-														
-					# 		elif results[k]["deviceHardwareId"] == "iHealt_OpenApiBG_"+pat_id+"_REAL_DEVICE_ID":
-					# 			token = results[k]["token"]
-					# 			meas = self.mySitewhere.get_meaurements_by_assignment_token(token)
-					# 			print meas
-					# 			#NON CI SONO MISURE DI GLUCOSIO PER ORA						
-							elif results[k]["deviceHardwareId"] == "iHealt_OpenApiSpO2_"+pat_id+"_REAL_DEVICE_ID":
-								token = results[k]["token"]
-								valori_spo2 = []
-								blood_oxygen = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"blood_oxygen_value",from_date_str,to_date_str)
-								valori_spo2 = trova_valori_puntuali(blood_oxygen)
-								values.update({"spo2":valori_spo2})
-							elif results[k]["deviceHardwareId"] == "iHealt_VirtualApiHeart_"+pat_id+"_REAL_DEVICE_ID":
-								token = results[k]["token"]
-								valori_hr = []
-								heart_rate = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"heart_rate",from_date_str,to_date_str)
-								valori_hr = trova_valori_puntuali(heart_rate)
-								values.update({"heart_rate":valori_hr})
-					# 		elif results[k]["deviceHardwareId"] == "iHealt_OpenApiWeight_"+pat_id+"_REAL_DEVICE_ID":
-					# 			token = results[k]["token"]
-					# 			#meas = self.mySitewhere.get_meaurements_by_assignment_token(token)
-					# 			#print meas
-					# 			#peso
-					# 			weight = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"weight",from_date_str_string,to_date_str_string)
-					# 			#bmi
-					# 			BMI = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"BMI",from_date_str_string,to_date_str_string)
-					# 			#massa magra
-					# 			fat_level = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"fat_level",from_date_str_string,to_date_str_string)
-					# 			#grasso corporeo
-					# 			body_fat = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"body_fat",from_date_str_string,to_date_str_string)
-					# 			#acqua corporea
-					# 			body_water = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"body_water",from_date_str_string,to_date_str_string)
-					# 			#massa muscolare
-					# 			muscle_weight = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"muscle_weight",from_date_str_string,to_date_str_string)
-					# 			#massa ossea
-					# 			bone_value = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"bone_value",from_date_str_string,to_date_str_string)					
-					# return json.dumps(response_of_server)
-					print json.dumps(values,indent=4, sort_keys=True)
-					return json.dumps(values)
-
+			#print from_date_str
+			#print to_date_str
+			today = datetime.datetime.today()+margin
+			print today
+			print to_date_object
+			if to_date_object<=today:
+				#ricerca degli assignment token
+				json_resp = self.mySitewhere.get_assignment_associated_with_asset(self.asset_pat_id,pat_id)
+				#print json_resp
+				if json_resp != "error_string":
+					mydict = json.loads(json_resp)
+					results = mydict["results"]
+					if len(results)>0:
+						#va a prendere gli assignments relativi ai parametri
+						for k in range(0,len(results)):
+							#fa un check su tutti gli assignment e poi va a prendere quelli di interesse
+							if results[k]["deviceHardwareId"] in devices_ids:
+								#check su ogni device di interesse
+								if results[k]["deviceHardwareId"] == "iHealt_OpenApiBP_"+pat_id+"_REAL_DEVICE_ID":
+									token = results[k]["token"]
+									valori_sist = []
+									valori_diast = []
+									systolic = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"systolic",from_date_str,to_date_str)
+									diastolic = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"diastolic",from_date_str,to_date_str)
+									valori_sist = trova_valori_puntuali(systolic)
+									#SE NON C'E' NEMMENO UN PARAMETRO MISURATO (controllo con la variabile count) DEVE ESSERE GENERATO UN ALERT DIALOG
+									if valori_sist == {}:
+										count = count+1
+									valori_diast = trova_valori_puntuali(diastolic)
+									if valori_diast == {}:
+										count = count+1
+									values.update({"systolic":valori_sist,"diastolic":valori_diast})														
+						# 		elif results[k]["deviceHardwareId"] == "iHealt_OpenApiBG_"+pat_id+"_REAL_DEVICE_ID":
+						# 			token = results[k]["token"]
+						# 			meas = self.mySitewhere.get_meaurements_by_assignment_token(token)
+						# 			print meas
+						# 			#NON CI SONO MISURE DI GLUCOSIO PER ORA						
+								elif results[k]["deviceHardwareId"] == "iHealt_OpenApiSpO2_"+pat_id+"_REAL_DEVICE_ID":
+									token = results[k]["token"]
+									valori_spo2 = []
+									blood_oxygen = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"blood_oxygen_value",from_date_str,to_date_str)
+									valori_spo2 = trova_valori_puntuali(blood_oxygen)
+									if valori_spo2 == {}:
+										count = count+1
+									values.update({"spo2":valori_spo2})
+								elif results[k]["deviceHardwareId"] == "iHealt_VirtualApiHeart_"+pat_id+"_REAL_DEVICE_ID":
+									token = results[k]["token"]
+									valori_hr = []
+									heart_rate = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"heart_rate",from_date_str,to_date_str)
+									valori_hr = trova_valori_puntuali(heart_rate)
+									if valori_hr == {}:
+										count = count+1
+									values.update({"heart_rate":valori_hr})
+								#IL PESO NON SERVE FARLO VEDERE PUNTUALMENTE
+						# 		elif results[k]["deviceHardwareId"] == "iHealt_OpenApiWeight_"+pat_id+"_REAL_DEVICE_ID":
+						# 			token = results[k]["token"]
+						# 			#meas = self.mySitewhere.get_meaurements_by_assignment_token(token)
+						# 			#print meas
+						# 			#peso
+						# 			weight = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"weight",from_date_str_string,to_date_str_string)
+						# 			#bmi
+						# 			BMI = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"BMI",from_date_str_string,to_date_str_string)
+						# 			#massa magra
+						# 			fat_level = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"fat_level",from_date_str_string,to_date_str_string)
+						# 			#grasso corporeo
+						# 			body_fat = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"body_fat",from_date_str_string,to_date_str_string)
+						# 			#acqua corporea
+						# 			body_water = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"body_water",from_date_str_string,to_date_str_string)
+						# 			#massa muscolare
+						# 			muscle_weight = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"muscle_weight",from_date_str_string,to_date_str_string)
+						# 			#massa ossea
+						# 			bone_value = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"bone_value",from_date_str_string,to_date_str_string)					
+						# return json.dumps(response_of_server)
+						print count
+						if count != 4:
+							print json.dumps(values,indent=4, sort_keys=True)
+							return json.dumps(values)
+						else:
+							raise cherrypy.HTTPError(400,"no_meas")
+					else:
+						raise cherrypy.HTTPError(400,"no_device")
 				else:
-					raise cherrypy.HTTPError(400,"no_device")
+					raise cherrypy.HTTPError(400,"error")
 			else:
-				raise cherrypy.HTTPError(400,"error")
+				raise cherrypy.HTTPError(400,"not_valid_date")
 		else:
 			raise cherrypy.HTTPError(400,"no_date")
 
@@ -1181,24 +1200,19 @@ class GraphParametersWebService(object):
 			
 	def POST (self, * uri, ** params):
 		def trova_valori(json_response):
-			array = []
+			
 			dictionary = json.loads(json_response)
 			entries = dictionary["entries"]
 			if len(entries)>0:
+				count = 0
+				sum_values = 0				
 				for j in range(0,len(entries)):
 					value = entries[j]["value"]
-					date_str = entries[j]["measurementDate"]
-					date_str = date_str.split("T")
-					day_of_year = date_str[0]
-					date_str2 = date_str[1]
-					date_str2 = date_str2.split(".")
-					time_of_day = date_str2[0]
-					date = day_of_year+" "+time_of_day
-					object_dict = {"value":value,"measurementDate":date}
-					array.append(object_dict)
-				return array
-			else:
-				return {}
+					sum_values = sum_values+value
+					count = count + 1
+				mean = 	int(sum_values/count)			
+				return mean
+			
 
 				
 
@@ -1222,6 +1236,15 @@ class GraphParametersWebService(object):
 			dev_id = "iHealt_OpenApiWeight_"+pat_id+"_REAL_DEVICE_ID"
 		elif parametro == "heart_rate":
 			dev_id = "iHealt_VirtualApiHeart_"+pat_id+"_REAL_DEVICE_ID"
+
+		#iddevices
+		devices_ids = [
+			"iHealt_OpenApiWeight_"+pat_id+"_REAL_DEVICE_ID",
+			"iHealt_OpenApiSpO2_"+pat_id+"_REAL_DEVICE_ID",
+			"iHealt_OpenApiBP_"+pat_id+"_REAL_DEVICE_ID",
+			"iHealt_OpenApiBG_"+pat_id+"_REAL_DEVICE_ID",
+			"iHealt_VirtualApiHeart_"+pat_id+"_REAL_DEVICE_ID"
+		]
 		########################################
 		# GESTIONE DELLA DATA
 		########################################
@@ -1235,22 +1258,17 @@ class GraphParametersWebService(object):
 			days = 60
 		margin = datetime.timedelta(days = days)
 		end_date_format = datetime.date.today()
+		#print end_date_format
 		end_date = end_date_format.strftime("%Y-%m-%d")
 		end_date_string = end_date+"T00:00:00.000+0000"
 		start_date_format=end_date_format-margin
+		#print start_date_format
 		start_date = start_date_format.strftime("%Y-%m-%d")
 		start_date_string = start_date+"T00:00:00.000+0000"
-		print start_date_string
-		print end_date_string
+		#print start_date_string
+		#print end_date_string
 
-		#iddevices
-		devices_ids = [
-			"iHealt_OpenApiWeight_"+pat_id+"_REAL_DEVICE_ID",
-			"iHealt_OpenApiSpO2_"+pat_id+"_REAL_DEVICE_ID",
-			"iHealt_OpenApiBP_"+pat_id+"_REAL_DEVICE_ID",
-			"iHealt_OpenApiBG_"+pat_id+"_REAL_DEVICE_ID",
-			"iHealt_VirtualApiHeart_"+pat_id+"_REAL_DEVICE_ID"
-		]
+		
 
 		#Se il dev id e' vuoto vuol dire che quel paziente non ha ancora associati i device iHealth
 		
@@ -1260,17 +1278,27 @@ class GraphParametersWebService(object):
 		if json_resp != "error_string":
 			mydict = json.loads(json_resp)
 			results = mydict["results"]
-			if len(results>0):
+			if len(results)>0:
 				#va a prendere gli assignments relativi ai parametri
 				for k in range(0,len(results)):
 					#fa un check su tutti gli assignment e poi va a prendere quelli di interesse
 					if results[k]["deviceHardwareId"] in devices_ids:
 						#check su ogni device di interesse
 						if results[k]["deviceHardwareId"] == dev_id:
-							token = results[k]["token"]							
-							sitewhere_response = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,parametro,start_date_string,end_date_string)
-							#print sitewhere_response
-							values = trova_valori(sitewhere_response)
+							token = results[k]["token"]
+							while start_date_format <= end_date_format:
+								to_date_format = start_date_format + datetime.timedelta(days=1)
+								from_date_str = start_date_format.strftime("%Y-%m-%d")+"T00:00:00.000+0000"
+								to_date_str = to_date_format.strftime("%Y-%m-%d")+"T00:00:00.000+0000"
+								sitewhere_response = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,parametro,from_date_str,to_date_str)
+								mean = trova_valori(sitewhere_response)
+								if mean != None:
+									measurementDate = start_date_format.strftime("%Y-%m-%d")
+									#print "********************"
+									values.append({"measurementDate":measurementDate,"value":mean})
+								start_date_format = start_date_format + datetime.timedelta(days=1)				
+							
+							#values = trova_valori(sitewhere_response)
 							break
 				if values != "empty":
 					results = {"results":values}
@@ -1283,9 +1311,6 @@ class GraphParametersWebService(object):
 				raise cherrypy.HTTPError(400,"no_device")
 		else:
 			raise cherrypy.HTTPError(400,"error")
-	
-		
-							
 
 	def PUT (self, * uri, ** params): 
 		pass
@@ -1565,12 +1590,11 @@ class DiaryEMOWebService(object):
 
 		print params
 		pat_id = params["pat_id"] #da mandare con l'applicazione
-		values = []
-		#VALUTARE SE E' UTILE UN PARAMETRO PER DISCRIMINARE TRA DIALISI PERITONEALE E EMODIALISI. Credo che sia la 
+		values = [] 
 		client = MongoClient()
 		client = MongoClient('localhost', 27017)
 		db = client[self.db_dialysis_diary]
-		collection = db['dp_diaries']
+		collection = db['emo_diaries']
 		#events = collection.find()
 		measurements_dp = collection.find({'userId':pat_id})
 		print measurements_dp
@@ -1889,6 +1913,8 @@ class TESTSERVERPARAMETRI(object):
 	def POST (self, * uri, ** params):
 		print params
 		if uri[0] == "grafico":
+
+			
 			values = [
 				{
 					"measurementDate":"2016-11-14",
@@ -1973,58 +1999,57 @@ class TESTSERVERPARAMETRI(object):
 					"value":118
 					}
 			]
+			values = values[::-1]
 			print json.dumps({"results":values})
 			return json.dumps({"results":values})
 			
 
 		elif uri[0] == "valori_medi":
+			prova_float = float(123.1)
+			prova_float = round(prova_float, 1)
 			data ={	"BMI": {
-							"1st_month": "43",
-							"2nd_month": "-"
+							"1st_month": 24.0,
+							"2nd_month": 23.0
 						},
-						"blood_oxygen": {
-							"1st_month": "43",
-							 "2nd_month": "-"
+						"spo2": {
+							"1st_month": 98,
+							 "2nd_month": 97
 						},
 						"body_fat": {
-							"1st_month": "43",
-							"2nd_month": "-"
+							"1st_month": 6.0,
+							"2nd_month": 6.1
 						},
 						"body_water": {
-							"1st_month": "43",
-							"2nd_month": "-"
+							"1st_month": 21.0,
+							"2nd_month": 21.2
 						},
 						"bone_value": {
-							"1st_month": "43",
-							"2nd_month": "-"
+							"1st_month": 2.0,
+							"2nd_month": 2.0
 						},
 						"diastolic": {
-							"1st_month": "43",
-							"2nd_month": "-"
-						},
-						"fat_level": {
-							"1st_month": "43",
-							"2nd_month": "-"
+							"1st_month": 88.0,
+							"2nd_month": 87.0
 						},
 						"glicemia": {
-							"1st_month": "10000",
-							"2nd_month": "10000"
+							"1st_month": 10000,
+							"2nd_month": 10000
 						},
 						"heart_rate": {
-							"1st_month": "43",
-							"2nd_month": "-"
+							"1st_month": 71.0,
+							"2nd_month": 72.0
 						},
 						"muscle_weight": {
-							"1st_month": "43",
-							"2nd_month": "-"
+							"1st_month": 0.2,
+							"2nd_month": 0.2
 						},
 				        "systolic": {
-							"1st_month": "43",
-							"2nd_month": "-"
+							"1st_month": prova_float,
+							"2nd_month": 123.0
 						},
 						"weight": {
-							"1st_month": "43",
-							"2nd_month": "-"
+							"1st_month": 10000,
+							"2nd_month": 72.1
 						}
 					}
 				
@@ -2056,8 +2081,9 @@ if __name__ == '__main__':
 	cherrypy.tree.mount (Notifications(), '/notifications', conf)
 	cherrypy.tree.mount (MeanValuesParametersWebService(), '/api/parameters/meanvalues', conf)
 	cherrypy.tree.mount (PointValuesParametersWebService(), '/api/parameters/pointvalues', conf)
-	cherrypy.tree.mount (GraphParametersWebService(), 'api/parameters/graphs', conf)
-	cherrypy.tree.mount (DiaryDpWebService(), '/api/diaryDp', conf)	
+	cherrypy.tree.mount (GraphParametersWebService(), '/api/parameters/graphs', conf)
+	cherrypy.tree.mount (DiaryDpWebService(), '/api/diaryDp', conf)
+	cherrypy.tree.mount (DiaryEMOWebService(), '/api/diaryEmo', conf)
 	cherrypy.tree.mount (UrinAnalysisProvider(), '/api/urinanalysis',conf)
 	cherrypy.tree.mount (BloodAnalysisWebServices(), '/api/bloodanalysis',conf)
 	cherrypy.tree.mount (PhysicianMessageManagerWebService(), '/api/messagefromphysician',conf)
