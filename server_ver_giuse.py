@@ -13,7 +13,7 @@ from mysitewherelib import SitewhereManager
 import datetime
 import math
 
-class RegistrationServer(object):
+class RegistrationWebService(object):
 	exposed = True
 
 	def __init__(self):
@@ -92,6 +92,7 @@ class RegistrationServer(object):
 		#--------------------------------------------------------------------------------------------------
 		# Prima elaborazione parametri che arrivano dalla App
 		#--------------------------------------------------------------------------------------------------
+		print params
 		data=str(params['new_user_data'])
 		#elaborazione dei params
 		data_obj=json.loads(data)
@@ -133,7 +134,7 @@ class RegistrationServer(object):
 		# GET REQUEST TO: http://localhost:8080/sitewhere/api/assets/categories/lista_medici_asset_ID/assets
 		#---------------------------------------------------------------------------------------------------
 		lista_medici = self.mySitewhere.get_assets_categoryID_assets(self.asset_med_id)
-		print lista_medici
+		#print lista_medici
 		if lista_medici != "error_string":
 			dixt = json.loads(lista_medici)
 			medici = dixt['results']
@@ -151,15 +152,15 @@ class RegistrationServer(object):
 				self.mySitewhere.init_asset_specification(self.device_asset_id,self.asset_app_id,self.app_specification_token)
 				self.mySitewhere.create_command(self.app_specification_token)
 				nuovo_medico = self.mySitewhere.post_new_person_asset(self.asset_med_id, med_id, med_name, imm_url, properties, med_username, email)
-				print nuovo_medico
+				#print nuovo_medico
 				if nuovo_medico != "error_string":					
 					count = count+1
 					nuovo_device = self.mySitewhere.post_device(hardware_id, self.med_site_token, self.app_specification_token, comments)
-					print nuovo_device
+					#print nuovo_device
 					if nuovo_device != "error_string":
 						count = count+1
 						nuovo_assignment = self.mySitewhere.post_assignment(hardware_id, self.asset_med_id, med_id, metadata)
-						print nuovo_assignment
+						#print nuovo_assignment
 						if nuovo_assignment != "error_string":
 							count=count+1
 				#--------------------------------------------------------------------------------------------------
@@ -183,7 +184,7 @@ class RegistrationServer(object):
 		pass
 
 
-class AuthenticationServer(object):
+class LoginWebService(object):
 	exposed = True
 
 	def __init__(self):
@@ -260,7 +261,7 @@ class AuthenticationServer(object):
 		# GET REQUEST TO: http://localhost:8080/sitewhere/api/assets/categories/lista_medici_asset_ID/assets
 		#---------------------------------------------------------------------------------------------------
 		lista_medici = self.mySitewhere.get_assets_categoryID_assets(self.asset_med_id)
-		print lista_medici
+		#print lista_medici
 		if lista_medici != "error_string":
 			dixt = json.loads(lista_medici)
 			medici = dixt['results']
@@ -269,15 +270,16 @@ class AuthenticationServer(object):
 			for i in range(0,(len(medici))):
 				if username == medici[i]["emailAddress"] and password == medici[i]["properties"]["password"]:
 					physician_id = medici[i]["id"]
-					print physician_id
+					#print physician_id
 					flag = True
 					break
 
 
 			if flag == True:
 				response = json.dumps({"results":{"status":"login_succesful", "physician_id":physician_id}})
+				print response
 				return response
-				#
+
 			else:
 				raise cherrypy.HTTPError(400, "wrong_params")
 		else:
@@ -290,7 +292,7 @@ class AuthenticationServer(object):
 		pass
 
 
-class DiseaseServer(object):
+class DiseasesWebService(object):
 	exposed = True
 
 	def __init__(self):
@@ -349,6 +351,7 @@ class DiseaseServer(object):
 		docu = collection.find_one() #restituisce il dizionario 
 		target = docu["diseases"]
 		mydict = {"diseases": target}
+		print json.dumps(mydict, indent=4, sort_keys=True)
 		return json.dumps(mydict)
 	
 
@@ -363,7 +366,7 @@ class DiseaseServer(object):
 		pass
 
 
-class SearchPatientServer(object):
+class SearchPatientWebService(object):
 	exposed = True
 
 	def __init__(self):
@@ -420,8 +423,8 @@ class SearchPatientServer(object):
 		
 		search_name = params['patient_name']
 		search_diseases = params['diseases']
-		print "*********"
-		print search_diseases
+		#print "*********"
+		#print search_diseases
 		
 
 		selected = []
@@ -430,7 +433,7 @@ class SearchPatientServer(object):
 		# GET REQUEST TO: http://localhost:8080/sitewhere/api/assets/categories/PATIENT_LIST_asset_id/assets
 		#---------------------------------------------------------------------------------------------------
 		lista_pazienti = self.mySitewhere.get_assets_categoryID_assets(self.asset_pat_id)
-		print lista_pazienti
+		#print lista_pazienti
 		if lista_pazienti != "error_string":
 			dixt = json.loads(lista_pazienti)
 			for i in range(0,len(dixt['results'])):
@@ -445,7 +448,7 @@ class SearchPatientServer(object):
 				
 				name = first_name+" "+last_name
 				#user_diseases = user_diseases.split(", ")
-				print "*************"
+				#print "*************"
 				#print name
 				#print user_diseases
 				count = 0
@@ -468,8 +471,8 @@ class SearchPatientServer(object):
 				#print selected
 				#print json.dumps(selected, indent=4, sort_keys=True)
 				server_response = { "server_response": selected }
-				server_response = json.dumps(server_response)
-				#print server_response
+				server_response = json.dumps(server_response,indent=4, sort_keys=True)
+				print server_response
 				return server_response
 			else:
 				raise cherrypy.HTTPError(400, "no_selected")
@@ -488,7 +491,7 @@ class SearchPatientServer(object):
 # La GET prende gli alerts dei pazienti e li rende disponibili per il medico
 # La POST crea un alert del medico, che altro non e' se non un messaggio per il paziente
 #---------------------------------------------------------------------------------------------------
-class Notifications(object):
+class AlarmsWebService(object):
 	exposed = True
 
 	def __init__(self):
@@ -547,7 +550,7 @@ class Notifications(object):
 		print params
 		true_params = {"specs":{}}
 		true_params.update(params)
-		print true_params
+		#print true_params
 		values = []
 		#params={"physician_ID":"francesco-tolu-1881989", "api":"get_alerts_read_and_notread", "specs":{}}
 		addr=self.addr_alerts
@@ -561,11 +564,11 @@ class Notifications(object):
 			print r.status_code
 			if r.status_code==200:
 				my_dict = json.loads(r.content)
-				print json.dumps(my_dict, indent=4, sort_keys=True)
+				#print json.dumps(my_dict, indent=4, sort_keys=True)
 				read_alerts = my_dict["read"]
 				not_read_alerts = my_dict["not_read"]
 				#print json.dumps(read_alerts, indent=4, sort_keys=True)
-				print "************************************************"
+				#print "************************************************"
 				#print json.dumps(not_read_alerts, indent=4, sort_keys=True)
 				for i in range(0,len(not_read_alerts)):
 					patient_name = not_read_alerts[i]["assetName"]
@@ -633,13 +636,13 @@ class Notifications(object):
 		if params["api"] == "get_list_of_not_read_alerts":
 			s=requests.Session()
 			r=s.get(addr,params=sec, verify=False)
-			print r.status_code
+			#print r.status_code
 			if r.status_code==200:
 				my_dict = json.loads(r.content)
-				print json.dumps(my_dict, indent=4, sort_keys=True)
+				#print json.dumps(my_dict, indent=4, sort_keys=True)
 				not_read_alerts = my_dict["not_read_alerts_list"]
 				#print json.dumps(read_alerts, indent=4, sort_keys=True)
-				print "************************************************"
+				#print "************************************************"
 				#print json.dumps(not_read_alerts, indent=4, sort_keys=True)
 				for i in range(0,len(not_read_alerts)):
 					patient_name = not_read_alerts[i]["assetName"]
@@ -799,7 +802,7 @@ class MeanValuesParametersWebService(object):
 		response_of_server = {}
 
 
-		pat_id = params["id_pat"]
+		pat_id = params["pat_id"]
 		print pat_id
 		#print self.asset_pat_id
 		devices_ids = [
@@ -1021,9 +1024,9 @@ class PointValuesParametersWebService(object):
 		response_of_server = {}
 
 		dev_id=""
-		pat_id = params["id_pat"]
-		print pat_id
-		print self.asset_pat_id
+		pat_id = params["pat_id"]
+		#print pat_id
+		#print self.asset_pat_id
 		devices_ids = [
 			"iHealt_OpenApiWeight_"+pat_id+"_REAL_DEVICE_ID",
 			"iHealt_OpenApiSpO2_"+pat_id+"_REAL_DEVICE_ID",
@@ -1050,8 +1053,8 @@ class PointValuesParametersWebService(object):
 			#print from_date_str
 			#print to_date_str
 			today = datetime.datetime.today()+margin
-			print today
-			print to_date_object
+			#print today
+			#print to_date_object
 			if to_date_object<=today:
 				#ricerca degli assignment token
 				json_resp = self.mySitewhere.get_assignment_associated_with_asset(self.asset_pat_id,pat_id)
@@ -1120,9 +1123,9 @@ class PointValuesParametersWebService(object):
 						# 			#massa ossea
 						# 			bone_value = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,"bone_value",from_date_str_string,to_date_str_string)					
 						# return json.dumps(response_of_server)
-						print count
+						#print count
 						if count != 4:
-							print json.dumps(values,indent=4, sort_keys=True)
+							#print json.dumps(values,indent=4, sort_keys=True)
 							return json.dumps(values)
 						else:
 							raise cherrypy.HTTPError(400,"no_meas")
@@ -1221,7 +1224,7 @@ class GraphParametersWebService(object):
 		#initialization
 		dev_id = ""
 		print params
-		pat_id = params["id_pat"]
+		pat_id = params["pat_id"]
 		parametro = params["param_id"]
 		interval_duration = params["interval_duration"]
 		#check on the parameter for choosing the device
@@ -1745,7 +1748,7 @@ class BloodAnalysisWebServices(object):
 	def DELETE (self, * uri, ** params):
 		pass
 
-class UrinAnalysisProvider(object):
+class UrinAnalysisWebService(object):
 	exposed = True
 
 	def __init__(self):
@@ -1838,6 +1841,73 @@ class UrinAnalysisProvider(object):
 
 	def DELETE (self, * uri, ** params):
 		pass
+
+class ThresholdsWebService(object):
+	exposed = True
+
+	def __init__(self):
+
+		self.id = id
+		self.my_dict = self.get_config_file()
+		
+		self.url = self.my_dict["sitewhere"]["url"]
+		#il tenant e' lo stesso creato da giuseppe
+		self.tenant_token = self.my_dict["sitewhere"]["tenant_token"]
+		self.auth=(self.my_dict["sitewhere"]["auth"]["username"], self.my_dict["sitewhere"]["auth"]["password"])
+
+		#In realta' la riga sotto non e' necessaria perche' e' inclusa in ogni metodo della classe SitewhereManager
+		self.headers = {'X-Sitewhere-Tenant': self.tenant_token}
+
+		self.mySitewhere = SitewhereManager(self.url, self.tenant_token, self.auth)
+
+		#SITES
+		self.pat_site_token = self.my_dict["sitewhere"]["sites"]["pat_site_token"]
+		self.med_site_token = self.my_dict["sitewhere"]["sites"]["med_site_token"]
+		
+
+		#ASSET DEVICE
+		self.device_asset_id = self.my_dict["sitewhere"]["assets"]["device_asset_id"]
+
+		#ASSET MEDICI PROPERTIES
+		self.asset_med_id= self.my_dict["sitewhere"]["assets"]["med_asset_id"]
+		self.asset_med_name= self.my_dict["sitewhere"]["assets"]["med_asset_name"]
+		self.asset_app_id= self.my_dict["sitewhere"]["assets"]["app_asset_id"]
+		self.app_specification_token = self.my_dict["sitewhere"]["tokens"]["app_specification_token"]
+
+		#ASSET PAZIENTI PROPERTIES
+		self.asset_pat_id= self.my_dict["sitewhere"]["assets"]["pat_asset_id"]
+		self.asset_pat_name= self.my_dict["sitewhere"]["assets"]["pat_asset_name"]
+
+		
+
+		#DataBase
+		self.db_sitewhere = self.my_dict["mongo"]["db_sitewhere"]
+		self.db_dialysis_diary = self.my_dict["mongo"]["db_dialysis_diary"]
+		self.db_utils = self.my_dict["mongo"]["db_utils"]
+
+
+		#To read config_file
+	def get_config_file(self):
+		myfile = open("config2.json","r")
+		stringa = myfile.read()
+		dictionary = json.loads(stringa)
+		myfile.close()
+		return dictionary
+		
+		
+	def GET (self, *uri, **params):
+		#GET PER IL TESTING
+		pass
+		
+	def POST (self, * uri, ** params):
+		pass
+			
+	def PUT (self, * uri, ** params): 
+		pass
+
+	def DELETE (self, * uri, ** params):
+		pass
+
 
 ####################################################################################################################################################################
 ####################################################################################################################################################################
@@ -2005,6 +2075,7 @@ class TESTSERVERPARAMETRI(object):
 			
 
 		elif uri[0] == "valori_medi":
+			print params
 			prova_float = float(123.1)
 			prova_float = round(prova_float, 1)
 			data ={	"BMI": {
@@ -2074,19 +2145,20 @@ if __name__ == '__main__':
 			'tools.sessions.on': True, 
 		}
 	}
-	cherrypy.tree.mount (RegistrationServer(),	'/registration',	conf)
-	cherrypy.tree.mount (AuthenticationServer(),	'/authentication',	conf)
-	cherrypy.tree.mount (DiseaseServer(),	'/diseases',	conf)
-	cherrypy.tree.mount (SearchPatientServer(),	'/searchPatient',	conf)
-	cherrypy.tree.mount (Notifications(), '/notifications', conf)
+	cherrypy.tree.mount (RegistrationWebService(),	'/api/registration',	conf)
+	cherrypy.tree.mount (LoginWebService(),	'/api/login',	conf)
+	cherrypy.tree.mount (DiseasesWebService(),	'/api/diseases',	conf)
+	cherrypy.tree.mount (SearchPatientWebService(),	'/api/searchPatient',	conf)
+	cherrypy.tree.mount (AlarmsWebService(), '/alarms', conf)
 	cherrypy.tree.mount (MeanValuesParametersWebService(), '/api/parameters/meanvalues', conf)
 	cherrypy.tree.mount (PointValuesParametersWebService(), '/api/parameters/pointvalues', conf)
 	cherrypy.tree.mount (GraphParametersWebService(), '/api/parameters/graphs', conf)
 	cherrypy.tree.mount (DiaryDpWebService(), '/api/diaryDp', conf)
 	cherrypy.tree.mount (DiaryEMOWebService(), '/api/diaryEmo', conf)
-	cherrypy.tree.mount (UrinAnalysisProvider(), '/api/urinanalysis',conf)
+	cherrypy.tree.mount (UrinAnalysisWebService(), '/api/urinanalysis',conf)
 	cherrypy.tree.mount (BloodAnalysisWebServices(), '/api/bloodanalysis',conf)
 	cherrypy.tree.mount (PhysicianMessageManagerWebService(), '/api/messagefromphysician',conf)
+	cherrypy.tree.mount (ThresholdsWebService(), '/api/thesholds',conf)
 	###########################################################################################
 	cherrypy.tree.mount (TESTSERVERPARAMETRI(),'/test_parametri',conf)
 	cherrypy.server.socket_host = '192.168.137.1'
