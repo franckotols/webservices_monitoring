@@ -1147,8 +1147,9 @@ class PointValuesParametersWebService(object):
 
 
 #------------------------------------------------------------------------------------------------------------------------
-# Classe di Test mandare i dati utili per i grafici
+# Classe per mandare i dati utili per i grafici
 #------------------------------------------------------------------------------------------------------------------------
+
 class GraphParametersWebService(object):
 	exposed = True
 
@@ -1203,19 +1204,28 @@ class GraphParametersWebService(object):
 			
 	def POST (self, * uri, ** params):
 		def trova_valori(json_response):
-			
+			array = []
 			dictionary = json.loads(json_response)
 			entries = dictionary["entries"]
 			if len(entries)>0:
-				count = 0
-				sum_values = 0				
 				for j in range(0,len(entries)):
 					value = entries[j]["value"]
-					sum_values = sum_values+value
-					count = count + 1
-				mean = 	int(sum_values/count)			
-				return mean
-			
+					date_str = entries[j]["measurementDate"]
+					date_str = date_str.split("T")
+					day_of_year = date_str[0]
+					date_str2 = date_str[1]
+					date_str2 = date_str2.split(".")
+					time_of_day = date_str2[0]
+					hou_min_vect = time_of_day.split(":")
+					hous = hou_min_vect[0]
+					mins = hou_min_vect[1]
+					#CONTROLLARE BENE QUESTO QUANDO CI SARANNO DI NUOVO VALORI
+					date = day_of_year+" "+hous+":"+mins
+					object_dict = {"value":value,"measurementDate":date}
+					array.append(object_dict)
+				return array
+			else:
+				return {}
 
 				
 
@@ -1224,7 +1234,7 @@ class GraphParametersWebService(object):
 		#initialization
 		dev_id = ""
 		print params
-		pat_id = params["pat_id"]
+		pat_id = params["id_pat"]
 		parametro = params["param_id"]
 		interval_duration = params["interval_duration"]
 		#check on the parameter for choosing the device
@@ -1239,15 +1249,6 @@ class GraphParametersWebService(object):
 			dev_id = "iHealt_OpenApiWeight_"+pat_id+"_REAL_DEVICE_ID"
 		elif parametro == "heart_rate":
 			dev_id = "iHealt_VirtualApiHeart_"+pat_id+"_REAL_DEVICE_ID"
-
-		#iddevices
-		devices_ids = [
-			"iHealt_OpenApiWeight_"+pat_id+"_REAL_DEVICE_ID",
-			"iHealt_OpenApiSpO2_"+pat_id+"_REAL_DEVICE_ID",
-			"iHealt_OpenApiBP_"+pat_id+"_REAL_DEVICE_ID",
-			"iHealt_OpenApiBG_"+pat_id+"_REAL_DEVICE_ID",
-			"iHealt_VirtualApiHeart_"+pat_id+"_REAL_DEVICE_ID"
-		]
 		########################################
 		# GESTIONE DELLA DATA
 		########################################
@@ -1261,17 +1262,22 @@ class GraphParametersWebService(object):
 			days = 60
 		margin = datetime.timedelta(days = days)
 		end_date_format = datetime.date.today()
-		#print end_date_format
 		end_date = end_date_format.strftime("%Y-%m-%d")
 		end_date_string = end_date+"T00:00:00.000+0000"
 		start_date_format=end_date_format-margin
-		#print start_date_format
 		start_date = start_date_format.strftime("%Y-%m-%d")
 		start_date_string = start_date+"T00:00:00.000+0000"
-		#print start_date_string
-		#print end_date_string
+		print start_date_string
+		print end_date_string
 
-		
+		#iddevices
+		devices_ids = [
+			"iHealt_OpenApiWeight_"+pat_id+"_REAL_DEVICE_ID",
+			"iHealt_OpenApiSpO2_"+pat_id+"_REAL_DEVICE_ID",
+			"iHealt_OpenApiBP_"+pat_id+"_REAL_DEVICE_ID",
+			"iHealt_OpenApiBG_"+pat_id+"_REAL_DEVICE_ID",
+			"iHealt_VirtualApiHeart_"+pat_id+"_REAL_DEVICE_ID"
+		]
 
 		#Se il dev id e' vuoto vuol dire che quel paziente non ha ancora associati i device iHealth
 		
@@ -1281,27 +1287,17 @@ class GraphParametersWebService(object):
 		if json_resp != "error_string":
 			mydict = json.loads(json_resp)
 			results = mydict["results"]
-			if len(results)>0:
+			if len(results>0):
 				#va a prendere gli assignments relativi ai parametri
 				for k in range(0,len(results)):
 					#fa un check su tutti gli assignment e poi va a prendere quelli di interesse
 					if results[k]["deviceHardwareId"] in devices_ids:
 						#check su ogni device di interesse
 						if results[k]["deviceHardwareId"] == dev_id:
-							token = results[k]["token"]
-							while start_date_format <= end_date_format:
-								to_date_format = start_date_format + datetime.timedelta(days=1)
-								from_date_str = start_date_format.strftime("%Y-%m-%d")+"T00:00:00.000+0000"
-								to_date_str = to_date_format.strftime("%Y-%m-%d")+"T00:00:00.000+0000"
-								sitewhere_response = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,parametro,from_date_str,to_date_str)
-								mean = trova_valori(sitewhere_response)
-								if mean != None:
-									measurementDate = start_date_format.strftime("%Y-%m-%d")
-									#print "********************"
-									values.append({"measurementDate":measurementDate,"value":mean})
-								start_date_format = start_date_format + datetime.timedelta(days=1)				
-							
-							#values = trova_valori(sitewhere_response)
+							token = results[k]["token"]							
+							sitewhere_response = self.mySitewhere.get_measurements_series_by_assignment_token_measurementID(token,parametro,start_date_string,end_date_string)
+							#print sitewhere_response
+							values = trova_valori(sitewhere_response)
 							break
 				if values != "empty":
 					results = {"results":values}
@@ -1314,12 +1310,21 @@ class GraphParametersWebService(object):
 				raise cherrypy.HTTPError(400,"no_device")
 		else:
 			raise cherrypy.HTTPError(400,"error")
+	
+		
+							
 
 	def PUT (self, * uri, ** params): 
 		pass
 
 	def DELETE (self, * uri, ** params):
 		pass
+
+
+
+#####################################################
+# servizio web per l'invio dei messaggi
+#####################################################
 
 class PhysicianMessageManagerWebService(object):
 	exposed = True
@@ -1896,11 +1901,89 @@ class ThresholdsWebService(object):
 		
 		
 	def GET (self, *uri, **params):
-		#GET PER IL TESTING
-		pass
-		
+		response = {"results":{}}
+		print params
+		pat_id = params["pat_id"]
+		physician_id = params["physician_id"]
+		true_params={"physician_ID":str(physician_id), "api":"get_current_variables_ranges_for_one_patient", "specs":{"patient_ID":str(pat_id)}}
+		addr="https://giupe.webfactional.com/health"
+		sec=urllib.urlencode(true_params)
+		s=requests.Session()
+		r=s.get(addr,params=sec, verify=False)
+		print ("STATUS CODE:\t"+str(r.status_code))
+		print ("\nMESSAGE:\t"+str(r.content))
+		if r.status_code == 200:
+			my_dict = json.loads(r.content)
+			list_var = my_dict["variables_list"]
+			for k in list_var:
+				if k["variable"]=="systolic":
+					max_val = k["max"]
+					min_val = k["min"]
+					response["results"].update({"systolic":{"max":max_val, "min":min_val}})
+				elif k["variable"]=="diastolic":
+					max_val = k["max"]
+					min_val = k["min"]
+					response["results"].update({"diastolic":{"max":max_val, "min":min_val}})
+				elif k["variable"]=="blood_oxygen_value":
+					max_val = k["max"]
+					min_val = k["min"]
+					response["results"].update({"spo2":{"max":max_val, "min":min_val}})
+				elif k["variable"]=="heart_rate":
+					max_val = k["max"]
+					min_val = k["min"]
+					response["results"].update({"heart_rate":{"max":max_val, "min":min_val}})
+				elif k["variable"]=="glucose_value":
+					max_val = k["max"]
+					min_val = k["min"]
+					response["results"].update({"glucose_value":{"max":max_val, "min":min_val}})
+			print json.dumps(response)
+			return json.dumps(response)
+
+		else:
+			raise cherrypy.HTTPError(400,"error")
+
+
 	def POST (self, * uri, ** params):
-		pass
+		print params
+		pat_id = params["pat_id"]
+		physician_id = params["physician_id"]
+		new_sys_min = str(params["new_sys_min"])
+		print type(new_sys_min)
+		new_sys_max = params["new_sys_max"]
+		new_dias_min = params["new_dias_min"]
+		new_dias_max = params["new_dias_max"]
+		new_hr_min = params["new_hr_min"]
+		new_hr_max = params["new_hr_max"]
+		new_spo2_min = params["new_spo2_min"]
+		new_spo2_max = params["new_spo2_max"]
+		new_glic_min = params["new_glic_min"]
+		new_glic_max = params["new_glic_max"]
+		addr="https://giupe.webfactional.com/health"
+		params_syst = {"physician_ID":str(physician_id), "api":"set_variable_range_for_one_patient", "specs":{"patient_ID":str(pat_id), "variable":"systolic", "new_min":int(float(new_sys_min)), "new_max":int(float(new_sys_max))}}
+		print "**************"
+		print params_syst
+		sec_syst=urllib.urlencode(params_syst)
+		s_syst=requests.Session()
+		r_syst=s_syst.put(addr,params=sec_syst, verify=False)
+		print r_syst.content
+		print r_syst.status_code
+		params_diast = {"physician_ID":str(physician_id), "api":"set_variable_range_for_one_patient", "specs":{"patient_ID":str(pat_id), "variable":"diastolic", "new_min":int(float(new_dias_min)), "new_max":int(float(new_dias_max))}}
+		sec_diast=urllib.urlencode(params_diast)
+		s_diast=requests.Session()
+		r_diast=s_diast.put(addr,params=sec_diast, verify=False)
+		params_hr = {"physician_ID":str(physician_id), "api":"set_variable_range_for_one_patient", "specs":{"patient_ID":str(pat_id), "variable":"heart_rate", "new_min":int(float(new_hr_min)), "new_max":int(float(new_sys_max))}}
+		sec_hr=urllib.urlencode(params_hr)
+		s_hr=requests.Session()
+		r_hr=s_hr.put(addr,params=sec_hr, verify=False)
+		params_spo2 = {"physician_ID":str(physician_id), "api":"set_variable_range_for_one_patient", "specs":{"patient_ID":str(pat_id), "variable":"blood_oxygen_value", "new_min":int(float(new_spo2_min)), "new_max":int(float(new_spo2_max))}}
+		sec_spo2=urllib.urlencode(params_spo2)
+		s_spo2=requests.Session()
+		r_spo2=s_spo2.put(addr,params=sec_spo2, verify=False)
+		params_glic = {"physician_ID":str(physician_id), "api":"set_variable_range_for_one_patient", "specs":{"patient_ID":str(pat_id), "variable":"glucose_value", "new_min":int(float(new_glic_min)), "new_max":int(float(new_glic_max))}}
+		sec_glic=urllib.urlencode(params_glic)
+		s_glic=requests.Session()
+		r_glic=s_glic.put(addr,params=sec_glic, verify=False)
+		return "ok"
 			
 	def PUT (self, * uri, ** params): 
 		pass
@@ -1987,88 +2070,105 @@ class TESTSERVERPARAMETRI(object):
 			
 			values = [
 				{
-					"measurementDate":"2016-11-14",
+					"measurementDate":"2016-11-14 19:33",
 					"value":123
 					},
 				{
-					"measurementDate":"2016-11-13",
+					"measurementDate":"2016-11-14 12:33",
+					"value":129
+					},				
+				{
+					"measurementDate":"2016-11-13 19:41",
 					"value":126
 					},
 				{
-					"measurementDate":"2016-11-12",
-					"value":132
-					},
-				{
-					"measurementDate":"2016-11-11",
+					"measurementDate":"2016-11-13 12:30",
 					"value":123
-					},
-				
-				{
-					"measurementDate":"2016-11-10",
-					"value":118
-					},
-				{
-					"measurementDate":"2016-11-9",
-					"value":123
-					},
-				{
-					"measurementDate":"2016-11-8",
-					"value":126
-					},
-				{
-					"measurementDate":"2016-11-7",
-					"value":132
-					},
-				{
-					"measurementDate":"2016-11-6",
-					"value":120
-					},
-				{
-					"measurementDate":"2016-11-5",
-					"value":118
-					},
-
-				{
-					"measurementDate":"2016-11-4",
-					"value":123
-					},
-				{
-					"measurementDate":"2016-11-3",
-					"value":126
-					},
-				{
-					"measurementDate":"2016-11-2",
-					"value":132
-					},
-				{
-					"measurementDate":"2016-11-1",
-					"value":120
-					},
-				{
-					"measurementDate":"2016-10-27",
-					"value":118
-					},
-				{
-					"measurementDate":"2016-10-24",
-					"value":123
-					},
-				{
-					"measurementDate":"2016-10-22",
-					"value":126
-					},
-				{
-					"measurementDate":"2016-10-4",
-					"value":132
-					},
-				{
-					"measurementDate":"2016-10-3",
-					"value":120
-					},
-				{
-					"measurementDate":"2016-10-2",
-					"value":118
 					}
-			]
+				]
+				# {
+				# 	"measurementDate":"2016-11-12 20:18",
+				# 	"value":132
+				# 	},
+				# {
+				# 	"measurementDate":"2016-11-12 13:33",
+				# 	"value":123
+				# 	},
+				# {
+				# 	"measurementDate":"2016-11-11 21:45",
+				# 	"value":119
+				# 	},
+				# {
+				# 	"measurementDate":"2016-11-11 14:00",
+				# 	"value":123
+				# 	},				
+				# {
+				# 	"measurementDate":"2016-11-10 11:21",
+				# 	"value":118
+				# 	},
+			
+			# 	{
+			# 		"measurementDate":"2016-11-9",
+			# 		"value":123
+			# 		},
+			# 	{
+			# 		"measurementDate":"2016-11-8",
+			# 		"value":126
+			# 		},
+			# 	{
+			# 		"measurementDate":"2016-11-7",
+			# 		"value":132
+			# 		},
+			# 	{
+			# 		"measurementDate":"2016-11-6",
+			# 		"value":120
+			# 		},
+			# 	{
+			# 		"measurementDate":"2016-11-5",
+			# 		"value":118
+			# 		},
+
+			# 	{
+			# 		"measurementDate":"2016-11-4",
+			# 		"value":123
+			# 		},
+			# 	{
+			# 		"measurementDate":"2016-11-3",
+			# 		"value":126
+			# 		},
+			# 	{
+			# 		"measurementDate":"2016-11-2",
+			# 		"value":132
+			# 		},
+			# 	{
+			# 		"measurementDate":"2016-11-1",
+			# 		"value":120
+			# 		},
+			# 	{
+			# 		"measurementDate":"2016-10-27",
+			# 		"value":118
+			# 		},
+			# 	{
+			# 		"measurementDate":"2016-10-24",
+			# 		"value":123
+			# 		},
+			# 	{
+			# 		"measurementDate":"2016-10-22",
+			# 		"value":126
+			# 		},
+			# 	{
+			# 		"measurementDate":"2016-10-4",
+			# 		"value":132
+			# 		},
+			# 	{
+			# 		"measurementDate":"2016-10-3",
+			# 		"value":120
+			# 		},
+			# 	{
+			# 		"measurementDate":"2016-10-2",
+			# 		"value":118
+			# 		}
+			# ]
 			values = values[::-1]
 			print json.dumps({"results":values})
 			return json.dumps({"results":values})
@@ -2158,7 +2258,7 @@ if __name__ == '__main__':
 	cherrypy.tree.mount (UrinAnalysisWebService(), '/api/urinanalysis',conf)
 	cherrypy.tree.mount (BloodAnalysisWebServices(), '/api/bloodanalysis',conf)
 	cherrypy.tree.mount (PhysicianMessageManagerWebService(), '/api/messagefromphysician',conf)
-	cherrypy.tree.mount (ThresholdsWebService(), '/api/thesholds',conf)
+	cherrypy.tree.mount (ThresholdsWebService(), '/thresholds',conf)
 	###########################################################################################
 	cherrypy.tree.mount (TESTSERVERPARAMETRI(),'/test_parametri',conf)
 	cherrypy.server.socket_host = '192.168.137.1'

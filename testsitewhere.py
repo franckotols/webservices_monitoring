@@ -546,6 +546,16 @@ class testSitewhere(object):
 		result3 = json.dumps(result3, indent=4, sort_keys=True)
 		print result3
 
+	def test_thersh(self):
+
+		params={"physician_ID":"francesco-tolu-1881989", "api":"bo", "specs":{"patient_ID":"tlofnc89m18i851f-francesco-tolu"}}
+		addr="https://giupe.webfactional.com/health"
+		sec=urllib.urlencode(params)
+		s=requests.Session()
+		r=s.get(addr,params=sec, verify=False)
+		print ("STATUS CODE:\t"+str(r.status_code))
+		print ("\nMESSAGE:\t"+str(r.content))
+
 
 
 if __name__ == "__main__":
@@ -577,6 +587,7 @@ if __name__ == "__main__":
 	print "22 - get_assignmets_in_sites"
 	print "23 - get_assignment_associated_with_asset"
 	print "24 - initialize_giupe_sitewhere_with_patients"
+	print "25 - test_thersh"
 	while True:
 		comm = raw_input("Insert command: ")
 		if comm == "1":
@@ -653,6 +664,8 @@ if __name__ == "__main__":
 			print assignments
 		elif comm == "24":
 			test.initialize_giupe_sitewhere_with_patients()
+		elif comm == "25":
+			test.test_thersh()
 
 
 			
